@@ -1,0 +1,4 @@
+framework module Embassy {
+  header "Embassy-Swift.h"
+  requires objc
+}
