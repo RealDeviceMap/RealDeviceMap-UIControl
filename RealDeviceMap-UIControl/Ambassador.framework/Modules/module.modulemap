@@ -1,4 +1,0 @@
-framework module Ambassador {
-  header "Ambassador-Swift.h"
-  requires objc
-}

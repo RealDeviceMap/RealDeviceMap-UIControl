@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 import Embassy
-import Ambassador
+import EnvoyAmbassador
 
 class RealDeviceMap_UIControlUITests: XCTestCase {
     

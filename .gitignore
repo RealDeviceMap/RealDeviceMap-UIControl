@@ -2,4 +2,9 @@
 .DS_Store
 
 # Xcode
+RealDeviceMap-UIControl.xcodeproj/project.xcworkspace/xcuserdata/
 
+# Pods
+Podfile.lock
+Pods/
+*.xcworkspace
