@@ -3,6 +3,7 @@
 
 # Xcode
 RealDeviceMap-UIControl.xcodeproj/project.xcworkspace/xcuserdata/
+.idea/
 
 # Pods
 Podfile.lock

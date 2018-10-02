@@ -14,20 +14,19 @@ import EnvoyAmbassador
 class RealDeviceMap_UIControlUITests: XCTestCase {
     
     // EDIT ME
-    
     let uuid = "DEVICE_UUID"
-    let backendURLBaseString = "http://RDM_IP:9001"
+    let backendURLBaseString = "http://RDM_UO:9001"
     
     // EDIT ME OPTIONALLY
-    
     let port = 8080
     let pokemonMaxTime = 45.0
     let raidMaxTime = 15.0
-    
+
+
     // DON'T EDIT ME
-    
     var backendControlerURL: URL!
     var backendJSONURL: URL!
+    var backendRawURL: URL!
     var isStarted = false
     var currentLocation: (lat: Double, lon: Double)?
     var waitRequiresPokemon = false
@@ -40,6 +39,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         backendControlerURL = URL(string: backendURLBaseString + "/controler")!
         backendJSONURL = URL(string: backendURLBaseString + "/json")!
+        backendRawURL = URL(string: backendURLBaseString + "/raw")!
         continueAfterFailure = true
     }
 
@@ -71,7 +71,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
         let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
         let router = Router()
-        let server = DefaultHTTPServer(eventLoop: loop, port: port, app: router.app)
+        let server = DefaultHTTPServer(eventLoop: loop, interface: "0.0.0.0", port: port, app: router.app)
         
         router["/loc"] = DelayResponse(JSONResponse(handler: { environ -> Any in
             if self.currentLocation != nil {
@@ -100,24 +100,41 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
                 
                 if jsonData != nil {
-                    let pokeCount: Int
-                    if let pokemon = jsonData!["nearby_pokemon"] as? [[String: Any]] {
-                        pokeCount = pokemon.count
+                    if jsonData!["gmo"] != nil {
+                        self.postRequest(url: self.backendRawURL, data: jsonData!, blocking: true, completion: { (resultJson) in
+                            if self.waitRequiresPokemon {
+                                if (resultJson!["data"] as! [String: Any])["nearby"] as? Int ?? 0 > 0 {
+                                    self.lock.lock()
+                                    self.waitForData = false
+                                    self.lock.unlock()
+                                }
+                            } else {
+                                self.lock.lock()
+                                self.waitForData = false
+                                self.lock.unlock()
+                            }
+                        })
+                        
                     } else {
-                        pokeCount = 0
-                    }
-                    
-                    self.postRequest(url: self.backendJSONURL, data: jsonData!, completion: { (_) in })
-                    if self.waitRequiresPokemon {
-                        if pokeCount != 0 {
+                        let pokeCount: Int
+                        if let pokemon = jsonData!["nearby_pokemon"] as? [[String: Any]] {
+                            pokeCount = pokemon.count
+                        } else {
+                            pokeCount = 0
+                        }
+                        
+                        self.postRequest(url: self.backendJSONURL, data: jsonData!, completion: { (_) in })
+                        if self.waitRequiresPokemon {
+                            if pokeCount != 0 {
+                                self.lock.lock()
+                                self.waitForData = false
+                                self.lock.unlock()
+                            }
+                        } else {
                             self.lock.lock()
                             self.waitForData = false
                             self.lock.unlock()
                         }
-                    } else {
-                        self.lock.lock()
-                        self.waitForData = false
-                        self.lock.unlock()
                     }
                 }
             }

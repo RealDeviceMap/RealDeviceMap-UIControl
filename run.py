@@ -1,8 +1,11 @@
 import subprocess
 import shlex
 
-device_id = '57c2eb15ea1f3267757892b65ae8d960528b3c33'
+# EDIT ME
+device_id = 'DEVICE_UUID'
 
+
+# DON'T EDIT ME
 while True:
 
     process = subprocess.Popen(shlex.split('xcodebuild test -workspace RealDeviceMap-UIControl.xcworkspace -scheme "RealDeviceMap-UIControl" -destination "id={}" -allowProvisioningUpdates'.format(device_id)), stdout=subprocess.PIPE)
