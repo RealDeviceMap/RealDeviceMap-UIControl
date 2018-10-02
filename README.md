@@ -1,6 +1,6 @@
 # RealDeviceMap-UIControl
 
-<strong>The contents of this repo are a proof of concept and are for educational use only!</strong>
+<strong>The contents of this repo is a proof of concept and is for educational use only!</strong>
 
 RealDeviceMap-UIControl is a Device Controllers for the RealDeviceMap-Api (https://github.com/123FLO321/RealDeviceMap).
 
