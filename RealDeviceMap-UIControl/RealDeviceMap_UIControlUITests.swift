@@ -3,7 +3,6 @@
 //  RealDeviceMap-UIControlUITests
 //
 //  Created by Florian Kostenzer on 28.09.18.
-//  Copyright © 2018 Florian Kostenzer. All rights reserved.
 //
 
 import Foundation
@@ -75,8 +74,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         router["/loc"] = DelayResponse(JSONResponse(handler: { environ -> Any in
             if self.currentLocation != nil {
-                let jitterLat = Double.random(in: 0.0 ... 0.0005) - 0.00025
-                let jitterLon = Double.random(in: 0.0 ... 0.0005) - 0.00025
+                
+                let jitterLat = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
+                let jitterLon = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
                 return [
                     "latitude": self.currentLocation!.lat + jitterLat,
                     "longitude": self.currentLocation!.lon + jitterLon

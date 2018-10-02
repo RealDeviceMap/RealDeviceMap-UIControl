@@ -3,7 +3,6 @@
 //  RealDeviceMap-UIControl
 //
 //  Created by Florian Kostenzer on 28.09.18.
-//  Copyright © 2018 Florian Kostenzer. All rights reserved.
 //
 
 import UIKit
