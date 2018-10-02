@@ -469,7 +469,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE212FE7DC432FB311B7EF39 /* Pods-RealDeviceMap-UIControlUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -494,7 +493,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3F46BE95C792EAE6E0B7CF21 /* Pods-RealDeviceMap-UIControlUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
