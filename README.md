@@ -1,9 +1,10 @@
 # RealDeviceMap-UIControl
 
-RealDeviceMap-UIControl is a Device Controllers for the RealDeviceMap-Api (https://github.com/123FLO321/RealDeviceMap).
-Check the Wiki of RealDeviceMap for first steps and then follow this Wiki.
+<strong>The contents of this repo are a proof of concept and are for educational use only!</strong>
 
-This Project has been created for educational purpouse only and should only be used for educational porpouses.
-The usage of this project might violate Niantics Terms of Service.
+RealDeviceMap-UIControl is a Device Controllers for the RealDeviceMap-Api (https://github.com/123FLO321/RealDeviceMap).
+
+RealDeviceMap-UIControl interaccts with the iOS Device using Xcode UITesting.<br>
+This project shows how to UITest 3rd party apps with optical image processing for none standart UIElements and how to setup and use a Webserver in a Xcode UITest.
 
 Questions? Ask as in Discord: https://discord.gg/q2aXaGP
