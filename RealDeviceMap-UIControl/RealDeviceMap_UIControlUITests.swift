@@ -75,12 +75,19 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         router["/loc"] = DelayResponse(JSONResponse(handler: { environ -> Any in
             if self.currentLocation != nil {
                 
-                let jitterLat = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
-                let jitterLon = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
-                return [
-                    "latitude": self.currentLocation!.lat + jitterLat,
-                    "longitude": self.currentLocation!.lon + jitterLon
-                ]
+                if waitRequiresPokemon {
+                    let jitterLat = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
+                    let jitterLon = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
+                    return [
+                        "latitude": self.currentLocation!.lat + jitterLat,
+                        "longitude": self.currentLocation!.lon + jitterLon
+                    ]
+                } else {
+                    return [
+                        "latitude": self.currentLocation!.lat,
+                        "longitude": self.currentLocation!.lon
+                    ]
+                }
             } else {
                 return []
             }
@@ -454,4 +461,4 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         return false
     }
-    }
+}
