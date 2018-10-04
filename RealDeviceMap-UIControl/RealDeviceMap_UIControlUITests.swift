@@ -75,7 +75,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         router["/loc"] = DelayResponse(JSONResponse(handler: { environ -> Any in
             if self.currentLocation != nil {
                 
-                if waitRequiresPokemon {
+                if self.waitRequiresPokemon {
                     let jitterLat = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
                     let jitterLon = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
                     return [
