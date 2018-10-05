@@ -59,9 +59,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 print("[ERROR] Backend did not include data!")
                 fatalError("[ERROR] Backend did not include data!")
             }
-            if data!["asigned"] as? Bool == false {
-                print("[ERROR] Device is not asigned to an instance!")
-                fatalError("[ERROR] Device is not asigned to an instance!")
+            if data!["assigned"] as? Bool == false {
+                print("[ERROR] Device is not assigned to an instance!")
+                fatalError("[ERROR] Device is not assigned to an instance!")
             }
             print("[INFO] Connected to Backend sucesfully")
 
