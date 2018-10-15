@@ -55,7 +55,7 @@ extension XCTestCase {
         task.resume()
         if blocking {
             repeat {
-                usleep(1000 * delayMultiplier)
+                usleep(1000)
             } while !done
             completion(resultDict)
         }
