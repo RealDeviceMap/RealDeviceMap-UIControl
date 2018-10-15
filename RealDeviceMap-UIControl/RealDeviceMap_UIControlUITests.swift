@@ -22,6 +22,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     let raidMaxTime = 15.0
     let maxWarningTimeRaid = 30 // 432000
     let resetAccountOnly = false
+    let delayMultiplier: UInt32 = 1
 
     // DON'T EDIT ME
     var backendControlerURL: URL!
@@ -98,7 +99,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         if resetAccountOnly {
             username = nil
             isLoggedIn = false
-            sleep(5)
+            sleep(5 * self.delayMultiplier)
             shouldExit = true
             return
         }
@@ -127,7 +128,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         app.terminate()
         app.activate()
-        sleep(1)
+        sleep(1 * self.delayMultiplier)
         
     }
     
@@ -179,14 +180,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     count = 0
                     app.terminate()
                     app.activate()
-                    sleep(1)
+                    sleep(1 * self.delayMultiplier)
                 }
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
             }
             
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             newPlayerButton.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             ptcButton.tap()
         }
     }
@@ -213,9 +214,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 return
             }
             
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             loginUsernameTextField.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             continueAfterFailure = true
             app.typeText(username!)
         }
@@ -244,9 +245,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 return
             }
             
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             loginPasswordTextField.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             continueAfterFailure = true
             app.typeText(password!)
             
@@ -299,9 +300,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 return
             }
             
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             loginConfirmButton.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             
             var loggedIn = false
             var count = 0
@@ -310,7 +311,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             
                 if app.state != .runningForeground {
                     app.activate()
-                    sleep(10)
+                    sleep(10 * self.delayMultiplier)
                 }
                 
                 let screenshotComp = XCUIScreen.main.screenshot()
@@ -361,22 +362,22 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     print("[DEBUG] Got ban. Restarting...")
                     app.terminate()
                     app.activate()
-                    sleep(10)
+                    sleep(10 * self.delayMultiplier)
                 } else if (greenT > 0.75 && greenT < 0.9 && blueT > 0.55 && blueT < 0.7) {
                     print("[DEBUG] Accepting Terms.")
                     acceptTermsButton.tap()
-                    sleep(1)
+                    sleep(1 * self.delayMultiplier)
                 } else if (greenP > 0.75 && greenP < 0.9 && blueP > 0.55 && blueP < 0.7) {
                     print("[DEBUG] Accepting Privacy.")
                     acceptPrivacyButton.tap()
-                    sleep(1)
+                    sleep(1 * self.delayMultiplier)
                 } else if (greenB > 0.75 && greenB < 0.9 && blueB > 0.55 && blueB < 0.7) {
                     print("[ERROR] Account \(username!) is banned.")
                     username = nil
                     isLoggedIn = false
                     bannedButton.tap()
                     postRequest(url: backendControlerURL, data: ["uuid": uuid, "type": "account_banned"], blocking: true) { (result) in }
-                    sleep(5)
+                    sleep(5 * self.delayMultiplier)
                     shouldExit = true
                     return
                 } else if (greenS > 0.75 && greenS < 0.9 && blueS > 0.55 && blueS < 0.7) || isTutorial(compareL: compareTutorialL, compareR: compareTutorialR) {
@@ -388,7 +389,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     username = nil
                     isLoggedIn = false
                     postRequest(url: backendControlerURL, data: ["uuid": uuid, "type": "account_invalid_credentials"], blocking: true) { (result) in }
-                    sleep(5)
+                    sleep(5 * self.delayMultiplier)
                     shouldExit = true
                     return
                 } else {
@@ -398,7 +399,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         shouldExit = true
                         return
                     }
-                    sleep(1)
+                    sleep(1 * self.delayMultiplier)
                 }
                 
             }
@@ -414,7 +415,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         if newLogIn {
             
-            sleep(4)
+            sleep(4 * self.delayMultiplier)
             
             let app = XCUIApplication(bundleIdentifier: "com.nianticlabs.pokemongo")
             let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
@@ -450,49 +451,49 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 newLogIn = false
                 app.terminate()
                 app.activate()
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
 
                 return
             }
             
             for _ in 1...9 {
                 nextButton.tap()
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
             }
-            sleep(2)
+            sleep(2 * self.delayMultiplier)
             for _ in 1...4 {
                 nextButton.tap()
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
             }
             
             styleYesButton.tap()
-            sleep(2)
+            sleep(2 * self.delayMultiplier)
             nextButton.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             nextButton.tap()
-            sleep(2)
+            sleep(2 * self.delayMultiplier)
 
             while !findAndClickPokemon(app: app) {
                 app.swipeLeft()
             }
             
-            sleep(4)
+            sleep(4 * self.delayMultiplier)
             noARButton.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             noARButtonConfirm.tap()
-            sleep(4)
+            sleep(4 * self.delayMultiplier)
             for _ in 1...5 {
                 app.swipeUp()
-                sleep(3)
+                sleep(3 * self.delayMultiplier)
             }
-            sleep(10)
+            sleep(10 * self.delayMultiplier)
             catchOKButton.tap()
-            sleep(7)
+            sleep(7 * self.delayMultiplier)
             catchCloseButton.tap()
-            sleep(3)
+            sleep(3 * self.delayMultiplier)
             for _ in 1...2 {
                 nextButton.tap()
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
             }
 
         }
@@ -540,26 +541,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 return
             }
             
-            sleep(2)
+            sleep(2 * self.delayMultiplier)
             keybordDoneButton.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             usernameOKButton.tap()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             usernameConfirmButton.tap()
-            sleep(4)
+            sleep(4 * self.delayMultiplier)
             
             for _ in 1...6 {
                 keybordDoneButton.tap()
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
             }
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
             keybordDoneButton.tap()
             
             print("[INFO] Tutorial Done. Restarting...")
             newLogIn = false
             app.terminate()
             app.activate()
-            sleep(1)
+            sleep(1 * self.delayMultiplier)
         }
         
     }
@@ -843,7 +844,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 isStarted = false
                 isStartupCompleted = false
                 app.activate()
-                sleep(1)
+                sleep(1 * self.delayMultiplier)
             } else {
                 normalized.tap()
             }
@@ -852,8 +853,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     print("[DEBUG] Performing Startup sequence")
                     coordStartup.tap()
-                    sleep(1)
-                    self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger)
+                    sleep(1 * self.delayMultiplier)
+                    self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, delayMultiplier: delayMultiplier)
                     hasWarning = self.checkHasWarning(compareL: compareWarningL, compareR: compareWarningR)
                     if hasWarning {
                         if self.firstWarningDate == nil {
@@ -862,10 +863,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         }
                         print("[INFO] Account has a warning!")
                         coordWarning.tap()
-                        sleep(1)
+                        sleep(1 * self.delayMultiplier)
                     }
                     coordCloseNews.tap()
-                    sleep(1)
+                    sleep(1 * self.delayMultiplier)
                     isStartupCompleted = true
                 } else {
                     
@@ -874,13 +875,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         
                         if result == nil {
                             print("[ERROR] Failed to get a job") // <- search harder, better, faster, stronger
-                            sleep(1)
+                            sleep(1 * self.delayMultiplier)
                         } else if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
                             
                             if action == "scan_pokemon" {
                                 if hasWarning {
                                     print("[INFO] Account has a warning and tried to scan for Pokemon. Logging out!")
-                                    let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutButton: logoutButton, logoutConfirmButton: logoutConfirmButton, compareStartLoggedOut: compareStartLoggedOut)
+                                    let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutButton: logoutButton, logoutConfirmButton: logoutConfirmButton, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.delayMultiplier)
                                     if !success {
                                         return
                                     }
@@ -889,7 +890,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(5)
+                                    sleep(5 * self.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -904,10 +905,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.lock.lock()
                                 self.waitForData = true
                                 self.lock.unlock()
-                                sleep(3)
+                                sleep(3 * self.delayMultiplier)
                                 var locked = true
                                 while locked {
-                                    usleep(100000)
+                                    usleep(100000 * self.delayMultiplier)
                                     self.lock.lock()
                                     if Date().timeIntervalSince(start) >= self.pokemonMaxTime {
                                         locked = false
@@ -926,7 +927,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.maxWarningTimeRaid {
                                     print("[INFO] Account has a warning and is over maxWarningTimeRaid. Logging out!")
-                                    let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutButton: logoutButton, logoutConfirmButton: logoutConfirmButton, compareStartLoggedOut: compareStartLoggedOut)
+                                    let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutButton: logoutButton, logoutConfirmButton: logoutConfirmButton, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.delayMultiplier)
                                     if !success {
                                         return
                                     }
@@ -935,7 +936,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(5)
+                                    sleep(5 * self.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -950,10 +951,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.lock.lock()
                                 self.waitForData = true
                                 self.lock.unlock()
-                                sleep(3)
+                                sleep(3 * self.delayMultiplier)
                                 var locked = true
                                 while locked {
-                                    usleep(100000)
+                                    usleep(100000 * self.delayMultiplier)
                                     self.lock.lock()
                                     if Date().timeIntervalSince(start) >= self.raidMaxTime {
                                         locked = false
@@ -975,7 +976,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             
                         } else {
                             print("[DEBUG] no job left") // <- search harder, better, faster, stronger
-                            sleep(1)
+                            sleep(1 * self.delayMultiplier)
                         }
                         
                     }
@@ -1003,7 +1004,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         self.username = nil
                         self.isLoggedIn = false
                         UserDefaults.standard.synchronize()
-                        sleep(5)
+                        sleep(5 * self.delayMultiplier)
                         self.shouldExit = true
                         return
                     } else if (green > 0.75 && green < 0.9 && blue > 0.55 && blue < 0.7) {
@@ -1016,7 +1017,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             app.terminate() // Retry
                         }
                         startupCount += 1
-                        sleep(1)
+                        sleep(1 * self.delayMultiplier)
                     }
                 } else {
                     print("[ERROR] CompareStart not set")
