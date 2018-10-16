@@ -80,12 +80,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     let jitterLon = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
                     return [
                         "latitude": self.currentLocation!.lat + jitterLat,
-                        "longitude": self.currentLocation!.lon + jitterLon
+                        "longitude": self.currentLocation!.lon + jitterLon,
+                        "lat": self.currentLocation!.lat + jitterLat,
+                        "lng": self.currentLocation!.lon + jitterLon
                     ]
                 } else {
                     return [
                         "latitude": self.currentLocation!.lat,
-                        "longitude": self.currentLocation!.lon
+                        "longitude": self.currentLocation!.lon,
+                        "lat": self.currentLocation!.lat,
+                        "lng": self.currentLocation!.lon
                     ]
                 }
             } else {
