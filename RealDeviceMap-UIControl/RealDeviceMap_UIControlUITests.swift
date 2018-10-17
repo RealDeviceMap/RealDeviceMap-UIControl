@@ -125,6 +125,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             
         }
         
+        if shouldExit {
+            return   
+        }
         
         if username == nil {
             postRequest(url: backendControlerURL, data: ["uuid": uuid, "type": "get_account"], blocking: true) { (result) in
