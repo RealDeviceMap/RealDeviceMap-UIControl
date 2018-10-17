@@ -21,7 +21,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     let pokemonMaxTime = 45.0
     let raidMaxTime = 15.0
     let maxWarningTimeRaid = 30 // 432000
-    let resetAccountOnly = false
     let delayMultiplier: UInt32 = 1
 
     // DON'T EDIT ME
@@ -96,12 +95,34 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         shouldExit = false
         
-        if resetAccountOnly {
-            username = nil
-            isLoggedIn = false
-            sleep(5 * self.delayMultiplier)
-            shouldExit = true
-            return
+        // Register on backend
+        postRequest(url: backendControlerURL, data: ["uuid": uuid, "type": "init"], blocking: true) { (result) in
+            if result == nil {
+                print("[ERROR] Failed to connect to Backend!")
+                self.shouldExit = true
+                return
+            } else if result!["status"] as? String != "ok" {
+                let error = result!["error"] ?? "? (no error sent)"
+                print("[ERROR] Backend returned a error: \(error)")
+                self.shouldExit = true
+                return
+            }
+            let data = result!["data"] as? [String: Any]
+            if data == nil {
+                print("[ERROR] Backend did not include data!")
+                self.shouldExit = true
+                return
+            }
+            if data!["assigned"] as? Bool == false {
+                print("[ERROR] Device is not assigned to an instance!")
+                self.shouldExit = true
+                return
+            }
+            if let firstWarningTimestamp = data!["first_warning_timestamp"] as? Int {
+                self.firstWarningDate = Date(timeIntervalSince1970: Double(firstWarningTimestamp))
+            }
+            print("[INFO] Connected to Backend sucesfully")
+            
         }
         
         
@@ -120,6 +141,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 self.password = password
                 self.newLogIn = true
                 self.isLoggedIn = false
+                
+                if let firstWarningTimestamp = data["first_warning_timestamp"] as? Int {
+                    self.firstWarningDate = Date(timeIntervalSince1970: Double(firstWarningTimestamp))
+                }
+                
                 print("[INFO] Got account \(username) from backend.")
             }
         }
@@ -571,37 +597,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             return
         }
         
-        // Register on backend
-        postRequest(url: backendControlerURL, data: ["uuid": uuid, "type": "init"], blocking: true) { (result) in
-            if result == nil {
-                print("[ERROR] Failed to connect to Backend!")
-                self.shouldExit = true
-                return
-            } else if result!["status"] as? String != "ok" {
-                let error = result!["error"] ?? "? (no error sent)"
-                print("[ERROR] Backend returned a error: \(error)")
-                self.shouldExit = true
-                return
-            }
-            let data = result!["data"] as? [String: Any]
-            if data == nil {
-                print("[ERROR] Backend did not include data!")
-                self.shouldExit = true
-                return
-            }
-            if data!["assigned"] as? Bool == false {
-                print("[ERROR] Device is not assigned to an instance!")
-                self.shouldExit = true
-                return
-            }
-            if let firstWarningTimestamp = data!["first_warning_timestamp"] as? Int {
-                self.firstWarningDate = Date(timeIntervalSince1970: Double(firstWarningTimestamp))
-            }
-            print("[INFO] Connected to Backend sucesfully")
-
-        }
-        
-
         let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
         let router = Router()
         let server = DefaultHTTPServer(eventLoop: loop, interface: "0.0.0.0", port: port, app: router.app)
