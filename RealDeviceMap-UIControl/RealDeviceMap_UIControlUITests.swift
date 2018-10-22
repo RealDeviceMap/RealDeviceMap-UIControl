@@ -588,7 +588,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     
     func test999Main() {
         
-        if shouldExit || username == nil || isLoggedIn == false {
+        if shouldExit || ((username == nil || isLoggedIn == false) && conf.enableAccountManager) {
             return
         }
         
