@@ -85,6 +85,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     
     func test0Setup() {
         
+        username = nil
+        
         shouldExit = false
         
         // Register on backend
@@ -288,31 +290,51 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
             
             let compareStart: (x: Int, y: Int)
-            let compareFailed: (x: Int, y: Int)
-            let compareTerms: (x: Int, y: Int)
-            let comparePrivacy: (x: Int, y: Int)
-            let compareBannedText: (x: Int, y: Int)
-            let compareBanned: (x: Int, y: Int)
             
+            let compareBannedButton: (x: Int, y: Int)
+            let compareBannedText: (x: Int, y: Int)
+            
+            let compareTermsButton: (x: Int, y: Int)
+            let compareTermsText: (x: Int, y: Int)
+            
+            let compareTerms2Button: (x: Int, y: Int)
+            let compareTerms2Text: (x: Int, y: Int)
+            
+            let compareFailedButton: (x: Int, y: Int)
+            let compareFailedText: (x: Int, y: Int)
+            
+            let comparePricacyButton: (x: Int, y: Int)
+            let comparePricacyText: (x: Int, y: Int)
+            
+            let compareBannedInfo: (x: Int, y: Int)
+
             let compareTutorialL: (x: Int, y: Int)
             let compareTutorialR: (x: Int, y: Int)
             
             let loginConfirmButton: XCUICoordinate
             let acceptTermsButton: XCUICoordinate
+            let acceptTerms2Button: XCUICoordinate
             let acceptPrivacyButton: XCUICoordinate
             let bannedButton: XCUICoordinate
             
             if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
                 compareStart = (320, 620)
-                compareFailed = (320, 660)
-                compareTerms = (115, 615)
-                comparePrivacy = (320, 725)
-                compareBanned = (320, 575)
-                compareBannedText = (100, 900)
+                compareBannedInfo = (100, 900)
                 compareTutorialL = (100, 900)
                 compareTutorialR = (550, 900)
+                compareBannedButton = (320, 600)
+                compareBannedText = (228, 479)
+                compareTermsButton = (320, 600)
+                compareTermsText = (109, 351)
+                compareTerms2Button = (320, 620)
+                compareTerms2Text = (109, 374)
+                compareFailedButton = (320, 700)
+                compareFailedText = (140, 443)
+                comparePricacyButton = (320, 700)
+                comparePricacyText = (128, 429)
                 loginConfirmButton = normalized.withOffset(CGVector(dx: 375, dy: 680))
                 acceptTermsButton = normalized.withOffset(CGVector(dx: 320, dy: 615))
+                acceptTerms2Button = normalized.withOffset(CGVector(dx: 320, dy: 615))
                 acceptPrivacyButton = normalized.withOffset(CGVector(dx: 320, dy: 670))
                 bannedButton = normalized.withOffset(CGVector(dx: 320, dy: 710))
             } else {
@@ -336,63 +358,61 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
                 
                 let screenshotComp = XCUIScreen.main.screenshot()
-                
-                let colorS = screenshotComp.image.getPixelColor(pos: CGPoint(x: compareStart.x, y: compareStart.y))
-                var redS: CGFloat = 0
-                var greenS: CGFloat = 0
-                var blueS: CGFloat = 0
-                var alphaS: CGFloat = 0
-                colorS.getRed(&redS, green: &greenS, blue: &blueS, alpha: &alphaS)
-                
-                let colorF = screenshotComp.image.getPixelColor(pos: CGPoint(x: compareFailed.x, y: compareFailed.y))
-                var redF: CGFloat = 0
-                var greenF: CGFloat = 0
-                var blueF: CGFloat = 0
-                var alphaF: CGFloat = 0
-                colorF.getRed(&redF, green: &greenF, blue: &blueF, alpha: &alphaF)
-                
-                let colorT = screenshotComp.image.getPixelColor(pos: CGPoint(x: compareTerms.x, y: compareTerms.y))
-                var redT: CGFloat = 0
-                var greenT: CGFloat = 0
-                var blueT: CGFloat = 0
-                var alphaT: CGFloat = 0
-                colorT.getRed(&redT, green: &greenT, blue: &blueT, alpha: &alphaT)
-            
-                let colorP = screenshotComp.image.getPixelColor(pos: CGPoint(x: comparePrivacy.x, y: comparePrivacy.y))
-                var redP: CGFloat = 0
-                var greenP: CGFloat = 0
-                var blueP: CGFloat = 0
-                var alphaP: CGFloat = 0
-                colorP.getRed(&redP, green: &greenP, blue: &blueP, alpha: &alphaP)
-                
-                let colorB = screenshotComp.image.getPixelColor(pos: CGPoint(x: compareBanned.x, y: compareBanned.y))
-                var redB: CGFloat = 0
-                var greenB: CGFloat = 0
-                var blueB: CGFloat = 0
-                var alphaB: CGFloat = 0
-                colorB.getRed(&redB, green: &greenB, blue: &blueB, alpha: &alphaB)
-                
-                let colorBT = screenshotComp.image.getPixelColor(pos: CGPoint(x: compareBannedText.x, y: compareBannedText.y))
-                var redBT: CGFloat = 0
-                var greenBT: CGFloat = 0
-                var blueBT: CGFloat = 0
-                var alphaBT: CGFloat = 0
-                colorBT.getRed(&redBT, green: &greenBT, blue: &blueBT, alpha: &alphaBT)
-                
-                if (redBT < 0.05 && greenBT > 0.2 && greenBT < 0.3 && blueBT > 0.3 && blueBT < 0.4) {
+
+                if (screenshotComp.rgbAtLocation(
+                    pos: compareBannedInfo,
+                    min: (red: 0.0, green: 0.2, blue: 0.3),
+                    max: (red: 0.05, green: 0.3, blue: 0.4))
+                  ) {
                     print("[DEBUG] Got ban. Restarting...")
                     app.terminate()
                     app.activate()
                     sleep(10 * conf.delayMultiplier)
-                } else if (greenT > 0.75 && greenT < 0.9 && blueT > 0.55 && blueT < 0.7) {
-                    print("[DEBUG] Accepting Terms.")
+                } else if ( screenshotComp.rgbAtLocation(
+                                pos: compareTermsButton,
+                                min: (red: 0.0, green: 0.75, blue: 0.55),
+                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                            screenshotComp.rgbAtLocation(
+                                pos: compareTermsText,
+                                min: (red: 0.0, green: 0.0, blue: 0.0),
+                                max: (red: 0.3, green: 0.5, blue: 0.5))
+                          ) {
+                    print("[DEBUG] Accepting Terms")
                     acceptTermsButton.tap()
                     sleep(1 * conf.delayMultiplier)
-                } else if (greenP > 0.75 && greenP < 0.9 && blueP > 0.55 && blueP < 0.7) {
+                } else if ( screenshotComp.rgbAtLocation(
+                                pos: compareTerms2Button,
+                                min: (red: 0.0, green: 0.75, blue: 0.55),
+                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                            screenshotComp.rgbAtLocation(
+                                pos: compareTerms2Text,
+                                min: (red: 0.0, green: 0.0, blue: 0.0),
+                                max: (red: 0.3, green: 0.5, blue: 0.5))
+                          ) {
+                    print("[DEBUG] Accepting Updated Terms.")
+                    acceptTerms2Button.tap()
+                    sleep(1 * conf.delayMultiplier)
+                } else if ( screenshotComp.rgbAtLocation(
+                                pos: comparePricacyButton,
+                                min: (red: 0.0, green: 0.75, blue: 0.55),
+                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                            screenshotComp.rgbAtLocation(
+                                pos: comparePricacyText,
+                                min: (red: 0.0, green: 0.0, blue: 0.0),
+                                max: (red: 0.3, green: 0.5, blue: 0.5))
+                          ) {
                     print("[DEBUG] Accepting Privacy.")
                     acceptPrivacyButton.tap()
                     sleep(1 * conf.delayMultiplier)
-                } else if (greenB > 0.75 && greenB < 0.9 && blueB > 0.55 && blueB < 0.7) {
+                } else if ( screenshotComp.rgbAtLocation(
+                                pos: compareBannedButton,
+                                min: (red: 0.0, green: 0.75, blue: 0.55),
+                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                            screenshotComp.rgbAtLocation(
+                                pos: compareBannedText,
+                                min: (red: 0.0, green: 0.0, blue: 0.0),
+                                max: (red: 0.3, green: 0.5, blue: 0.5))
+                          ) {
                     print("[ERROR] Account \(username!) is banned.")
                     username = nil
                     isLoggedIn = false
@@ -401,11 +421,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(5 * conf.delayMultiplier)
                     shouldExit = true
                     return
-                } else if (greenS > 0.75 && greenS < 0.9 && blueS > 0.55 && blueS < 0.7) || isTutorial(compareL: compareTutorialL, compareR: compareTutorialR) {
-                    loggedIn = true
-                    isLoggedIn = true
-                    print("[INFO] Logged in as \(username!)")
-                } else if (greenF > 0.75 && greenF < 0.9 && blueF > 0.55 && blueF < 0.7) {
+                } else if ( screenshotComp.rgbAtLocation(
+                                pos: compareFailedButton,
+                                min: (red: 0.0, green: 0.75, blue: 0.55),
+                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                            screenshotComp.rgbAtLocation(
+                                pos: compareFailedText,
+                                min: (red: 0.0, green: 0.0, blue: 0.0),
+                                max: (red: 0.3, green: 0.5, blue: 0.5))
+                          ) {
                     print("[ERROR] Invalid credentials for \(username!)")
                     username = nil
                     isLoggedIn = false
@@ -413,6 +437,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(5 * conf.delayMultiplier)
                     shouldExit = true
                     return
+                } else if (screenshotComp.rgbAtLocation(
+                        pos: compareStart,
+                        min: (red: 0.0, green: 0.75, blue: 0.55),
+                        max: (red: 1.0, green: 0.90, blue: 0.70))
+                        || isTutorial(compareL: compareTutorialL, compareR: compareTutorialR)
+                  ) {
+                    loggedIn = true
+                    isLoggedIn = true
+                    print("[INFO] Logged in as \(username!)")
                 } else {
                     count += 1
                     if count == 60 {
@@ -500,7 +533,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             
             sleep(4 * conf.delayMultiplier)
             noARButton.tap()
-            sleep(1 * conf.delayMultiplier)
+            sleep(2 * conf.delayMultiplier)
             noARButtonConfirm.tap()
             sleep(4 * conf.delayMultiplier)
             for _ in 1...5 {
@@ -990,7 +1023,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     var alphaL: CGFloat = 0
                     colorL.getRed(&redL, green: &greenL, blue: &blueL, alpha: &alphaL)
                     
-                    if (redL == 1 && greenL > 0.75 && greenL < 0.85 && blueL < 0.1) {
+                    if (redL == 1 && greenL > 0.75 && greenL < 0.85 && blueL < 0.1 && conf.enableAccountManager) {
                         print("[INFO] Not logged in. Restarting...")
                         self.username = nil
                         self.isLoggedIn = false

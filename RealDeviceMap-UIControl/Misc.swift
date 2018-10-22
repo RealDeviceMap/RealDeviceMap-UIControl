@@ -27,6 +27,32 @@ extension UIImage {
     }
 }
 
+extension XCUIScreenshot {
+    
+    func rgbAtLocation(pos: (x: Int, y: Int)) -> (red: CGFloat, green: CGFloat, blue: CGFloat){
+        
+        let color = self.image.getPixelColor(pos: CGPoint(x: pos.x, y: pos.y))
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        return (red, green, blue)
+        
+    }
+    
+    func rgbAtLocation(pos: (x: Int, y: Int), min: (red: CGFloat, green: CGFloat, blue: CGFloat), max: (red: CGFloat, green: CGFloat, blue: CGFloat)) -> Bool {
+
+        let color = self.rgbAtLocation(pos: pos)
+        
+        return  color.red >= min.red && color.red <= max.red &&
+                color.green >= min.green && color.green <= max.green &&
+                color.blue >= min.blue && color.blue <= max.blue
+    }
+}
+
 extension XCTestCase {
     
     func postRequest(url: URL, data: [String: Any], blocking: Bool=false, completion: @escaping ([String: Any]?) -> Swift.Void) {
