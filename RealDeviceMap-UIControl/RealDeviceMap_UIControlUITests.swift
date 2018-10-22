@@ -84,9 +84,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     }
     
     func test0Setup() {
-        
-        username = nil
-        
+                
         shouldExit = false
         
         // Register on backend
