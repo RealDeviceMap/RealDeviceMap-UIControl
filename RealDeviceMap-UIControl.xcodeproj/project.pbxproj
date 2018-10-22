@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E6D7FA8217E037E0022DA75 /* ConfigProto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D7FA7217E037E0022DA75 /* ConfigProto.swift */; };
+		2E6D7FAA217E03A70022DA75 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D7FA9217E03A70022DA75 /* Config.swift */; };
 		2EEB5E36215E61DD0039B79B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB5E35215E61DD0039B79B /* AppDelegate.swift */; };
 		2EEB5E38215E61DD0039B79B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB5E37215E61DD0039B79B /* ViewController.swift */; };
 		2EEB5E3B215E61DD0039B79B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EEB5E39215E61DD0039B79B /* Main.storyboard */; };
@@ -28,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E6D7FA7217E037E0022DA75 /* ConfigProto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigProto.swift; sourceTree = "<group>"; };
+		2E6D7FA9217E03A70022DA75 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		2EEB5E32215E61DD0039B79B /* RealDeviceMap-UIControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RealDeviceMap-UIControl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EEB5E35215E61DD0039B79B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2EEB5E37215E61DD0039B79B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -111,6 +115,8 @@
 				2EEB5E57215E757E0039B79B /* Misc.swift */,
 				2EEB5E4A215E61DF0039B79B /* RealDeviceMap_UIControlUITests.swift */,
 				2EEB5E4C215E61DF0039B79B /* Info.plist */,
+				2E6D7FA7217E037E0022DA75 /* ConfigProto.swift */,
+				2E6D7FA9217E03A70022DA75 /* Config.swift */,
 			);
 			path = "RealDeviceMap-UIControl";
 			sourceTree = "<group>";
@@ -269,7 +275,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EEB5E4B215E61DF0039B79B /* RealDeviceMap_UIControlUITests.swift in Sources */,
+				2E6D7FAA217E03A70022DA75 /* Config.swift in Sources */,
 				2EEB5E58215E757E0039B79B /* Misc.swift in Sources */,
+				2E6D7FA8217E037E0022DA75 /* ConfigProto.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
