@@ -20,7 +20,8 @@ protocol ConfigProto {
     var raidMaxTime: Double { get }
     var maxWarningTimeRaid: Int { get }
     var delayMultiplier: UInt32 { get }
-    
+    var jitterValue: Double { get }
+    var targetMaxDistance: Double { get }
 }
 
 extension ConfigProto {
@@ -42,6 +43,12 @@ extension ConfigProto {
     }
     var delayMultiplier: UInt32 {
         return 1
+    }
+    var jitterValue: Double {
+        return 0.00005
+    }
+    var targetMaxDistance: Double {
+        return 250.0
     }
     
 }

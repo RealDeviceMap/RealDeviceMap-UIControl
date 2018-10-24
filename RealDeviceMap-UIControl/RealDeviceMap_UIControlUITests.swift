@@ -26,6 +26,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var lock = NSLock()
     var lastDataTime = Date()
     var firstWarningDate: Date?
+    var jitterCorner = 0
     
     var shouldExit: Bool {
         get {
@@ -628,26 +629,53 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let server = DefaultHTTPServer(eventLoop: loop, interface: "0.0.0.0", port: conf.port, app: router.app)
         
         router["/loc"] = DelayResponse(JSONResponse(handler: { environ -> Any in
-            if self.currentLocation != nil {
-                
+            
+            self.lock.lock()
+            let currentLocation = self.currentLocation
+            if currentLocation != nil {
                 if self.waitRequiresPokemon {
-                    let jitterLat = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
-                    let jitterLon = Double(arc4random_uniform(5000)) / Double(10000000) - 0.00025
+                    self.lock.unlock()
+                    
+                    let jitterValue = self.conf.jitterValue
+        
+                    let jitterLat: Double
+                    let jitterLon: Double
+                    switch self.jitterCorner {
+                    case 0:
+                        jitterLat = jitterValue
+                        jitterLon = jitterValue
+                        self.jitterCorner = 1
+                    case 1:
+                        jitterLat = -jitterValue
+                        jitterLon = jitterValue
+                        self.jitterCorner = 2
+                    case 2:
+                        jitterLat = -jitterValue
+                        jitterLon = -jitterValue
+                        self.jitterCorner = 3
+                    default:
+                        jitterLat = jitterValue
+                        jitterLon = -jitterValue
+                        self.jitterCorner = 0
+                    }
+
                     return [
-                        "latitude": self.currentLocation!.lat + jitterLat,
-                        "longitude": self.currentLocation!.lon + jitterLon,
-                        "lat": self.currentLocation!.lat + jitterLat,
-                        "lng": self.currentLocation!.lon + jitterLon
+                        "latitude": currentLocation!.lat + jitterLat,
+                        "longitude": currentLocation!.lon + jitterLon,
+                        "lat": currentLocation!.lat + jitterLat,
+                        "lng": currentLocation!.lon + jitterLon
                     ]
                 } else {
+                    self.lock.unlock()
                     return [
-                        "latitude": self.currentLocation!.lat,
-                        "longitude": self.currentLocation!.lon,
-                        "lat": self.currentLocation!.lat,
-                        "lng": self.currentLocation!.lon
+                        "latitude": currentLocation!.lat,
+                        "longitude": currentLocation!.lon,
+                        "lat": currentLocation!.lat,
+                        "lng": currentLocation!.lon
                     ]
                 }
             } else {
+                self.lock.unlock()
                 return []
             }
         }), delay: .delay(seconds: 0.1))
@@ -656,52 +684,57 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             let input = environ["swsgi.input"] as! SWSGIInput
             DataReader.read(input) { data in
                 
+                self.lock.lock()
+                let currentLocation = self.currentLocation
+                self.lock.unlock()
+                
                 self.lastDataTime = Date()
                 
-                let jsonData: [String: Any]?
+                var jsonData: [String: Any]?
                 do {
                     jsonData = try JSONSerialization.jsonObject(with: data) as? [String: Any]
                 } catch {
                     return
                 }
                 
-                if jsonData != nil {
+                if jsonData != nil && currentLocation != nil {
+                    jsonData!["lat_target"] = currentLocation!.lat
+                    jsonData!["lon_target"] = currentLocation!.lon
+                    jsonData!["target_max_distnace"] = self.conf.targetMaxDistance
+
+                    let url: URL
                     if jsonData!["gmo"] != nil {
-                        self.postRequest(url: self.backendRawURL, data: jsonData!, blocking: true, completion: { (resultJson) in
+                        url = self.backendRawURL
+                    } else {
+                        url = self.backendJSONURL
+                    }
+
+                    self.postRequest(url: url, data: jsonData!, blocking: true, completion: { (resultJson) in
+                        let inArea = (resultJson?["data"] as? [String: Any])?["in_area"] as? Bool ?? false
+                        
+                        if inArea {
+                            self.lock.lock()
                             if self.waitRequiresPokemon {
-                                if (resultJson!["data"] as! [String: Any])["nearby"] as? Int ?? 0 > 0 {
+                                self.lock.unlock()
+                                if ((resultJson!["data"] as! [String: Any])["nearby"] as? Int ?? 0) + ((resultJson!["data"] as! [String: Any])["wild"] as? Int ?? 0) > 0 {
+                                    print("[DEBUG] Got Data with Pokemon")
                                     self.lock.lock()
                                     self.waitForData = false
                                     self.lock.unlock()
+                                } else {
+                                    print("[DEBUG] Got Data without Pokemon")
                                 }
                             } else {
-                                self.lock.lock()
-                                self.waitForData = false
                                 self.lock.unlock()
-                            }
-                        })
-                        
-                    } else {
-                        let pokeCount: Int
-                        if let pokemon = jsonData!["nearby_pokemon"] as? [[String: Any]] {
-                            pokeCount = pokemon.count
-                        } else {
-                            pokeCount = 0
-                        }
-                        
-                        self.postRequest(url: self.backendJSONURL, data: jsonData!, completion: { (_) in })
-                        if self.waitRequiresPokemon {
-                            if pokeCount != 0 {
+                                print("[DEBUG] Got Data")
                                 self.lock.lock()
                                 self.waitForData = false
                                 self.lock.unlock()
                             }
                         } else {
-                            self.lock.lock()
-                            self.waitForData = false
-                            self.lock.unlock()
+                            print("[DEBUG] Got Data outside Target-Area")
                         }
-                    }
+                    })
                 }
             }
             return []
@@ -921,13 +954,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
-                                self.currentLocation = (lat, lon)
-                                let start = Date()
+                                self.lock.lock()
                                 self.waitRequiresPokemon = true
+                                self.currentLocation = (lat, lon)
+                                self.lock.unlock()
+                                let start = Date()
+                                sleep(2)
                                 self.lock.lock()
                                 self.waitForData = true
                                 self.lock.unlock()
-                                sleep(3 * self.conf.delayMultiplier)
                                 var locked = true
                                 while locked {
                                     usleep(100000 * self.conf.delayMultiplier)
@@ -967,13 +1002,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
-                                self.currentLocation = (lat, lon)
-                                let start = Date()
-                                self.waitRequiresPokemon = false
                                 self.lock.lock()
+                                self.currentLocation = (lat, lon)
+                                self.lock.unlock()
+                                let start = Date()
+                                sleep(2)
+                                self.lock.lock()
+                                self.waitRequiresPokemon = false
                                 self.waitForData = true
                                 self.lock.unlock()
-                                sleep(3 * self.conf.delayMultiplier)
                                 var locked = true
                                 while locked {
                                     usleep(100000 * self.conf.delayMultiplier)
@@ -997,7 +1034,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             }
                             
                         } else {
-                            print("[DEBUG] no job left") // <- search harder, better, faster, stronger
+                            print("[DEBUG] no job left (Got result: \(result!)") // <- search harder, better, faster, stronger
                             sleep(1 * self.conf.delayMultiplier)
                         }
                         
