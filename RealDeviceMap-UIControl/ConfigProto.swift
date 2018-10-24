@@ -47,7 +47,7 @@ extension ConfigProto {
     var jitterValue: Double {
         return 0.00005
     }
-    var targetMaxDistance: Double {
+    var targetMaxDistance: Double {
         return 250.0
     }
     
