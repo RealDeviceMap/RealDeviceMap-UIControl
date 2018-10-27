@@ -24,12 +24,12 @@ while True:
 
         if lat < 0:
             lat_str = '-- {}'.format(lat)
-        else:
+            lon_str = str(lon)
+        elif lon < 0:
             lat_str = str(lat)
-
-        if lon < 0:
             lon_str = '-- {}'.format(lon)
         else:
+            lat_str = str(lat)
             lon_str = str(lon)
 
         process = subprocess.Popen('idevicelocation -u {} {} {}'.format(device_id, lat_str, lon_str), shell=True,
