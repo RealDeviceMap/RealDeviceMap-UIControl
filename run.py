@@ -1,8 +1,9 @@
-import subprocess
 import shlex
+import subprocess
+import sys
 
 # EDIT ME
-device_id = 'DEVICE_UUID'
+device_id = sys.argv[1]
 
 
 # DON'T EDIT ME
