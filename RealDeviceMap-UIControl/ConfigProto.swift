@@ -22,6 +22,10 @@ protocol ConfigProto {
     var delayMultiplier: UInt32 { get }
     var jitterValue: Double { get }
     var targetMaxDistance: Double { get }
+    var itemFullCount: Int { get }
+    var questFullCount: Int { get }
+    var itemsPerStop: Int { get }
+    var minDelayLogout: Double { get }
 }
 
 extension ConfigProto {
@@ -47,8 +51,20 @@ extension ConfigProto {
     var jitterValue: Double {
         return 0.00005
     }
-    var targetMaxDistance: Double {
+    var targetMaxDistance: Double {
         return 250.0
+    }
+    var itemFullCount: Int {
+        return 250
+    }
+    var questFullCount: Int {
+        return 3
+    }
+    var itemsPerStop: Int {
+        return 10
+    }
+    var minDelayLogout: Double {
+        return 180
     }
     
 }

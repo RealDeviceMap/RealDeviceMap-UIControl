@@ -108,6 +108,9 @@ extension XCTestCase {
             var alphaR: CGFloat = 0
             colorR.getRed(&redR, green: &greenR, blue: &blueR, alpha: &alphaR)
             
+            print("[DEBUG] Warning Values Left:", redL, greenL, blueL)
+            print("[DEBUG] Warning Values Right:", redR, greenR, blueR)
+
             if (
                 redL <= 0.07 && redR <= 0.07 &&
                     redL >= 0.03 && redR >= 0.03 &&
@@ -119,7 +122,7 @@ extension XCTestCase {
                 hasWarning = true
             }
         } else {
-            print("[WARNING] Can't check if acount is banned. Missing warning compare values.")
+            print("[WARNING] Can't check if acount has a warning. Missing warning compare values.")
         }
         
         return hasWarning
@@ -189,12 +192,12 @@ extension XCTestCase {
                 
             }
         }
-        print("[DEBUG] No Pokemon Found!")
+        print("[DEBUG] No Pokemon Found! ")
         
         return false
     }
     
-    func freeScreen(app: XCUIApplication, comparePassenger: (x: Int, y: Int), compareWeather: (x: Int, y: Int), coordWeather1: XCUICoordinate, coordWeather2: XCUICoordinate, coordPassenger: XCUICoordinate, delayMultiplier: UInt32) {
+    func freeScreen(app: XCUIApplication, comparePassenger: (x: Int, y: Int), compareWeather: (x: Int, y: Int), comparOverlay: (x: Int, y: Int), comparePokemonRun: (x: Int, y: Int), coordWeather1: XCUICoordinate, coordWeather2: XCUICoordinate, coordPassenger: XCUICoordinate, closeOverlay: XCUICoordinate, pokemonRun: XCUICoordinate, delayMultiplier: UInt32) {
         var screenshot = XCUIScreen.main.screenshot()
         screenshot = clickPassengerWarning(coord: coordPassenger, compare: comparePassenger, screenshot: screenshot, delayMultiplier: delayMultiplier)
         if compareWeather.x != 0 && compareWeather.y != 0 {
@@ -207,11 +210,37 @@ extension XCTestCase {
             if red > 0.235 && red < 0.353 && green > 0.353 && green < 0.47 && blue > 0.5 && blue < 0.63 {
                 print("[DEBUG] Clicking Weather Warning")
                 coordWeather1.tap()
-                sleep(2 * delayMultiplier)
+                sleep(1 * delayMultiplier)
                 coordWeather2.tap()
-                sleep(2 * delayMultiplier)
+                sleep(1 * delayMultiplier)
                 screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning(coord: coordPassenger, compare: comparePassenger, screenshot: screenshot, delayMultiplier: delayMultiplier)
+                sleep(1 * delayMultiplier)
+                
+            }
+        }
+        if comparOverlay.x != 0 && comparOverlay.y != 0 {
+            if screenshot.rgbAtLocation(
+                pos: comparOverlay,
+                min: (red: 0.08, green: 0.50, blue: 0.55),
+                max: (red: 0.13, green: 0.55, blue: 0.60)) {
+                closeOverlay.tap()
+                sleep(1 * delayMultiplier)
+                screenshot = XCUIScreen.main.screenshot()
+                screenshot = clickPassengerWarning(coord: coordPassenger, compare: comparePassenger, screenshot: screenshot, delayMultiplier: delayMultiplier)
+                sleep(1 * delayMultiplier)
+            }
+        }
+        if comparePokemonRun.x != 0 && comparePokemonRun.y != 0 {
+            if screenshot.rgbAtLocation(
+                pos: comparePokemonRun,
+                min: (red: 0.98, green: 0.98, blue: 0.98),
+                max: (red: 1.00, green: 1.00, blue: 1.00)) {
+                pokemonRun.press(forDuration: 1)
+                sleep(1 * delayMultiplier)
+                screenshot = XCUIScreen.main.screenshot()
+                screenshot = clickPassengerWarning(coord: coordPassenger, compare: comparePassenger, screenshot: screenshot, delayMultiplier: delayMultiplier)
+                sleep(1 * delayMultiplier)
             }
         }
     }
@@ -244,7 +273,9 @@ extension XCTestCase {
         }
     }
     
-    func logOut(app: XCUIApplication, closeMenuButton: XCUICoordinate, settingsButton: XCUICoordinate, dragStart: XCUICoordinate, dragEnd: XCUICoordinate, logoutButton: XCUICoordinate, logoutConfirmButton: XCUICoordinate, compareStartLoggedOut:  (x: Int, y: Int), delayMultiplier: UInt32) -> Bool {
+    func logOut(app: XCUIApplication, closeMenuButton: XCUICoordinate, settingsButton: XCUICoordinate, dragStart: XCUICoordinate, dragEnd: XCUICoordinate, logoutConfirmButton: XCUICoordinate, logoutCompareX: Int, compareStartLoggedOut:  (x: Int, y: Int), delayMultiplier: UInt32) -> Bool {
+        
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         
         closeMenuButton.tap()
         sleep(2 * delayMultiplier)
@@ -252,7 +283,17 @@ extension XCTestCase {
         sleep(2 * delayMultiplier)
         dragStart.press(forDuration: 0.1, thenDragTo: dragEnd)
         sleep(2 * delayMultiplier)
-        logoutButton.tap()
+        
+        let screenshot = XCUIScreen.main.screenshot()
+        for y in 0...screenshot.image.cgImage!.height / 10 {
+            if screenshot.rgbAtLocation(
+                pos: (x: logoutCompareX, y: y * 10),
+                min: (red: 0.60, green: 0.9, blue: 0.6),
+                max: (red: 0.75, green: 1.0, blue: 0.7)) {
+                normalized.withOffset(CGVector(dx: logoutCompareX, dy: y * 10)).tap()
+                break
+            }
+        }
         sleep(2 * delayMultiplier)
         logoutConfirmButton.tap()
         sleep(10 * delayMultiplier)
@@ -276,6 +317,90 @@ extension XCTestCase {
         }
         return false
         
+    }
+    
+    func spin(app: XCUIApplication, open: XCUICoordinate, close: XCUICoordinate, delayMultiplier: UInt32) {
+        open.tap()
+        sleep(1 * delayMultiplier)
+        app.swipeLeft()
+        sleep(1 * delayMultiplier)
+        close.tap()
+        sleep(1 * delayMultiplier)
+    }
+    
+    func clearQuest(app: XCUIApplication, open: XCUICoordinate, close: XCUICoordinate, questDelete: XCUICoordinate, confirm: XCUICoordinate, delayMultiplier: UInt32) {
+        open.tap()
+        sleep(1 * delayMultiplier)
+        app.swipeRight()
+        sleep(1 * delayMultiplier)
+    
+        questDelete.tap()
+        sleep(1 * delayMultiplier)
+        confirm.tap()
+        sleep(1 * delayMultiplier)
+
+        questDelete.tap()
+        sleep(1 * delayMultiplier)
+        confirm.tap()
+        sleep(1 * delayMultiplier)
+        
+        questDelete.tap()
+        sleep(1 * delayMultiplier)
+        confirm.tap()
+        sleep(1 * delayMultiplier)
+        
+        close.tap()
+        sleep(1 * delayMultiplier)
+    }
+    
+    func clearItems(app: XCUIApplication, open: XCUICoordinate, closeMenu: XCUICoordinate, deleteIncrease: XCUICoordinate, deleteConfirm: XCUICoordinate, itemDeleteX: Int, itemGiftX: Int, itemsY: [Int], delayMultiplier: UInt32) {
+        
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        var index = 0
+        var done = false
+        
+        closeMenu.tap()
+        sleep(1 * delayMultiplier)
+        open.tap()
+        sleep(1 * delayMultiplier)
+
+        while !done && !itemsY.isEmpty {
+            let screenshot = XCUIScreen.main.screenshot()
+            
+            if itemHasDelete(screenshot, x: itemDeleteX, y: itemsY[index]) && !itemIsGift(screenshot, x: itemGiftX, y: itemsY[index]) {
+                let delete = normalized.withOffset(CGVector(dx: itemDeleteX, dy: itemsY[index]))
+                delete.tap()
+                sleep(1 * delayMultiplier)
+                deleteIncrease.press(forDuration: 3)
+                deleteConfirm.tap()
+                sleep(1 * delayMultiplier)
+            } else if index + 1 < itemsY.count {
+                index += 1
+            } else {
+                done = true
+            }
+        }
+        
+        closeMenu.tap()
+        sleep(1 * delayMultiplier)
+    }
+    
+    func itemHasDelete(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
+        
+        
+        return screenshot.rgbAtLocation(
+            pos: (x: x, y: y),
+            min: (red: 0.60, green: 0.60, blue: 0.60),
+            max: (red: 0.75, green: 0.75, blue: 0.75)
+        )
+    }
+    
+    func itemIsGift(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
+        return screenshot.rgbAtLocation(
+            pos: (x: x, y: y),
+            min: (red: 0.6, green: 0.05, blue: 0.5),
+            max: (red: 0.7, green: 0.15, blue: 0.6)
+        )
     }
     
 }
