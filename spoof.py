@@ -1,14 +1,14 @@
-import subprocess
-import time
-import requests
 import os
+import requests
+import subprocess
+import sys
+import time
 
 # Only use this for iSpoofer not for PokemonGo++
 
 # EDIT ME
-device_id = 'DEVICE_UUID'
-location_url = 'http://DEVICE_IP:8080/loc'
-
+device_id = sys.argv[1]
+location_url = 'http://{}:8080/loc'.format(sys.argv[2])
 
 # DON'T EDIT ME
 FNULL = open(os.devnull, 'w')
@@ -41,4 +41,3 @@ while True:
     except:
         print 'Failed to teleport'
         time.sleep(1)
-
