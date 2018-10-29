@@ -953,12 +953,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                               
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
-                                self.lock.lock()
-                                self.waitRequiresPokemon = true
-                                self.currentLocation = (lat, lon)
 
                                 print("[DEBUG] Scanning for Pokemon \(lat),\(lon)")
 
+                                self.lock.lock()
+                                self.waitRequiresPokemon = true
+                                self.currentLocation = (lat, lon)
                                 self.lock.unlock()
                                 let start = Date()
                                 sleep(2)
@@ -1002,11 +1002,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
-                                self.lock.lock()
-                                self.currentLocation = (lat, lon)
-
-                                print("[DEBUG] Scanning for Raid at \(lat),\(lon)")
                                 
+                                print("[DEBUG] Scanning for Raid at \(lat),\(lon)")
+
+                                self.lock.lock()
+                                self.currentLocation = (lat, lon)                              
                                 self.lock.unlock()
                                 let start = Date()
                                 sleep(2)
