@@ -842,6 +842,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let comparePokemonRun: (x: Int, y: Int)
         
         let logoutCompareX: Int
+        
+        var failedToGetJobCount = 0
 
         if app.frame.size.width == 375 { //iPhone Normal (6, 7, ...)
             coordStartup = normalized.withOffset(CGVector(dx: 375, dy: 800))
@@ -1029,10 +1031,17 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     postRequest(url: backendControlerURL, data: ["uuid": conf.uuid, "username": self.username as Any, "type": "get_job"], blocking: true) { (result) in
                         
                         if result == nil {
-                            print("[ERROR] Failed to get a job") // <- search harder, better, faster, stronger
-                            sleep(1 * self.conf.delayMultiplier)
+                            if failedToGetJobCount == 10 {
+                                print("[ERROR] Failed to get a job 10 times in a row. Exiting...")
+                                self.shouldExit = true
+                                return
+                            } else {
+                                print("[ERROR] Failed to get a job")
+                                failedToGetJobCount += 1
+                                sleep(5 * self.conf.delayMultiplier)
+                            }
                         } else if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
-                            
+                            failedToGetJobCount = 0
                             if action == "scan_pokemon" {
                                 if hasWarning && self.conf.enableAccountManager {
                                     print("[INFO] Account has a warning and tried to scan for Pokemon. Logging out!")
@@ -1082,7 +1091,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
 
                             } else if action == "scan_raid" {
-                                
+                                failedToGetJobCount = 0
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.conf.maxWarningTimeRaid && self.conf.enableAccountManager {
                                     print("[INFO] Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
@@ -1130,7 +1139,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
                             } else if action == "scan_quest" {
-                                
+                                failedToGetJobCount = 0
                                 print("[DEBUG] Scanning for Quest")
                                 
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.conf.maxWarningTimeRaid && self.conf.enableAccountManager {
@@ -1249,8 +1258,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             }
                             
                         } else {
+                            failedToGetJobCount = 0
                             print("[DEBUG] no job left (Got result: \(result!)") // <- search harder, better, faster, stronger
-                            sleep(1 * self.conf.delayMultiplier)
+                            sleep(5 * self.conf.delayMultiplier)
                         }
                         
                     }
