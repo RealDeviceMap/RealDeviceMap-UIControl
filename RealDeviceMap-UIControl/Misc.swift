@@ -115,7 +115,7 @@ extension XCTestCase {
                 redL <= 0.07 && redR <= 0.07 &&
                     redL >= 0.03 && redR >= 0.03 &&
                     greenL <= 0.11 && greenR <= 0.11 &&
-                    greenL >= 0.7 && greenR >= 0.7 &&
+                    greenL >= 0.07 && greenR >= 0.07 &&
                     blueL <= 0.14 && blueR <= 0.14 &&
                     blueL >= 0.10 && blueR >= 0.10
                 ) {
