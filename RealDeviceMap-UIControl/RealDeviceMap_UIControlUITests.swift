@@ -721,7 +721,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     jsonData!["target_max_distnace"] = self.targetMaxDistance
 
                     let url: URL
-                    if jsonData!["contents"] != nil {
+                    if jsonData!["contents"] != nil || jsonData!["protos"] != nil || jsonData!["gmo"] != nil {
                         url = self.backendRawURL
                     } else {
                         url = self.backendJSONURL
