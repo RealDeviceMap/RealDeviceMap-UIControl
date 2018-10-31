@@ -706,8 +706,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let currentLocation = self.currentLocation
                 self.lock.unlock()
                 
-                self.lastDataTime = Date()
-                
                 var jsonData: [String: Any]?
                 do {
                     jsonData = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -731,6 +729,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let inArea = (resultJson?["data"] as? [String: Any])?["in_area"] as? Bool ?? false
                         
                         if inArea {
+                            
+                            self.lastDataTime = Date()
+                            
                             self.lock.lock()
                             if self.waitRequiresPokemon {
                                 self.lock.unlock()
@@ -926,7 +927,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             openPokestop = normalized.withOffset(CGVector(dx: 320, dy: 510)) // TODO: - Change back to 500
             openQuest = normalized.withOffset(CGVector(dx: 590, dy: 970))
             deleteQuest = normalized.withOffset(CGVector(dx: 598, dy: 530))
-            deleteQuestConfirm = normalized.withOffset(CGVector(dx: 320, dy: 675))
+            deleteQuestConfirm = normalized.withOffset(CGVector(dx: 320, dy: 620))
             openItems = normalized.withOffset(CGVector(dx: 500, dy: 950))
             itemDeleteIncrease = normalized.withOffset(CGVector(dx: 470, dy: 510))
             itemDeleteConfirm = normalized.withOffset(CGVector(dx: 320, dy: 710))
@@ -999,7 +1000,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if isStarted {
                 if !isStartupCompleted {
                     print("[DEBUG] Performing Startup sequence")
-                    currentLocation = (0, 0)
+                    currentLocation = (1, 1)
                     coordStartup.tap()
                     sleep(2 * conf.delayMultiplier)
                     
