@@ -846,7 +846,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         var failedToGetJobCount = 0
 
         if app.frame.size.width == 375 { //iPhone Normal (6, 7, ...)
-            coordStartup = normalized.withOffset(CGVector(dx: 375, dy: 800))
+            coordStartup = normalized.withOffset(CGVector(dx: 375, dy: 770))
             coordPassenger = normalized.withOffset(CGVector(dx: 275, dy: 950))
             coordWeather1 = normalized.withOffset(CGVector(dx: 225, dy: 1145))
             coordWeather2 = normalized.withOffset(CGVector(dx: 225, dy: 1270))
