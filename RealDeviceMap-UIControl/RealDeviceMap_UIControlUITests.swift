@@ -871,7 +871,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             logoutCompareX = 0
             itemsY = [Int]()
             
-            compareStart = (375, 800)
+            compareStart = (375, 770)
             compareStartLoggedOut = (0, 0)
             compareWeather = (375, 916)
             comparePassenger = (275, 950)
