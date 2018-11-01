@@ -42,7 +42,7 @@ extension ConfigProto {
         return 45.0
     }
     var raidMaxTime: Double {
-        return 15.0
+        return 25.0
     }
     var maxWarningTimeRaid: Int {
         return 432000
