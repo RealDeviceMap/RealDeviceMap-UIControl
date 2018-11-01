@@ -328,7 +328,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             let bannedButton: XCUICoordinate
             
             if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
-                compareStart = (320, 620)
+                compareStart = (320, 590)
                 compareBannedInfo = (100, 900)
                 compareTutorialL = (100, 900)
                 compareTutorialR = (550, 900)
@@ -369,8 +369,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 
                 let screenshotComp = XCUIScreen.main.screenshot()
                 
-                sleep(10)
-
                 if (screenshotComp.rgbAtLocation(
                     pos: compareBannedInfo,
                     min: (red: 0.0, green: 0.2, blue: 0.3),
@@ -917,7 +915,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             compareOverlay = (0, 0)
             comparePokemonRun = (0, 0)
         } else if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
-            coordStartup = normalized.withOffset(CGVector(dx: 320, dy: 620))
+            coordStartup = normalized.withOffset(CGVector(dx: 320, dy: 590))
             coordPassenger = normalized.withOffset(CGVector(dx: 230, dy: 790))
             coordWeather1 = normalized.withOffset(CGVector(dx: 240, dy: 975))
             coordWeather2 = normalized.withOffset(CGVector(dx: 220, dy: 1080))
@@ -941,7 +939,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             itemsY = [215, 443, 670, 898]
             logoutCompareX = 523
 
-            compareStart = (320, 620)
+            compareStart = (320, 590)
             compareStartLoggedOut = (320, 175)
             compareWeather = (320, 780)
             comparePassenger = (230, 790)
