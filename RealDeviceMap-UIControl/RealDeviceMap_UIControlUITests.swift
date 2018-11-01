@@ -1008,6 +1008,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     coordStartup.tap()
                     sleep(2 * conf.delayMultiplier)
                     
+                    coordCloseNews.tap()
+                    sleep(1 * conf.delayMultiplier)
                     hasWarning = self.checkHasWarning(compareL: compareWarningL, compareR: compareWarningR)
                     if hasWarning {
                         if self.firstWarningDate == nil && conf.enableAccountManager {
