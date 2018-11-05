@@ -85,6 +85,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             UserDefaults.standard.synchronize()
         }
     }
+    var needsLogout: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: "needs_logout")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "needs_logout")
+            UserDefaults.standard.synchronize()
+        }
+    }
 
     override func setUp() {
         super.setUp()
@@ -98,6 +107,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         shouldExit = false
         newCreated = false
+        needsLogout = false
         
         // Register on backend
         postRequest(url: backendControlerURL, data: ["uuid": conf.uuid, "username": self.username as Any, "type": "init"], blocking: true) { (result) in
@@ -177,16 +187,19 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
             
             let compareStartLogin: (x: Int, y: Int)
+            let compareStartGame: (x: Int, y: Int)
             let newPlayerButton: XCUICoordinate
             let ptcButton: XCUICoordinate
             if app.frame.size.width == 375 { //iPhone Normal (6, 7, ...)
                 newPlayerButton = normalized.withOffset(CGVector(dx: 375, dy: 750))
                 ptcButton = normalized.withOffset(CGVector(dx: 375, dy: 950))
                 compareStartLogin = (0, 0)
+                compareStartGame = (375, 770)
             } else if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
                 newPlayerButton = normalized.withOffset(CGVector(dx: 320, dy: 785))
                 ptcButton = normalized.withOffset(CGVector(dx: 375, dy: 800))
                 compareStartLogin = (320, 616)
+                compareStartGame = (320, 590)
             } else {
                 print("Unsupported iOS modell. Please report this in our Discord!")
                 shouldExit = true
@@ -203,11 +216,22 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 var blue: CGFloat = 0
                 var alpha: CGFloat = 0
                 color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-                if (green > 0.75 && green < 0.9 && blue > 0.55 && blue < 0.7) {
+                if screenshotComp.rgbAtLocation(
+                    pos: compareStartGame,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) {
+                    print("[INFO] Tried to log in but allready logged in.")
+                    needsLogout = true
+                    isLoggedIn = true
+                    newLogIn = false
+                    return
+                } else if screenshotComp.rgbAtLocation(
+                    pos: compareStartLogin,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) {
                     print("[DEBUG] App Started in login screen.")
                     loaded = true
                 }
-                
                 count += 1
                 if count == 60 && !loaded {
                     count = 0
@@ -1034,6 +1058,22 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(1 * conf.delayMultiplier)
 
                     isStartupCompleted = true
+                    
+                    if needsLogout {
+                        needsLogout = false
+                        let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
+                        if !success {
+                            return
+                        }
+                        
+                        self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "username": self.username as Any, "type": "logged_out"], blocking: true) { (result) in }
+                        self.username = nil
+                        self.isLoggedIn = false
+                        UserDefaults.standard.synchronize()
+                        sleep(7 * self.conf.delayMultiplier)
+                        self.shouldExit = true
+                        return
+                    }
                 } else {
                     
                     // Work work work
