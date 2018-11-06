@@ -23,12 +23,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var waitRequiresPokemon = false
     var waitForData = false
     var lock = NSLock()
-    var lastDataTime = Date()
     var firstWarningDate: Date?
     var jitterCorner = 0
     var gotQuest = false
     var noQuestCount = 0
     var targetMaxDistance = 250.0
+    
+    var level: Int = 0
     
     var shouldExit: Bool {
         get {
@@ -94,6 +95,31 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             UserDefaults.standard.synchronize()
         }
     }
+    
+    var minLevel: Int {
+        get {
+            if UserDefaults.standard.object(forKey: "min_level") == nil {
+                return 0
+            }
+            return UserDefaults.standard.integer(forKey: "min_level")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "min_level")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    var maxLevel: Int {
+        get {
+            if UserDefaults.standard.object(forKey: "max_level") == nil {
+                return 29
+            }
+            return UserDefaults.standard.integer(forKey: "max_level")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "max_level")
+            UserDefaults.standard.synchronize()
+        }
+    }
 
     override func setUp() {
         super.setUp()
@@ -144,7 +170,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         if username == nil && conf.enableAccountManager {
-            postRequest(url: backendControlerURL, data: ["uuid": conf.uuid, "username": self.username as Any, "type": "get_account"], blocking: true) { (result) in
+            postRequest(url: backendControlerURL, data: ["uuid": conf.uuid, "username": self.username as Any, "type": "get_account", "min_level": minLevel, "max_level": maxLevel], blocking: true) { (result) in
                 guard
                     let data = result!["data"] as? [String: Any],
                     let username = data["username"] as? String,
@@ -730,6 +756,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 
                 self.lock.lock()
                 let currentLocation = self.currentLocation
+                let targetMaxDistance = self.targetMaxDistance
                 self.lock.unlock()
                 
                 var jsonData: [String: Any]?
@@ -742,17 +769,18 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if jsonData != nil && currentLocation != nil {
                     jsonData!["lat_target"] = currentLocation!.lat
                     jsonData!["lon_target"] = currentLocation!.lon
-                    jsonData!["target_max_distnace"] = self.targetMaxDistance
+                    jsonData!["target_max_distnace"] = targetMaxDistance
                     jsonData!["username"] = self.username
 
                     let url = self.backendRawURL
 
                     self.postRequest(url: url!, data: jsonData!, blocking: true, completion: { (resultJson) in
+                        
                         let inArea = (resultJson?["data"] as? [String: Any])?["in_area"] as? Bool ?? false
+                        let level = (resultJson?["data"] as? [String: Any])?["level"] as? Int ?? 0
+                        self.level = level
                         
                         if inArea {
-                            
-                            self.lastDataTime = Date()
                             
                             self.lock.lock()
                             if self.waitRequiresPokemon {
@@ -871,6 +899,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let logoutCompareX: Int
         
         var failedToGetJobCount = 0
+        var failedCount = 0
 
         if app.frame.size.width == 375 { //iPhone Normal (6, 7, ...)
             coordStartup = normalized.withOffset(CGVector(dx: 375, dy: 770))
@@ -1089,7 +1118,27 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 failedToGetJobCount += 1
                                 sleep(5 * self.conf.delayMultiplier)
                             }
-                        } else if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
+                        } else if self.conf.enableAccountManager == true, let data = result!["data"] as? [String: Any], let minLevel = data["min_level"] as? Int, let maxLevel = data["max_level"] as? Int {
+                            self.minLevel = minLevel
+                            self.maxLevel = maxLevel
+                            if self.level != 0 && self.level < minLevel || self.level > maxLevel {
+                                print("[INFO] Account is outside min/max Level. Current: \(self.level) Min/Max: \(minLevel)/\(maxLevel). Logging out!")
+                                let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
+                                if !success {
+                                    return
+                                }
+                                
+                                self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "username": self.username as Any, "type": "logged_out"], blocking: true) { (result) in }
+                                self.username = nil
+                                self.isLoggedIn = false
+                                UserDefaults.standard.synchronize()
+                                sleep(7 * self.conf.delayMultiplier)
+                                self.shouldExit = true
+                                return
+                            }
+                        }
+                            
+                        if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
                             failedToGetJobCount = 0
                             if action == "scan_pokemon" {
                                 if hasWarning && self.conf.enableAccountManager {
@@ -1112,14 +1161,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
+                                let start = Date()
                                 self.lock.lock()
                                 self.waitRequiresPokemon = true
                                 self.targetMaxDistance = self.conf.targetMaxDistance
                                 self.currentLocation = (lat, lon)
-                                self.lock.unlock()
-                                let start = Date()
-                                sleep(2)
-                                self.lock.lock()
                                 self.waitForData = true
                                 self.lock.unlock()
                                 var locked = true
@@ -1129,10 +1175,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     if Date().timeIntervalSince(start) >= self.conf.pokemonMaxTime {
                                         locked = false
                                         self.waitForData = false
+                                        failedCount += 1
                                         print("[DEBUG] Pokemon loading timed out.")
                                     } else {
                                         locked = self.waitForData
                                         if !locked {
+                                            failedCount = 0
                                             print("[DEBUG] Pokemon loaded after \(Date().timeIntervalSince(start)).")
                                         }
                                     }
@@ -1161,12 +1209,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
+                                let start = Date()
                                 self.lock.lock()
                                 self.currentLocation = (lat, lon)
-                                self.lock.unlock()
-                                let start = Date()
-                                sleep(2)
-                                self.lock.lock()
                                 self.waitRequiresPokemon = false
                                 self.targetMaxDistance = self.conf.targetMaxDistance
                                 self.waitForData = true
@@ -1178,10 +1223,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     if Date().timeIntervalSince(start) >= self.conf.raidMaxTime {
                                         locked = false
                                         self.waitForData = false
+                                        failedCount += 1
                                         print("[DEBUG] Raids loading timed out.")
                                     } else {
                                         locked = self.waitForData
                                         if !locked {
+                                            failedCount = 0
                                             print("[DEBUG] Raids loaded after \(Date().timeIntervalSince(start)).")
                                         }
                                     }
@@ -1280,12 +1327,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     if Date().timeIntervalSince(start) >= self.conf.raidMaxTime + delay {
                                         locked = false
                                         self.waitForData = false
+                                        failedCount += 1
                                         print("[DEBUG] Pokestop loading timed out.")
                                         self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "job_failed", "action": action, "lat": lat, "lon": lon], blocking: true) { (result) in }
                                     } else {
                                         locked = self.waitForData
                                         if !locked {
                                             success = true
+                                            failedCount = 0
                                             print("[DEBUG] Pokestop loaded after \(Date().timeIntervalSince(start)).")
                                         }
                                     }
@@ -1333,10 +1382,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 sleep(7 * self.conf.delayMultiplier)
                                 self.shouldExit = true
                                 return
+                            } else {
+                                print("[ERROR] Unkown Action: \(action)")
                             }
                             
-                            if Date().timeIntervalSince(self.lastDataTime) >= 60 &&
-                                (action == "scan_raid" || action == "scan_pokemon") {
+                            if failedCount >= self.conf.maxFailedCount {
+                                print("[ERROR] Failed \(failedCount) times in a row. Restarting")
                                 app.terminate()
                             }
                             

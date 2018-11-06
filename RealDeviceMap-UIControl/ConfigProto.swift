@@ -27,6 +27,7 @@ protocol ConfigProto {
     var itemsPerStop: Int { get }
     var minDelayLogout: Double { get }
     var maxNoQuestCount: Int { get }
+    var maxFailedCount: Int { get }
     var startupLocation: (lat: Double, lon: Double) { get }
 }
 
@@ -69,6 +70,9 @@ extension ConfigProto {
         return 180
     }
     var maxNoQuestCount: Int {
+        return 5
+    }
+    var maxFailedCount: Int {
         return 5
     }
     var startupLocation: (lat: Double, lon: Double) {
