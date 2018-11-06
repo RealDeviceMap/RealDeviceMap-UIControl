@@ -776,18 +776,21 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
                     self.postRequest(url: url!, data: jsonData!, blocking: true, completion: { (resultJson) in
                         
-                        print("[TMP] Server says: \(resultJson as Any)")
+                        print("[TMP] We say: \(jsonData!)")
+                        print("[TMP] Server says: \(resultJson!["data"]!)")
                         
                         let inArea = (resultJson?["data"] as? [String: Any])?["in_area"] as? Bool ?? false
                         let level = (resultJson?["data"] as? [String: Any])?["level"] as? Int ?? 0
+                        let nearby = (resultJson!["data"] as! [String: Any])["nearby"] as? Int ?? 0
+                        let wild = (resultJson!["data"] as! [String: Any])["wild"] as? Int ?? 0
+                        let forts = (resultJson!["data"] as! [String: Any])["forts"] as? Int ?? 0
                         self.level = level
                         
                         if inArea {
-                            
                             self.lock.lock()
                             if self.waitRequiresPokemon {
                                 self.lock.unlock()
-                                if ((resultJson!["data"] as! [String: Any])["nearby"] as? Int ?? 0) + ((resultJson!["data"] as! [String: Any])["wild"] as? Int ?? 0) > 0 {
+                                if nearby + wild > 0 {
                                     print("[DEBUG] Got Data with Pokemon")
                                     self.lock.lock()
                                     self.waitForData = false
@@ -802,6 +805,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.waitForData = false
                                 self.lock.unlock()
                             }
+                        } else if nearby + wild + forts == 0 {
+                            print("[DEBUG] Got Empty Data")
                         } else {
                             print("[DEBUG] Got Data outside Target-Area")
                         }
