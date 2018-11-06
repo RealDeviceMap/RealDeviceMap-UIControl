@@ -776,6 +776,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
                     self.postRequest(url: url!, data: jsonData!, blocking: true, completion: { (resultJson) in
                         
+                        print("[TMP] Server says: \(resultJson as Any)")
+                        
                         let inArea = (resultJson?["data"] as? [String: Any])?["in_area"] as? Bool ?? false
                         let level = (resultJson?["data"] as? [String: Any])?["level"] as? Int ?? 0
                         self.level = level
