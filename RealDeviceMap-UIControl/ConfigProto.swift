@@ -11,7 +11,7 @@ import Foundation
 
 protocol ConfigProto {
     
-    var uuid: String { get }
+    var uuid: String { gmet }
     var backendURLBaseString: String { get }
     
     var enableAccountManager: Bool { get }
@@ -27,7 +27,7 @@ protocol ConfigProto {
     var itemsPerStop: Int { get }
     var minDelayLogout: Double { get }
     var maxNoQuestCount: Int { get }
-    var maxFailedCount: Int { get }
+    var maxFailedCount: Int { get }
     var startupLocation: (lat: Double, lon: Double) { get }
 }
 
