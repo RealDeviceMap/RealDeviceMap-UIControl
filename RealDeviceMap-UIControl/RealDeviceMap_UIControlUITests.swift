@@ -135,6 +135,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         newCreated = false
         needsLogout = false
         
+        let app = XCUIApplication(bundleIdentifier: "com.nianticlabs.pokemongo")
+        app.terminate()
+        
         // Register on backend
         postRequest(url: backendControlerURL, data: ["uuid": conf.uuid, "username": self.username as Any, "type": "init"], blocking: true) { (result) in
             if result == nil {
@@ -193,9 +196,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             }
         }
         
-        let app = XCUIApplication(bundleIdentifier: "com.nianticlabs.pokemongo")
-        
-        app.terminate()
         app.activate()
         sleep(1 * conf.delayMultiplier)
         
