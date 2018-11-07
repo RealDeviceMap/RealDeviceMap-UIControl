@@ -11,7 +11,7 @@ import Foundation
 
 protocol ConfigProto {
     
-    var uuid: String { gmet }
+    var uuid: String { get }
     var backendURLBaseString: String { get }
     
     var enableAccountManager: Bool { get }
