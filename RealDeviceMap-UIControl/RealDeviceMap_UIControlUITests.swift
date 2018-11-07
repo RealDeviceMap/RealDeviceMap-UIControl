@@ -29,6 +29,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var noQuestCount = 0
     var targetMaxDistance = 250.0
     var emptyGmoCount = 0
+    var pokemonEncounterId: String?
     
     var level: Int = 0
     
@@ -118,6 +119,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         set {
             UserDefaults.standard.set(newValue, forKey: "max_level")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    var zoomedOut: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: "zoomed_out")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "zoomed_out")
             UserDefaults.standard.synchronize()
         }
     }
@@ -758,6 +768,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 self.lock.lock()
                 let currentLocation = self.currentLocation
                 let targetMaxDistance = self.targetMaxDistance
+                let pokemonEncounterId = self.pokemonEncounterId
                 self.lock.unlock()
                 
                 var jsonData: [String: Any]?
@@ -772,6 +783,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     jsonData!["lon_target"] = currentLocation!.lon
                     jsonData!["target_max_distnace"] = targetMaxDistance
                     jsonData!["username"] = self.username
+                    jsonData!["pokemon_encounter_id"] = pokemonEncounterId
 
                     let url = self.backendRawURL
 
@@ -784,12 +796,32 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let wild = data?["wild"] as? Int ?? 0
                         let forts = data?["forts"] as? Int ?? 0
                         let quests = data?["quests"] as? Int ?? 0
+                        let pokemonLat = data?["pokemon_lat"] as? Double
+                        let pokemonLon = data?["pokemon_lon"] as? Double
                         self.level = level
                         
                         if inArea {
                             self.emptyGmoCount = 0
                             self.lock.lock()
-                            if self.waitRequiresPokemon {
+                            
+                            if self.pokemonEncounterId != nil {
+                                self.lock.unlock()
+                                if (nearby + wild) > 0 {
+                                    if pokemonLat != nil && pokemonLon != nil {
+                                        self.lock.lock()
+                                        self.waitRequiresPokemon = false
+                                        self.currentLocation = (pokemonLat!, pokemonLon!)
+                                        self.waitForData = false
+                                        self.lock.unlock()
+                                        print("[DEBUG] Got Data and found Pokemon")
+                                    } else {
+                                        print("[DEBUG] Got Data but didn't find Pokemon")
+                                    }
+                                } else {
+                                    print("[DEBUG] Got Data without Pokemon")
+                                }
+
+                            } else if self.waitRequiresPokemon {
                                 self.lock.unlock()
                                 if (nearby + wild) > 0 {
                                     print("[DEBUG] Got Data with Pokemon")
@@ -882,6 +914,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let logoutDragEnd: XCUICoordinate
         let logoutConfirmButton: XCUICoordinate
         
+        let encounterPokemon: XCUICoordinate
+        let encounterNoARButton: XCUICoordinate
+        let encounterNoARButtonConfirm: XCUICoordinate
+        let encounterTmpButton: XCUICoordinate
+
         let pokemonRunButton: XCUICoordinate
         
         let openPokestop: XCUICoordinate
@@ -905,6 +942,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let comparePassenger: (x: Int, y: Int)
         let compareOverlay: (x: Int, y: Int)
         let comparePokemonRun: (x: Int, y: Int)
+        let comparePokemonBall: (x: Int, y: Int)
+        let compareEncoutnerAR: (x: Int, y: Int)
         
         let logoutCompareX: Int
         
@@ -930,6 +969,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             openItems = normalized.withOffset(CGVector(dx: 0, dy: 0))
             itemDeleteIncrease = normalized.withOffset(CGVector(dx: 0, dy: 0))
             itemDeleteConfirm = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterPokemon = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterNoARButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterNoARButtonConfirm = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterTmpButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             pokemonRunButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             itemsDeleteX = 0
             itemsGiftX = 0
@@ -944,6 +987,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             compareWarningR = (0, 0)
             compareOverlay = (0, 0)
             comparePokemonRun = (0, 0)
+            comparePokemonBall = (0, 0)
+            compareEncoutnerAR = (0, 0)
 	} else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
 	    coordStartup = normalized.withOffset(CGVector(dx: 768, dy: 1234))
             coordPassenger = normalized.withOffset(CGVector(dx: 768, dy: 1567))
@@ -963,6 +1008,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             openItems = normalized.withOffset(CGVector(dx: 1165, dy: 1620))
             itemDeleteIncrease = normalized.withOffset(CGVector(dx: 1128, dy: 882))
             itemDeleteConfirm = normalized.withOffset(CGVector(dx: 768, dy: 1362))
+            encounterPokemon = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterNoARButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterNoARButtonConfirm = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterTmpButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             pokemonRunButton = normalized.withOffset(CGVector(dx: 100, dy: 170))
             itemsDeleteX = 1437
             itemsGiftX = 226
@@ -977,6 +1026,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             comparePassenger = (768, 1567)
             compareOverlay = (768, 1809)
             comparePokemonRun = (149, 232)
+            comparePokemonBall = (0, 0)
+            compareEncoutnerAR = (0, 0)
         } else if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
             coordStartup = normalized.withOffset(CGVector(dx: 320, dy: 590))
             coordPassenger = normalized.withOffset(CGVector(dx: 230, dy: 790))
@@ -989,13 +1040,17 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             logoutDragStart = normalized.withOffset(CGVector(dx: 320, dy: 900))
             logoutDragEnd = normalized.withOffset(CGVector(dx: 320, dy: 100))
             logoutConfirmButton = normalized.withOffset(CGVector(dx: 315, dy: 610))
-            openPokestop = normalized.withOffset(CGVector(dx: 320, dy: 510)) // TODO: - Change back to 500
+            openPokestop = normalized.withOffset(CGVector(dx: 320, dy: 500))
             openQuest = normalized.withOffset(CGVector(dx: 590, dy: 970))
             deleteQuest = normalized.withOffset(CGVector(dx: 598, dy: 530))
             deleteQuestConfirm = normalized.withOffset(CGVector(dx: 320, dy: 620))
             openItems = normalized.withOffset(CGVector(dx: 500, dy: 950))
             itemDeleteIncrease = normalized.withOffset(CGVector(dx: 470, dy: 510))
             itemDeleteConfirm = normalized.withOffset(CGVector(dx: 320, dy: 710))
+            encounterPokemon = normalized.withOffset(CGVector(dx: 320, dy: 740))
+            encounterNoARButton = normalized.withOffset(CGVector(dx: 320, dy: 1070))
+            encounterNoARButtonConfirm = normalized.withOffset(CGVector(dx: 320, dy: 645))
+            encounterTmpButton = normalized.withOffset(CGVector(dx: 575, dy: 107))
             pokemonRunButton = normalized.withOffset(CGVector(dx: 30, dy: 40))
             itemsDeleteX = 585
             itemsGiftX = 133
@@ -1009,7 +1064,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             compareWarningL = (90, 950)
             compareWarningR = (550, 950)
             compareOverlay = (320, 1060)
-            comparePokemonRun = (61, 95)
+            comparePokemonRun = (50, 75)
+            comparePokemonBall = (570, 990)
+            compareEncoutnerAR = (320, 1000)
         } else if app.frame.size.width == 414 { //iPhone Large (6+, 7+, ...)
             coordStartup = normalized.withOffset(CGVector(dx: 621, dy: 1275))
             coordPassenger = normalized.withOffset(CGVector(dx: 820, dy: 1540))
@@ -1029,6 +1086,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             openItems = normalized.withOffset(CGVector(dx: 0, dy: 0))
             itemDeleteIncrease = normalized.withOffset(CGVector(dx: 0, dy: 0))
             itemDeleteConfirm = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterPokemon = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterNoARButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterNoARButtonConfirm = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterTmpButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             pokemonRunButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             itemsDeleteX = 0
             itemsGiftX = 0
@@ -1043,6 +1104,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             compareWarningR = (0, 0)
             compareOverlay = (0, 0)
             comparePokemonRun = (0, 0)
+            comparePokemonBall = (0, 0)
+            compareEncoutnerAR = (0, 0)
         } else {
             print("[ERROR] Unsupported iOS modell. Please report this in our Discord!")
             shouldExit = true
@@ -1088,12 +1151,21 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(1 * conf.delayMultiplier)
                     self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: conf.delayMultiplier)
                     sleep(1 * conf.delayMultiplier)
-                    coordStartup.tap()
-                    app.swipeDown()
-                    coordStartup.tap()
-                    app.swipeDown()
-                    coordStartup.tap()
-                    app.swipeDown()
+                    if zoomedOut {
+                        coordStartup.tap()
+                        app.swipeUp()
+                        coordStartup.tap()
+                        app.swipeUp()
+                        coordStartup.tap()
+                        app.swipeUp()
+                    } else {
+                        coordStartup.tap()
+                        app.swipeDown()
+                        coordStartup.tap()
+                        app.swipeDown()
+                        coordStartup.tap()
+                        app.swipeDown()
+                    }
                     sleep(1 * conf.delayMultiplier)
 
                     isStartupCompleted = true
@@ -1127,6 +1199,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[ERROR] Failed to get a job")
                                 failedToGetJobCount += 1
                                 sleep(5 * self.conf.delayMultiplier)
+                                return
                             }
                         } else if self.conf.enableAccountManager == true, let data = result!["data"] as? [String: Any], let minLevel = data["min_level"] as? Int, let maxLevel = data["max_level"] as? Int {
                             self.minLevel = minLevel
@@ -1147,9 +1220,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 return
                             }
                         }
+                        
+                        failedToGetJobCount = 0
                             
                         if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
-                            failedToGetJobCount = 0
                             if action == "scan_pokemon" {
                                 if hasWarning && self.conf.enableAccountManager {
                                     print("[INFO] Account has a warning and tried to scan for Pokemon. Logging out!")
@@ -1174,6 +1248,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 let start = Date()
                                 self.lock.lock()
                                 self.waitRequiresPokemon = true
+                                self.pokemonEncounterId = nil
                                 self.targetMaxDistance = self.conf.targetMaxDistance
                                 self.currentLocation = (lat, lon)
                                 self.waitForData = true
@@ -1186,7 +1261,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         locked = false
                                         self.waitForData = false
                                         failedCount += 1
+                                        self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
                                         print("[DEBUG] Pokemon loading timed out.")
+                                        self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "job_failed", "action": action, "lat": lat, "lon": lon], blocking: true) { (result) in }
                                     } else {
                                         locked = self.waitForData
                                         if !locked {
@@ -1198,7 +1275,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
 
                             } else if action == "scan_raid" {
-                                failedToGetJobCount = 0
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.conf.maxWarningTimeRaid && self.conf.enableAccountManager {
                                     print("[INFO] Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
@@ -1216,7 +1292,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                                 
                                 print("[DEBUG] Scanning for Raid")
-
+                                
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
                                 let start = Date()
@@ -1234,7 +1310,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         locked = false
                                         self.waitForData = false
                                         failedCount += 1
+                                        self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
                                         print("[DEBUG] Raids loading timed out.")
+                                        self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "job_failed", "action": action, "lat": lat, "lon": lon], blocking: true) { (result) in }
                                     } else {
                                         locked = self.waitForData
                                         if !locked {
@@ -1245,8 +1323,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
                             } else if action == "scan_quest" {
-                                failedToGetJobCount = 0
                                 print("[DEBUG] Scanning for Quest")
+                                self.zoom(out: false, app: app, coordStartup: coordStartup)
                                 
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.conf.maxWarningTimeRaid && self.conf.enableAccountManager {
                                     print("[INFO] Account has a warning and is over maxWarningTimeRaid. Logging out!")
@@ -1309,7 +1387,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.lock.lock()
                                 self.currentLocation = (lat, lon)
                                 self.waitRequiresPokemon = false
-                                self.targetMaxDistance = 1
+                                self.pokemonEncounterId = nil
+                                self.targetMaxDistance = self.conf.targetMaxDistance
                                 self.waitForData = true
                                 self.lock.unlock()
                                 let start = Date()
@@ -1338,6 +1417,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         locked = false
                                         self.waitForData = false
                                         failedCount += 1
+                                        self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
                                         print("[DEBUG] Pokestop loading timed out.")
                                         self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "job_failed", "action": action, "lat": lat, "lon": lon], blocking: true) { (result) in }
                                     } else {
@@ -1392,6 +1472,78 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 sleep(7 * self.conf.delayMultiplier)
                                 self.shouldExit = true
                                 return
+                            } else if action == "scan_iv" {
+                                if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.conf.maxWarningTimeRaid && self.conf.enableAccountManager {
+                                    print("[INFO] Account has a warning and is over maxWarningTimeRaid. Logging out!")
+                                    let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
+                                    if !success {
+                                        return
+                                    }
+                                    
+                                    self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "username": self.username as Any, "type": "logged_out"], blocking: true) { (result) in }
+                                    self.username = nil
+                                    self.isLoggedIn = false
+                                    UserDefaults.standard.synchronize()
+                                    sleep(7 * self.conf.delayMultiplier)
+                                    self.shouldExit = true
+                                    return
+                                }
+                                
+                                print("[DEBUG] Scanning for IV")
+                                self.zoom(out: true, app: app, coordStartup: coordStartup)
+                                
+                                let lat = data["lat"] as? Double ?? 0
+                                let lon = data["lon"] as? Double ?? 0
+                                let id = data["id"] as? String ?? ""
+                                let start = Date()
+                                self.lock.lock()
+                                self.waitRequiresPokemon = true
+                                self.pokemonEncounterId = id
+                                self.targetMaxDistance = self.conf.targetMaxDistance
+                                self.currentLocation = (lat, lon)
+                                self.waitForData = true
+                                self.lock.unlock()
+                                
+                                var success = false
+                                var locked = true
+                                while locked {
+                                    usleep(100000 * self.conf.delayMultiplier)
+                                    self.lock.lock()
+                                    if Date().timeIntervalSince(start) >= self.conf.pokemonMaxTime {
+                                        locked = false
+                                        self.waitForData = false
+                                        failedCount += 1
+                                        self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
+                                        print("[DEBUG] Pokemon loading timed out.")
+                                        self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "job_failed", "action": action, "lat": lat, "lon": lon], blocking: true) { (result) in }
+                                    } else {
+                                        locked = self.waitForData
+                                        if !locked {
+                                            failedCount = 0
+                                            print("[DEBUG] Pokemon loaded after \(Date().timeIntervalSince(start)).")
+                                            success = true
+                                        }
+                                    }
+                                    self.lock.unlock()
+                                }
+                                
+                                if success {
+                                    sleep(3 * self.conf.delayMultiplier)
+                                    
+                                    var count = 0
+                                    var done = false
+                                    while count < 3 && !done {
+                                        self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
+                                        encounterPokemon.tap()
+                                        sleep(2 * self.conf.delayMultiplier)
+                                        done = self.prepareEncounter(comparePokemonRun: comparePokemonRun, comparePokemonBall: comparePokemonBall, pokemonRun: pokemonRunButton, comparePokemonAR: compareEncoutnerAR, noArButton: encounterNoARButton, noArButtonConfirm: encounterNoARButtonConfirm, maxWait: self.conf.encoutnerMaxWait, delayMultiplier: self.conf.delayMultiplier, tmp: encounterTmpButton)
+                                        count += 1
+                                        if !done {
+                                            app.swipeLeft()
+                                        }
+                                    }
+                                }
+                               
                             } else {
                                 print("[ERROR] Unkown Action: \(action)")
                             }
@@ -1471,6 +1623,34 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     return
                 }
             }
+        }
+        
+    }
+    
+    func zoom(out: Bool, app: XCUIApplication, coordStartup: XCUICoordinate) {
+        
+        if out != zoomedOut {
+            self.lock.lock()
+            self.currentLocation = self.conf.startupLocation
+            self.lock.unlock()
+            sleep(2 * self.conf.delayMultiplier)
+            if out {
+                coordStartup.tap()
+                app.swipeUp()
+                coordStartup.tap()
+                app.swipeUp()
+                coordStartup.tap()
+                app.swipeUp()
+            } else {
+                coordStartup.tap()
+                app.swipeDown()
+                coordStartup.tap()
+                app.swipeDown()
+                coordStartup.tap()
+                app.swipeDown()
+            }
+            sleep(1 * self.conf.delayMultiplier)
+            self.zoomedOut = out
         }
         
     }

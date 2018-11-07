@@ -219,24 +219,24 @@ extension XCTestCase {
                 
             }
         }
-        if comparOverlay.x != 0 && comparOverlay.y != 0 {
+        if comparePokemonRun.x != 0 && comparePokemonRun.y != 0 {
             if screenshot.rgbAtLocation(
-                pos: comparOverlay,
-                min: (red: 0.08, green: 0.50, blue: 0.55),
-                max: (red: 0.13, green: 0.55, blue: 0.60)) {
-                closeOverlay.tap()
+                pos: comparePokemonRun,
+                min: (red: 0.98, green: 0.98, blue: 0.98),
+                max: (red: 1.00, green: 1.00, blue: 1.00)) {
+                pokemonRun.tap()
                 sleep(1 * delayMultiplier)
                 screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning(coord: coordPassenger, compare: comparePassenger, screenshot: screenshot, delayMultiplier: delayMultiplier)
                 sleep(1 * delayMultiplier)
             }
         }
-        if comparePokemonRun.x != 0 && comparePokemonRun.y != 0 {
-            if screenshot.rgbAtLocation(
-                pos: comparePokemonRun,
+        if comparOverlay.x != 0 && comparOverlay.y != 0 {
+            if !screenshot.rgbAtLocation(
+                pos: comparOverlay,
                 min: (red: 0.98, green: 0.98, blue: 0.98),
                 max: (red: 1.00, green: 1.00, blue: 1.00)) {
-                pokemonRun.press(forDuration: 1)
+                closeOverlay.tap()
                 sleep(1 * delayMultiplier)
                 screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning(coord: coordPassenger, compare: comparePassenger, screenshot: screenshot, delayMultiplier: delayMultiplier)
@@ -401,6 +401,50 @@ extension XCTestCase {
             min: (red: 0.6, green: 0.05, blue: 0.5),
             max: (red: 0.7, green: 0.15, blue: 0.6)
         )
+    }
+    
+    func prepareEncounter(comparePokemonRun: (x: Int, y: Int), comparePokemonBall: (x: Int, y: Int), pokemonRun: XCUICoordinate, comparePokemonAR: (x: Int, y: Int), noArButton: XCUICoordinate, noArButtonConfirm: XCUICoordinate, maxWait: UInt32, delayMultiplier: UInt32, tmp: XCUICoordinate) -> Bool {
+        
+        let start = Date()
+        while UInt32(Date().timeIntervalSince(start)) <= (maxWait * delayMultiplier) {
+            
+            var screenshot = XCUIScreen.main.screenshot()
+            
+            if comparePokemonAR.x != 0 && comparePokemonAR.y != 0 {
+                if screenshot.rgbAtLocation(
+                    pos: comparePokemonAR,
+                    min: (red: 0.35, green: 0.80, blue: 0.60),
+                    max: (red: 0.45, green: 0.90, blue: 0.70)) {
+                    print("[DEBUG] Got AR Popup")
+                    noArButton.tap()
+                    sleep(2 * delayMultiplier)
+                    noArButtonConfirm.tap()
+                    sleep(3 * delayMultiplier)
+                    tmp.tap()
+                    sleep(3 * delayMultiplier)
+                    screenshot = XCUIScreen.main.screenshot()
+                    sleep(1 * delayMultiplier)
+                }
+            }
+            
+            if comparePokemonRun.x != 0 && comparePokemonRun.y != 0 {
+                if screenshot.rgbAtLocation(
+                    pos: comparePokemonRun,
+                    min: (red: 0.98, green: 0.98, blue: 0.98),
+                    max: (red: 1.00, green: 1.00, blue: 1.00)) &&
+                   screenshot.rgbAtLocation(
+                    pos: comparePokemonBall,
+                    min: (red: 0.7, green: 0.05, blue: 0.05),
+                    max: (red: 0.9, green: 0.25, blue: 0.25)) {
+                    pokemonRun.tap()
+                    return true
+                }
+            }
+            usleep(100000)
+            
+        }
+        return false
+        
     }
     
 }

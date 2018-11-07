@@ -30,6 +30,7 @@ protocol ConfigProto {
     var maxFailedCount: Int { get }
     var maxEmptyGMO: Int { get }
     var startupLocation: (lat: Double, lon: Double) { get }
+    var encoutnerMaxWait: UInt32 { get }
 }
 
 extension ConfigProto {
@@ -81,6 +82,9 @@ extension ConfigProto {
     }
     var startupLocation: (lat: Double, lon: Double) {
         return (1.0, 1.0)
+    }
+    var encoutnerMaxWait: UInt32 {
+        return 7
     }
     
 }
