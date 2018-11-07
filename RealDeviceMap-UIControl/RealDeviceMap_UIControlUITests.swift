@@ -28,6 +28,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var gotQuest = false
     var noQuestCount = 0
     var targetMaxDistance = 250.0
+    var emptyGmoCount = 0
     
     var level: Int = 0
     
@@ -786,6 +787,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         self.level = level
                         
                         if inArea {
+                            self.emptyGmoCount = 0
                             self.lock.lock()
                             if self.waitRequiresPokemon {
                                 self.lock.unlock()
@@ -805,8 +807,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.lock.unlock()
                             }
                         } else if (nearby + wild + forts) == 0 {
+                            self.emptyGmoCount += 1
                             print("[DEBUG] Got Empty Data")
                         } else {
+                            self.emptyGmoCount = 0
                             print("[DEBUG] Got Data outside Target-Area")
                         }
                         if !self.gotQuest && quests != 0 {
@@ -1390,6 +1394,24 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 return
                             } else {
                                 print("[ERROR] Unkown Action: \(action)")
+                            }
+                            
+                            if self.emptyGmoCount >= self.conf.maxEmptyGMO {
+                                print("[ERROR] Got Emtpy GMO \(self.emptyGmoCount) times in a row. Switching Account.")
+                                self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
+                                
+                                let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
+                                if !success {
+                                    return
+                                }
+                                
+                                self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "logged_out"], blocking: true) { (result) in }
+                                self.username = nil
+                                self.isLoggedIn = false
+                                UserDefaults.standard.synchronize()
+                                sleep(7 * self.conf.delayMultiplier)
+                                self.shouldExit = true
+                                return
                             }
                             
                             if failedCount >= self.conf.maxFailedCount {
