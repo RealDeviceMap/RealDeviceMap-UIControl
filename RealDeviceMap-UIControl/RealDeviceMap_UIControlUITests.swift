@@ -798,6 +798,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let quests = data?["quests"] as? Int ?? 0
                         let pokemonLat = data?["pokemon_lat"] as? Double
                         let pokemonLon = data?["pokemon_lon"] as? Double
+                        let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
                         self.level = level
                         
                         if inArea {
@@ -807,10 +808,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             if self.pokemonEncounterId != nil {
                                 self.lock.unlock()
                                 if (nearby + wild) > 0 {
-                                    if pokemonLat != nil && pokemonLon != nil {
+                                    if pokemonLat != nil && pokemonLon != nil && pokemonEncounterId == pokemonEncounterIdResult {
                                         self.lock.lock()
                                         self.waitRequiresPokemon = false
                                         self.currentLocation = (pokemonLat!, pokemonLon!)
+                                        self.pokemonEncounterId = nil
                                         self.waitForData = false
                                         self.lock.unlock()
                                         print("[DEBUG] Got Data and found Pokemon")
