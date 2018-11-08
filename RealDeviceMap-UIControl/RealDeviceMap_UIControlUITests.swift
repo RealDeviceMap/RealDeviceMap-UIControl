@@ -1530,7 +1530,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                                 
                                 if success {
-                                    sleep(3 * self.conf.delayMultiplier)
+                                    sleep(4 * self.conf.delayMultiplier)
                                     
                                     var count = 0
                                     var done = false
@@ -1550,22 +1550,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[ERROR] Unkown Action: \(action)")
                             }
                             
-                            if self.conf.enableAccountManager && self.emptyGmoCount >= self.conf.maxEmptyGMO {
-                                print("[ERROR] Got Emtpy GMO \(self.emptyGmoCount) times in a row. Switching Account.")
-                                self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
-                                
-                                let success = self.logOut(app: app, closeMenuButton: closeMenuButton, settingsButton: settingsButton, dragStart: logoutDragStart, dragEnd: logoutDragEnd, logoutConfirmButton: logoutConfirmButton, logoutCompareX: logoutCompareX, compareStartLoggedOut: compareStartLoggedOut, delayMultiplier: self.conf.delayMultiplier)
-                                if !success {
-                                    return
-                                }
-                                
-                                self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "type": "logged_out"], blocking: true) { (result) in }
-                                self.username = nil
-                                self.isLoggedIn = false
-                                UserDefaults.standard.synchronize()
-                                sleep(7 * self.conf.delayMultiplier)
-                                self.shouldExit = true
-                                return
+                            if self.emptyGmoCount >= self.conf.maxEmptyGMO {
+                                print("[ERROR] Got Emtpy GMO \(self.emptyGmoCount) times in a row. Restarting")
+                                app.terminate()
                             }
                             
                             if failedCount >= self.conf.maxFailedCount {
@@ -1614,7 +1601,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         print("[DEBUG] App still in Startup")
                         if startupCount == 30 {
                             print("[DEBUG] App stuck in Startup. Restarting...")
-                            app.terminate() // Retry
+                            app.terminate()
                         }
                         startupCount += 1
                         sleep(1 * conf.delayMultiplier)
