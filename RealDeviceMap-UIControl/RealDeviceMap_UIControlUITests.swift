@@ -796,6 +796,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let wild = data?["wild"] as? Int ?? 0
                         let forts = data?["forts"] as? Int ?? 0
                         let quests = data?["quests"] as? Int ?? 0
+                        let encounters = data?["encounters"] as? Int ?? 0
                         let pokemonLat = data?["pokemon_lat"] as? Double
                         let pokemonLon = data?["pokemon_lon"] as? Double
                         let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
@@ -807,8 +808,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let toPrint: String
                         
                         self.lock.lock()
-                        let diffLat = fabs(self.currentLocation?.lat ?? 0 - targetLat)
-                        let diffLon = fabs(self.currentLocation?.lon ?? 0 - targetLon)
+                        let diffLat = fabs((self.currentLocation?.lat ?? 0) - targetLat)
+                        let diffLon = fabs((self.currentLocation?.lon ?? 0) - targetLon)
                         
                         if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
                             self.emptyGmoCount = 0
@@ -839,7 +840,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 toPrint = "[DEBUG] Got Data"
                                 self.waitForData = false
                             }
-                        } else if (nearby + wild + forts) == 0 {
+                        } else if (nearby + wild + forts + quests + encounters) == 0 {
                             self.emptyGmoCount += 1
                             toPrint = "[DEBUG] Got Empty Data"
                         } else {
