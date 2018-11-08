@@ -1548,7 +1548,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[ERROR] Unkown Action: \(action)")
                             }
                             
-                            if self.emptyGmoCount >= self.conf.maxEmptyGMO {
+                            if self.conf.enableAccountManager && self.emptyGmoCount >= self.conf.maxEmptyGMO {
                                 print("[ERROR] Got Emtpy GMO \(self.emptyGmoCount) times in a row. Switching Account.")
                                 self.freeScreen(app: app, comparePassenger: comparePassenger, compareWeather: compareWeather, comparOverlay: compareOverlay, comparePokemonRun: comparePokemonRun, coordWeather1: coordWeather1, coordWeather2: coordWeather2, coordPassenger: coordPassenger, closeOverlay: closeMenuButton, pokemonRun: pokemonRunButton, delayMultiplier: self.conf.delayMultiplier)
                                 
