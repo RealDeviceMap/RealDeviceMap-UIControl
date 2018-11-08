@@ -42,7 +42,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             UserDefaults.standard.synchronize()
         }
     }
-
+    
     var username: String? {
         get {
             return UserDefaults.standard.string(forKey: "username")
@@ -131,7 +131,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             UserDefaults.standard.synchronize()
         }
     }
-
+    
     override func setUp() {
         super.setUp()
         
@@ -180,7 +180,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         if shouldExit {
-            return   
+            return
         }
         
         if username == nil && conf.enableAccountManager {
@@ -189,10 +189,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     let data = result!["data"] as? [String: Any],
                     let username = data["username"] as? String,
                     let password = data["password"] as? String
-                else {
-                    print("[ERROR] Failed to get account and not logged in.")
-                    self.shouldExit = true
-                    return
+                    else {
+                        print("[ERROR] Failed to get account and not logged in.")
+                        self.shouldExit = true
+                        return
                 }
                 self.username = username
                 self.password = password
@@ -217,7 +217,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         if shouldExit || !conf.enableAccountManager {
             return
         }
-
+        
         if username != nil && !isLoggedIn {
             
             let app = XCUIApplication(bundleIdentifier: "com.nianticlabs.pokemongo")
@@ -378,7 +378,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             let comparePricacyText: (x: Int, y: Int)
             
             let compareBannedInfo: (x: Int, y: Int)
-
+            
             let compareTutorialL: (x: Int, y: Int)
             let compareTutorialR: (x: Int, y: Int)
             
@@ -422,7 +422,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             var count = 0
             
             while !loggedIn {
-            
+                
                 if app.state != .runningForeground {
                     app.activate()
                     sleep(10 * conf.delayMultiplier)
@@ -434,56 +434,56 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     pos: compareBannedInfo,
                     min: (red: 0.0, green: 0.2, blue: 0.3),
                     max: (red: 0.05, green: 0.3, blue: 0.4))
-                  ) {
+                    ) {
                     print("[DEBUG] Got ban. Restarting...")
                     app.terminate()
                     app.activate()
                     sleep(10 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
-                                pos: compareTermsButton,
-                                min: (red: 0.0, green: 0.75, blue: 0.55),
-                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                            screenshotComp.rgbAtLocation(
-                                pos: compareTermsText,
-                                min: (red: 0.0, green: 0.0, blue: 0.0),
-                                max: (red: 0.3, green: 0.5, blue: 0.5))
-                          ) {
+                    pos: compareTermsButton,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: compareTermsText,
+                        min: (red: 0.0, green: 0.0, blue: 0.0),
+                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                    ) {
                     print("[DEBUG] Accepting Terms")
                     acceptTermsButton.tap()
                     sleep(1 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
-                                pos: compareTerms2Button,
-                                min: (red: 0.0, green: 0.75, blue: 0.55),
-                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                            screenshotComp.rgbAtLocation(
-                                pos: compareTerms2Text,
-                                min: (red: 0.0, green: 0.0, blue: 0.0),
-                                max: (red: 0.3, green: 0.5, blue: 0.5))
-                          ) {
+                    pos: compareTerms2Button,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: compareTerms2Text,
+                        min: (red: 0.0, green: 0.0, blue: 0.0),
+                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                    ) {
                     print("[DEBUG] Accepting Updated Terms.")
                     acceptTerms2Button.tap()
                     sleep(1 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
-                                pos: comparePricacyButton,
-                                min: (red: 0.0, green: 0.75, blue: 0.55),
-                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                            screenshotComp.rgbAtLocation(
-                                pos: comparePricacyText,
-                                min: (red: 0.0, green: 0.0, blue: 0.0),
-                                max: (red: 0.3, green: 0.5, blue: 0.5))
-                          ) {
+                    pos: comparePricacyButton,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: comparePricacyText,
+                        min: (red: 0.0, green: 0.0, blue: 0.0),
+                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                    ) {
                     print("[DEBUG] Accepting Privacy.")
                     acceptPrivacyButton.tap()
                     sleep(1 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
-                                pos: compareBannedButton,
-                                min: (red: 0.0, green: 0.75, blue: 0.55),
-                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                            screenshotComp.rgbAtLocation(
-                                pos: compareBannedText,
-                                min: (red: 0.0, green: 0.0, blue: 0.0),
-                                max: (red: 0.3, green: 0.5, blue: 0.5))
-                          ) {
+                    pos: compareBannedButton,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: compareBannedText,
+                        min: (red: 0.0, green: 0.0, blue: 0.0),
+                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                    ) {
                     print("[ERROR] Account \(username!) is banned.")
                     username = nil
                     isLoggedIn = false
@@ -493,14 +493,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     shouldExit = true
                     return
                 } else if ( screenshotComp.rgbAtLocation(
-                                pos: compareFailedButton,
-                                min: (red: 0.0, green: 0.75, blue: 0.55),
-                                max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                            screenshotComp.rgbAtLocation(
-                                pos: compareFailedText,
-                                min: (red: 0.0, green: 0.0, blue: 0.0),
-                                max: (red: 0.3, green: 0.5, blue: 0.5))
-                          ) {
+                    pos: compareFailedButton,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: compareFailedText,
+                        min: (red: 0.0, green: 0.0, blue: 0.0),
+                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                    ) {
                     print("[ERROR] Invalid credentials for \(username!)")
                     username = nil
                     isLoggedIn = false
@@ -509,11 +509,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     shouldExit = true
                     return
                 } else if (screenshotComp.rgbAtLocation(
-                        pos: compareStart,
-                        min: (red: 0.0, green: 0.75, blue: 0.55),
-                        max: (red: 1.0, green: 0.90, blue: 0.70))
-                        || isTutorial(compareL: compareTutorialL, compareR: compareTutorialR)
-                  ) {
+                    pos: compareStart,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70))
+                    || isTutorial(compareL: compareTutorialL, compareR: compareTutorialR)
+                    ) {
                     loggedIn = true
                     isLoggedIn = true
                     print("[INFO] Logged in as \(username!)")
@@ -555,7 +555,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             let catchOKButton: XCUICoordinate
             let catchCloseButton: XCUICoordinate
             let buttonARTmp: XCUICoordinate
-
+            
             
             if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
                 nextButton = normalized.withOffset(CGVector(dx: 565, dy: 1085))
@@ -581,7 +581,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 app.terminate()
                 app.activate()
                 sleep(1 * conf.delayMultiplier)
-
+                
                 return
             }
             
@@ -603,7 +603,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             sleep(1 * conf.delayMultiplier)
             nextButton.tap()
             sleep(2 * conf.delayMultiplier)
-
+            
             while !findAndClickPokemon(app: app) {
                 app.swipeLeft()
             }
@@ -632,7 +632,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
     }
-
+    
     func test6TutorialUsername() {
         
         if shouldExit || username == nil || !isLoggedIn || !conf.enableAccountManager {
@@ -648,7 +648,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
     }
-
+    
     func test7TutorialEnd() {
         
         if shouldExit || username == nil || !isLoggedIn || !conf.enableAccountManager {
@@ -718,7 +718,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     self.lock.unlock()
                     
                     let jitterValue = self.conf.jitterValue
-        
+                    
                     let jitterLat: Double
                     let jitterLon: Double
                     switch self.jitterCorner {
@@ -739,7 +739,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         jitterLon = -jitterValue
                         self.jitterCorner = 0
                     }
-
+                    
                     return [
                         "latitude": currentLocation!.lat + jitterLat,
                         "longitude": currentLocation!.lon + jitterLon,
@@ -784,9 +784,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     jsonData!["target_max_distnace"] = targetMaxDistance
                     jsonData!["username"] = self.username
                     jsonData!["pokemon_encounter_id"] = pokemonEncounterId
-
+                    
                     let url = self.backendRawURL
-
+                    
                     self.postRequest(url: url!, data: jsonData!, blocking: true, completion: { (resultJson) in
                         
                         let data = resultJson?["data"] as? [String: Any]
@@ -799,59 +799,58 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let pokemonLat = data?["pokemon_lat"] as? Double
                         let pokemonLon = data?["pokemon_lon"] as? Double
                         let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
+                        let targetLat = data?["lat_target"] as? Double ?? 0
+                        let targetLon = data?["lon_target"] as? Double ?? 0
+
                         self.level = level
                         
-                        if inArea {
+                        let toPrint: String
+                        
+                        self.lock.lock()
+                        let diffLat = fabs(self.currentLocation?.lat ?? 0 - targetLat)
+                        let diffLon = fabs(self.currentLocation?.lon ?? 0 - targetLon)
+                        
+                        if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
                             self.emptyGmoCount = 0
-                            self.lock.lock()
                             
                             if self.pokemonEncounterId != nil {
-                                self.lock.unlock()
                                 if (nearby + wild) > 0 {
-                                    if pokemonLat != nil && pokemonLon != nil && pokemonEncounterId == pokemonEncounterIdResult {
-                                        self.lock.lock()
+                                    if pokemonLat != nil && pokemonLon != nil && self.pokemonEncounterId == pokemonEncounterIdResult {
                                         self.waitRequiresPokemon = false
                                         self.currentLocation = (pokemonLat!, pokemonLon!)
                                         self.pokemonEncounterId = nil
                                         self.waitForData = false
-                                        self.lock.unlock()
-                                        print("[DEBUG] Got Data and found Pokemon")
+                                        toPrint = "[DEBUG] Got Data and found Pokemon"
                                     } else {
-                                        print("[DEBUG] Got Data but didn't find Pokemon")
+                                        toPrint = "[DEBUG] Got Data but didn't find Pokemon"
                                     }
                                 } else {
-                                    print("[DEBUG] Got Data without Pokemon")
+                                    toPrint = "[DEBUG] Got Data without Pokemon"
                                 }
-
+                                
                             } else if self.waitRequiresPokemon {
-                                self.lock.unlock()
                                 if (nearby + wild) > 0 {
-                                    print("[DEBUG] Got Data with Pokemon")
-                                    self.lock.lock()
+                                    toPrint = "[DEBUG] Got Data with Pokemon"
                                     self.waitForData = false
-                                    self.lock.unlock()
                                 } else {
-                                    print("[DEBUG] Got Data without Pokemon")
+                                    toPrint = "[DEBUG] Got Data without Pokemon"
                                 }
                             } else {
-                                self.lock.unlock()
-                                print("[DEBUG] Got Data")
-                                self.lock.lock()
+                                toPrint = "[DEBUG] Got Data"
                                 self.waitForData = false
-                                self.lock.unlock()
                             }
                         } else if (nearby + wild + forts) == 0 {
                             self.emptyGmoCount += 1
-                            print("[DEBUG] Got Empty Data")
+                            toPrint = "[DEBUG] Got Empty Data"
                         } else {
                             self.emptyGmoCount = 0
-                            print("[DEBUG] Got Data outside Target-Area")
+                            toPrint = "[DEBUG] Got Data outside Target-Area"
                         }
                         if !self.gotQuest && quests != 0 {
-                            self.lock.lock()
                             self.gotQuest = true
-                            self.lock.unlock()
                         }
+                        self.lock.unlock()
+                        print(toPrint)
                     })
                 }
             }
@@ -876,7 +875,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             }
         }
         
-
+        
         // Time to start the actuall work
         runLoop()
         
@@ -920,7 +919,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let encounterNoARButton: XCUICoordinate
         let encounterNoARButtonConfirm: XCUICoordinate
         let encounterTmpButton: XCUICoordinate
-
+        
         let pokemonRunButton: XCUICoordinate
         
         let openPokestop: XCUICoordinate
@@ -935,7 +934,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let itemsDeleteX: Int
         let itemsGiftX: Int
         let itemsY: [Int]
-
+        
         let compareStart: (x: Int, y: Int)
         let compareStartLoggedOut: (x: Int, y: Int)
         let compareWarningL: (x: Int, y: Int)
@@ -951,7 +950,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         var failedToGetJobCount = 0
         var failedCount = 0
-
+        
         if app.frame.size.width == 375 { //iPhone Normal (6, 7, ...)
             coordStartup = normalized.withOffset(CGVector(dx: 375, dy: 770))
             coordPassenger = normalized.withOffset(CGVector(dx: 275, dy: 950))
@@ -991,8 +990,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             comparePokemonRun = (0, 0)
             comparePokemonBall = (0, 0)
             compareEncoutnerAR = (0, 0)
-	} else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
-	    coordStartup = normalized.withOffset(CGVector(dx: 768, dy: 1234))
+        } else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
+            coordStartup = normalized.withOffset(CGVector(dx: 768, dy: 1234))
             coordPassenger = normalized.withOffset(CGVector(dx: 768, dy: 1567))
             coordWeather1 = normalized.withOffset(CGVector(dx: 1300, dy: 1700))
             coordWeather2 = normalized.withOffset(CGVector(dx: 768, dy: 2000))
@@ -1058,7 +1057,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             itemsGiftX = 133
             itemsY = [215, 443, 670, 898]
             logoutCompareX = 523
-
+            
             compareStart = (320, 590)
             compareStartLoggedOut = (320, 175)
             compareWeather = (320, 780)
@@ -1169,7 +1168,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         app.swipeDown()
                     }
                     sleep(1 * conf.delayMultiplier)
-
+                    
                     isStartupCompleted = true
                     
                     if needsLogout {
@@ -1224,7 +1223,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         }
                         
                         failedToGetJobCount = 0
-                            
+                        
                         if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
                             if action == "scan_pokemon" {
                                 if hasWarning && self.conf.enableAccountManager {
@@ -1275,7 +1274,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.unlock()
                                 }
-
+                                
                             } else if action == "scan_raid" {
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.conf.maxWarningTimeRaid && self.conf.enableAccountManager {
                                     print("[INFO] Account has a warning and is over maxWarningTimeRaid. Logging out!")
@@ -1545,7 +1544,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         }
                                     }
                                 }
-                               
+                                
                             } else {
                                 print("[ERROR] Unkown Action: \(action)")
                             }
