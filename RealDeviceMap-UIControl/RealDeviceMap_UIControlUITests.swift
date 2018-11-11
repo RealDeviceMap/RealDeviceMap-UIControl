@@ -237,6 +237,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 ptcButton = normalized.withOffset(CGVector(dx: 375, dy: 800))
                 compareStartLogin = (320, 616)
                 compareStartGame = (320, 590)
+            } else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
+                newPlayerButton = normalized.withOffset(CGVector(dx: 768, dy: 1425))
+                ptcButton = normalized.withOffset(CGVector(dx: 1000, dy: 1464))
+                compareStartLogin = (771, 1130)
+                compareStartGame = (771, 1050)
             } else {
                 print("Unsupported iOS modell. Please report this in our Discord!")
                 shouldExit = true
@@ -302,6 +307,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 loginUsernameTextField = normalized.withOffset(CGVector(dx: 375, dy: 600))
             } else if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
                 loginUsernameTextField = normalized.withOffset(CGVector(dx: 320, dy: 500))
+            } else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
+                loginUsernameTextField = normalized.withOffset(CGVector(dx: 768, dy: 915))
             } else {
                 print("Unsupported iOS modell. Please report this in our Discord!")
                 shouldExit = true
@@ -333,6 +340,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 loginPasswordTextField = normalized.withOffset(CGVector(dx: 375, dy: 700))
             } else if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
                 loginPasswordTextField = normalized.withOffset(CGVector(dx: 320, dy: 600))
+            } else if app.frame.size.width == 768 { //iPad 2 mini)
+                loginPasswordTextField = normalized.withOffset(CGVector(dx: 768, dy: 1100))
             } else {
                 print("Unsupported iOS modell. Please report this in our Discord!")
                 shouldExit = true
@@ -408,6 +417,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 acceptTerms2Button = normalized.withOffset(CGVector(dx: 320, dy: 615))
                 acceptPrivacyButton = normalized.withOffset(CGVector(dx: 320, dy: 670))
                 bannedButton = normalized.withOffset(CGVector(dx: 320, dy: 660))
+            } else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
+                compareStart = (768, 1234)
+                compareBannedInfo = (189, 1551)
+                compareTutorialL = (64, 1660)
+                compareTutorialR = (1444, 1660)
+                compareBannedButton = (768, 1250)
+                compareBannedText = (551, 778)
+                compareTermsButton = (768, 1060)
+                compareTermsText = (258, 560)
+                compareTerms2Button = (768, 1166)
+                compareTerms2Text = (382, 589)
+                compareFailedButton = (768, 1200)
+                compareFailedText = (340, 732)
+                comparePricacyButton = (768, 1166)
+                comparePricacyText = (485, 977)
+                loginConfirmButton = normalized.withOffset(CGVector(dx: 768, dy: 1296))
+                acceptTermsButton = normalized.withOffset(CGVector(dx: 768, dy: 1130))
+                acceptTerms2Button = normalized.withOffset(CGVector(dx: 768, dy: 1260))
+                acceptPrivacyButton = normalized.withOffset(CGVector(dx: 768, dy: 1270))
+                bannedButton = normalized.withOffset(CGVector(dx: 768, dy: 1250))
             } else {
                 print("Unsupported iOS modell. Please report this in our Discord!")
                 shouldExit = true
@@ -567,6 +596,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 buttonARTmp = normalized.withOffset(CGVector(dx: 575, dy: 107))
                 compareTutorialL = (100, 900)
                 compareTutorialR = (550, 900)
+            } else if app.frame.size.width == 768 { //iPad 9,7 (Air, Air2, ...)
+                nextButton = normalized.withOffset(CGVector(dx: 1400, dy: 1949))
+                styleYesButton = normalized.withOffset(CGVector(dx: 768, dy: 1024))
+                noARButton = normalized.withOffset(CGVector(dx: 768, dy: 1950))
+                noARButtonConfirm = normalized.withOffset(CGVector(dx: 768, dy: 1025))
+                catchOKButton = normalized.withOffset(CGVector(dx: 768, dy: 1600))
+                catchCloseButton = normalized.withOffset(CGVector(dx: 768, dy: 1900))
+                buttonARTmp = normalized.withOffset(CGVector(dx: 768, dy: 1950))
+                compareTutorialL = (64, 1660)
+                compareTutorialR = (1444, 1660)
             } else {
                 print("Unsupported iOS modell. Please report this in our Discord!")
                 shouldExit = true
@@ -574,7 +613,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             }
             
             if !isTutorial(compareL: compareTutorialL, compareR: compareTutorialR) {
-                print("[INFO] Tutorial allready done. Restarting...")
+                print("[INFO] Tutorial already done. Restarting...")
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.conf.uuid, "username": self.username as Any, "type": "tutorial_done"], blocking: true) { (result) in }
                 newCreated = true
                 newLogIn = false
@@ -996,13 +1035,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             coordPassenger = normalized.withOffset(CGVector(dx: 768, dy: 1567))
             coordWeather1 = normalized.withOffset(CGVector(dx: 1300, dy: 1700))
             coordWeather2 = normalized.withOffset(CGVector(dx: 768, dy: 2000))
-            coordWarning = normalized.withOffset(CGVector(dx: 768, dy: 1700))
+            coordWarning = normalized.withOffset(CGVector(dx: 768, dy: 1800))
             coordCloseNews = normalized.withOffset(CGVector(dx: 768, dy: 1700))
             closeMenuButton = normalized.withOffset(CGVector(dx: 768, dy: 1890))
             settingsButton = normalized.withOffset(CGVector(dx: 1445, dy: 410))
-            logoutDragStart = normalized.withOffset(CGVector(dx: 0, dy: 0))
-            logoutDragEnd = normalized.withOffset(CGVector(dx: 0, dy: 0))
-            logoutConfirmButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            logoutDragStart = normalized.withOffset(CGVector(dx: 768, dy: 1980)) 
+            logoutDragEnd = normalized.withOffset(CGVector(dx: 768, dy: 0)) 
+            logoutConfirmButton = normalized.withOffset(CGVector(dx: 768, dy: 1025))
             openPokestop = normalized.withOffset(CGVector(dx: 828, dy: 1215))
             openQuest = normalized.withOffset(CGVector(dx: 1445, dy: 1750))
             deleteQuest = normalized.withOffset(CGVector(dx: 1434, dy: 1272))
@@ -1010,25 +1049,25 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             openItems = normalized.withOffset(CGVector(dx: 1165, dy: 1620))
             itemDeleteIncrease = normalized.withOffset(CGVector(dx: 1128, dy: 882))
             itemDeleteConfirm = normalized.withOffset(CGVector(dx: 768, dy: 1362))
-            encounterPokemon = normalized.withOffset(CGVector(dx: 0, dy: 0))
+            encounterPokemon = normalized.withOffset(CGVector(dx: 764, dy: 1316))
             encounterNoARButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             encounterNoARButtonConfirm = normalized.withOffset(CGVector(dx: 0, dy: 0))
             encounterTmpButton = normalized.withOffset(CGVector(dx: 0, dy: 0))
             pokemonRunButton = normalized.withOffset(CGVector(dx: 100, dy: 170))
-            itemsDeleteX = 1437
-            itemsGiftX = 226
-            itemsY = [443, 954, 1463, 1972]
-            logoutCompareX = 0
+            itemsDeleteX = 1434
+            itemsGiftX = 296
+            itemsY = [483, 992, 1501, 2010]
+            logoutCompareX = 948
             
             compareStart = (768, 1234)
-            compareStartLoggedOut = (0, 0)
-            compareWarningL = (0, 0)
-            compareWarningR = (0, 0)
+            compareStartLoggedOut = (807, 177)
+            compareWarningL = (90, 1800)
+            compareWarningR = (1400, 1800)
             compareWeather = (768, 1360)
             comparePassenger = (768, 1567)
-            compareOverlay = (768, 1809)
+            compareOverlay = (768, 1915)
             comparePokemonRun = (149, 232)
-            comparePokemonBall = (0, 0)
+            comparePokemonBall = (1365, 1696)
             compareEncoutnerAR = (0, 0)
         } else if app.frame.size.width == 320 { //iPhone Small (5S, SE, ...)
             coordStartup = normalized.withOffset(CGVector(dx: 320, dy: 590))
