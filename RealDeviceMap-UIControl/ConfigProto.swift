@@ -4,9 +4,7 @@
 //
 //  Created by Florian Kostenzer on 22.10.18.
 //
-
 // DON'T EDIT!
-
 import Foundation
 
 protocol ConfigProto {

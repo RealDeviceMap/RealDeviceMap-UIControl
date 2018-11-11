@@ -4,9 +4,7 @@
 //
 //  Created by Florian Kostenzer on 28.09.18.
 //
-
 // DON'T EDIT!
-
 import Foundation
 import XCTest
 
