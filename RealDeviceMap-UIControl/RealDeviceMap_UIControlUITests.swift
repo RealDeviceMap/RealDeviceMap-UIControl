@@ -802,6 +802,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
                         let targetLat = data?["lat_target"] as? Double ?? 0
                         let targetLon = data?["lon_target"] as? Double ?? 0
+                        let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
 
                         self.level = level
                         
@@ -840,7 +841,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 toPrint = "[DEBUG] Got Data"
                                 self.waitForData = false
                             }
-                        } else if (nearby + wild + forts + quests + encounters) == 0 {
+                        } else if onlyEmptyGmos {
                             self.emptyGmoCount += 1
                             toPrint = "[DEBUG] Got Empty Data"
                         } else {
