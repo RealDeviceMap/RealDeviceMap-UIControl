@@ -1295,6 +1295,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.currentLocation = (lat, lon)
                                 self.waitForData = true
                                 self.lock.unlock()
+                                print("[DEBUG] Scanning prepared")
+
                                 var locked = true
                                 while locked {
                                     usleep(100000 * self.conf.delayMultiplier)
@@ -1344,6 +1346,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.targetMaxDistance = self.conf.targetMaxDistance
                                 self.waitForData = true
                                 self.lock.unlock()
+                                print("[DEBUG] Scanning prepared")
+
                                 var locked = true
                                 while locked {
                                     usleep(100000 * self.conf.delayMultiplier)
@@ -1433,6 +1437,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.targetMaxDistance = self.conf.targetMaxDistance
                                 self.waitForData = true
                                 self.lock.unlock()
+                                print("[DEBUG] Scanning prepared")
+
                                 let start = Date()
                                 
                                 app.swipeLeft()
@@ -1545,6 +1551,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.currentLocation = (lat, lon)
                                 self.waitForData = true
                                 self.lock.unlock()
+                                print("[DEBUG] Scanning prepared")
                                 
                                 var success = false
                                 var locked = true
