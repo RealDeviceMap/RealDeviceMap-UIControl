@@ -479,7 +479,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     ) {
                     print("[DEBUG] Accepting Terms")
                     acceptTermsButton.tap()
-                    sleep(1 * conf.delayMultiplier)
+                    sleep(2 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
                     pos: compareTerms2Button,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
@@ -491,7 +491,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     ) {
                     print("[DEBUG] Accepting Updated Terms.")
                     acceptTerms2Button.tap()
-                    sleep(1 * conf.delayMultiplier)
+                    sleep(2 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
                     pos: comparePricacyButton,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
@@ -503,7 +503,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     ) {
                     print("[DEBUG] Accepting Privacy.")
                     acceptPrivacyButton.tap()
-                    sleep(1 * conf.delayMultiplier)
+                    sleep(2 * conf.delayMultiplier)
                 } else if ( screenshotComp.rgbAtLocation(
                     pos: compareBannedButton,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
@@ -553,7 +553,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         shouldExit = true
                         return
                     }
-                    sleep(1 * conf.delayMultiplier)
+                    sleep(2 * conf.delayMultiplier)
                 }
                 
             }
