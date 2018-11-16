@@ -433,7 +433,7 @@ extension XCTestCase {
                    screenshot.rgbAtLocation(
                     pos: comparePokemonBall,
                     min: (red: 0.7, green: 0.05, blue: 0.05),
-                    max: (red: 0.9, green: 0.25, blue: 0.25)) {
+                    max: (red: 0.9, green: 0.25, blue: 0.35)) {
                     pokemonRun.tap()
                     return true
                 }
