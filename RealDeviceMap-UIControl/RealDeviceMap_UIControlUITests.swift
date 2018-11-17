@@ -842,7 +842,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let targetLat = data?["lat_target"] as? Double ?? 0
                         let targetLon = data?["lon_target"] as? Double ?? 0
                         let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
-
+                        let onlyInvalidGmos = data?["only_invalid_gmos"] as? Bool ?? false
+                        
                         self.level = level
                         
                         let toPrint: String
@@ -851,41 +852,46 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let diffLat = fabs((self.currentLocation?.lat ?? 0) - targetLat)
                         let diffLon = fabs((self.currentLocation?.lon ?? 0) - targetLon)
                         
-                        if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
-                            self.emptyGmoCount = 0
-                            
-                            if self.pokemonEncounterId != nil {
-                                if (nearby + wild) > 0 {
-                                    if pokemonLat != nil && pokemonLon != nil && self.pokemonEncounterId == pokemonEncounterIdResult {
-                                        self.waitRequiresPokemon = false
-                                        self.currentLocation = (pokemonLat!, pokemonLon!)
-                                        self.pokemonEncounterId = nil
-                                        self.waitForData = false
-                                        toPrint = "[DEBUG] Got Data and found Pokemon"
+                        if onlyInvalidGmos {
+                            self.waitForData = false
+                            toPrint = "[DEBUG] Got GMO but it was malformed. Skipping."
+                        } else {
+                            if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
+                                self.emptyGmoCount = 0
+                                
+                                if self.pokemonEncounterId != nil {
+                                    if (nearby + wild) > 0 {
+                                        if pokemonLat != nil && pokemonLon != nil && self.pokemonEncounterId == pokemonEncounterIdResult {
+                                            self.waitRequiresPokemon = false
+                                            self.currentLocation = (pokemonLat!, pokemonLon!)
+                                            self.pokemonEncounterId = nil
+                                            self.waitForData = false
+                                            toPrint = "[DEBUG] Got Data and found Pokemon"
+                                        } else {
+                                            toPrint = "[DEBUG] Got Data but didn't find Pokemon"
+                                        }
                                     } else {
-                                        toPrint = "[DEBUG] Got Data but didn't find Pokemon"
+                                        toPrint = "[DEBUG] Got Data without Pokemon"
+                                    }
+                                    
+                                } else if self.waitRequiresPokemon {
+                                    if (nearby + wild) > 0 {
+                                        toPrint = "[DEBUG] Got Data with Pokemon"
+                                        self.waitForData = false
+                                    } else {
+                                        toPrint = "[DEBUG] Got Data without Pokemon"
                                     }
                                 } else {
-                                    toPrint = "[DEBUG] Got Data without Pokemon"
-                                }
-                                
-                            } else if self.waitRequiresPokemon {
-                                if (nearby + wild) > 0 {
-                                    toPrint = "[DEBUG] Got Data with Pokemon"
+                                    toPrint = "[DEBUG] Got Data"
                                     self.waitForData = false
-                                } else {
-                                    toPrint = "[DEBUG] Got Data without Pokemon"
                                 }
+                            } else if onlyEmptyGmos {
+                                self.emptyGmoCount += 1
+                                toPrint = "[DEBUG] Got Empty Data"
                             } else {
-                                toPrint = "[DEBUG] Got Data"
-                                self.waitForData = false
+                                self.emptyGmoCount = 0
+                                toPrint = "[DEBUG] Got Data outside Target-Area"
                             }
-                        } else if onlyEmptyGmos {
-                            self.emptyGmoCount += 1
-                            toPrint = "[DEBUG] Got Empty Data"
-                        } else {
-                            self.emptyGmoCount = 0
-                            toPrint = "[DEBUG] Got Data outside Target-Area"
                         }
                         if !self.gotQuest && quests != 0 {
                             self.gotQuest = true
