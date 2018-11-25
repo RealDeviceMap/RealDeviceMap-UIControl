@@ -160,5 +160,13 @@ protocol DeviceConfigProtocol {
     var tutorialUsernameOk: DeviceCoordinate { get }
     /** Confirm username button. */
     var tutorialUsernameConfirm: DeviceCoordinate { get }
+    
+    
+    // MARK: - Adevture Sync
+    
+    /** Pink Pixel in background of "Rewards" in adventure sync popup */
+    var adventureSyncRewards: DeviceCoordinate { get }
+    /** Green/Blue or Pixel in claim/close button of adventure sync popup */
+    var adventureSyncButton: DeviceCoordinate { get }
 
 }

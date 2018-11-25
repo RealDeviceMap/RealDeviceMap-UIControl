@@ -216,6 +216,37 @@ extension XCTestCase {
         }
         
         if screenshot.rgbAtLocation(
+            pos: deviceConfig.adventureSyncRewards,
+            min: (red: 0.98, green: 0.3, blue: 0.45),
+            max: (red: 1.00, green: 0.5, blue: 0.60)
+        ) {
+            
+            if screenshot.rgbAtLocation(
+                pos: deviceConfig.adventureSyncButton,
+                min: (red: 0.40, green: 0.80, blue: 0.50),
+                max: (red: 0.50, green: 0.90, blue: 0.70)
+            ) {
+                deviceConfig.adventureSyncButton.toXCUICoordinate(app: app).tap()
+                sleep(2 * config.delayMultiplier)
+                deviceConfig.adventureSyncButton.toXCUICoordinate(app: app).tap()
+                sleep(2 * config.delayMultiplier)
+                screenshot = XCUIScreen.main.screenshot()
+                screenshot = clickPassengerWarning()
+            }
+            
+            if screenshot.rgbAtLocation(
+                pos: deviceConfig.adventureSyncButton,
+                min: (red: 0.05, green: 0.45, blue: 0.50),
+                max: (red: 0.20, green: 0.60, blue: 0.65)
+            ) {
+                deviceConfig.adventureSyncButton.toXCUICoordinate(app: app).tap()
+                sleep(2 * config.delayMultiplier)
+                screenshot = XCUIScreen.main.screenshot()
+                screenshot = clickPassengerWarning()
+            }
+        }
+        
+        if screenshot.rgbAtLocation(
             pos: deviceConfig.weather,
             min: (red: 0.23, green: 0.35, blue: 0.50),
             max: (red: 0.36, green: 0.47, blue: 0.65)

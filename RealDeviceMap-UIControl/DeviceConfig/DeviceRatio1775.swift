@@ -259,4 +259,13 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
     }
     
+    
+    // MARK: - Adevture Sync
+    var adventureSyncRewards: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 330, scaler: scaler)
+    }
+    var adventureSyncButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 975, scaler: scaler)
+    }
+    
 }
