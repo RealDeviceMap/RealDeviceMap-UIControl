@@ -72,6 +72,9 @@ extension ConfigProto {
     var maxNoQuestCount: Int {
         return 5
     }
+    var maxNoEncounterCount: Int {
+        return 5
+    }
     var maxFailedCount: Int {
         return 5
     }

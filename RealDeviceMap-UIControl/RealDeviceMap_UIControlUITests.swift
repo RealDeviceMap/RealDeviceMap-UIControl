@@ -23,6 +23,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var jitterCorner = 0
     var gotQuest = false
     var noQuestCount = 0
+    var noEncounterCount = 0
     var targetMaxDistance = 250.0
     var emptyGmoCount = 0
     var pokemonEncounterId: String?
@@ -1179,15 +1180,29 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     var done = false
                                     while count < 3 && !done {
                                         self.freeScreen()
+                                        if count != 0 {
+                                            self.app.swipeLeft()
+                                        }
                                         self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
                                         self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
                                         sleep(2 * self.config.delayMultiplier)
                                         done = self.prepareEncounter()
                                         count += 1
-                                        if !done {
-                                            self.app.swipeLeft()
-                                        }
                                     }
+                                    self.lock.lock()
+                                    if !done {
+                                        if noEncounterCount >= config.maxNoEncounterCount {
+                                            self.lock.unlock()
+                                            Log.debug("Stuck somewhere. Restarting")
+                                            self.app.terminate()
+                                            self.shouldExit = true
+                                            return
+                                        }
+                                        noEncounterCount += 1
+                                    } else {
+                                        noEncounterCount = 0
+                                    }
+                                    self.lock.unlock()
                                 }
                                 
                             } else {
