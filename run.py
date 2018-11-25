@@ -2,7 +2,7 @@ import subprocess
 import shlex
 
 # EDIT ME
-device_id = 'DEVICE_UUID'
+device_id = '78aaba92e229376d9fa67fe7137e9e940d34c884'
 
 
 # DON'T EDIT ME
