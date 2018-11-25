@@ -1191,16 +1191,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.lock()
                                     if !done {
-                                        if noEncounterCount >= config.maxNoEncounterCount {
+                                        if self.noEncounterCount >= self.config.maxNoEncounterCount {
                                             self.lock.unlock()
                                             Log.debug("Stuck somewhere. Restarting")
                                             self.app.terminate()
                                             self.shouldExit = true
                                             return
                                         }
-                                        noEncounterCount += 1
+                                        self.noEncounterCount += 1
                                     } else {
-                                        noEncounterCount = 0
+                                        self.noEncounterCount = 0
                                     }
                                     self.lock.unlock()
                                 }
