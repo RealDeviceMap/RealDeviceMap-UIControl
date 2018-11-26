@@ -68,7 +68,7 @@ extension XCUIScreenshot {
     }
     
     func rgbAtLocation(pos: DeviceCoordinate) -> (red: CGFloat, green: CGFloat, blue: CGFloat){
-        return self.rgbAtLocation(pos: (pos.x, pos.y))
+        return self.rgbAtLocation(pos: pos.toXY())
     }
     
     func rgbAtLocation(pos: (x: Int, y: Int), min: (red: CGFloat, green: CGFloat, blue: CGFloat), max: (red: CGFloat, green: CGFloat, blue: CGFloat)) -> Bool {
@@ -81,7 +81,7 @@ extension XCUIScreenshot {
     }
     
     func rgbAtLocation(pos: DeviceCoordinate, min: (red: CGFloat, green: CGFloat, blue: CGFloat), max: (red: CGFloat, green: CGFloat, blue: CGFloat)) -> Bool {
-        return self.rgbAtLocation(pos: (pos.x, pos.y), min: min, max: max)
+        return self.rgbAtLocation(pos: pos.toXY(), min: min, max: max)
     }
 }
 

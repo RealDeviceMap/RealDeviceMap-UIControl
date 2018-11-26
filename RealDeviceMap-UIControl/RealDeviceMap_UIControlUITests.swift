@@ -1231,6 +1231,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             } else {
                 let screenshotComp = XCUIScreen.main.screenshot()
                 
+                print(deviceConfig.startup.toXY())
+                
                 if config.enableAccountManager && screenshotComp.rgbAtLocation(
                     pos: deviceConfig.startupLoggedOut,
                     min: (0.95, 0.75, 0.0),
