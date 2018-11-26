@@ -232,9 +232,7 @@ extension XCTestCase {
                 sleep(2 * config.delayMultiplier)
                 screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning()
-            }
-            
-            if screenshot.rgbAtLocation(
+            } else if screenshot.rgbAtLocation(
                 pos: deviceConfig.adventureSyncButton,
                 min: (red: 0.05, green: 0.45, blue: 0.50),
                 max: (red: 0.20, green: 0.60, blue: 0.65)
@@ -244,6 +242,42 @@ extension XCTestCase {
                 screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning()
             }
+        }
+        
+        if screenshot.rgbAtLocation(
+            pos: deviceConfig.teamSelectBackgorundL,
+            min: (red: 0.00, green: 0.20, blue: 0.25),
+            max: (red: 0.05, green: 0.35, blue: 0.35)) &&
+           screenshot.rgbAtLocation(
+            pos: deviceConfig.teamSelectBackgorundR,
+            min: (red: 0.00, green: 0.20, blue: 0.25),
+            max: (red: 0.05, green: 0.35, blue: 0.35)
+        ) {
+            
+            for _ in 1...6 {
+                deviceConfig.teamSelectNext.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+            }
+            sleep(3 * config.delayMultiplier)
+            
+            for _ in 1...3 {
+                for _ in 1...5 {
+                    deviceConfig.teamSelectNext.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                }
+                sleep(4 * config.delayMultiplier)
+            }
+            
+            let x = Int(arc4random_uniform(UInt32(app.frame.width)))
+            let button = DeviceCoordinate(x: x, y: deviceConfig.teamSelectY).toXCUICoordinate(app: app)
+            button.tap()
+            sleep(3 * config.delayMultiplier)
+            deviceConfig.teamSelectNext.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
+            deviceConfig.teamSelectWelcomeOk.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
+            screenshot = XCUIScreen.main.screenshot()
+            screenshot = clickPassengerWarning()
         }
         
         if screenshot.rgbAtLocation(
@@ -257,7 +291,6 @@ extension XCTestCase {
             sleep(1 * config.delayMultiplier)
             screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
-            sleep(1 * config.delayMultiplier)
         }
         
         if run && screenshot.rgbAtLocation(
@@ -269,7 +302,6 @@ extension XCTestCase {
             sleep(1 * config.delayMultiplier)
             screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
-            sleep(1 * config.delayMultiplier)
         }
 
         if run && !screenshot.rgbAtLocation(
@@ -280,7 +312,6 @@ extension XCTestCase {
             sleep(1 * config.delayMultiplier)
             screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
-            sleep(1 * config.delayMultiplier)
         }
 
     }

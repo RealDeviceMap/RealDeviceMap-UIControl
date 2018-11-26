@@ -168,5 +168,19 @@ protocol DeviceConfigProtocol {
     var adventureSyncRewards: DeviceCoordinate { get }
     /** Green/Blue or Pixel in claim/close button of adventure sync popup */
     var adventureSyncButton: DeviceCoordinate { get }
+    
+    
+    // MARK: - Team Select
+    
+    /** Background of team select screen (left side) */
+    var teamSelectBackgorundL: DeviceCoordinate { get }
+    /** Background of team select screen (right side) */
+    var teamSelectBackgorundR: DeviceCoordinate { get }
+    /** Next Button in Team select */
+    var teamSelectNext: DeviceCoordinate { get }
+    /** Y value of of Team Leaders */
+    var teamSelectY: Int { get }
+    /** Ok button in welcome to team */
+    var teamSelectWelcomeOk: DeviceCoordinate { get }
 
 }

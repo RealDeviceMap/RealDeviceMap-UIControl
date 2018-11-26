@@ -268,4 +268,27 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 320, y: 975, scaler: scaler)
     }
     
+    
+    // MARK: - Team Select
+
+    var teamSelectBackgorundL: DeviceCoordinate {
+        return DeviceCoordinate(x: 100, y: 800, scaler: scaler)
+    }
+    
+    var teamSelectBackgorundR: DeviceCoordinate {
+        return DeviceCoordinate(x: 550, y: 800, scaler: scaler)
+    }
+    
+    var teamSelectNext: DeviceCoordinate {
+        return DeviceCoordinate(x: 550, y: 1055, scaler: scaler)
+    }
+    
+    var teamSelectY: Int {
+        return scaler.scaleY(y: 700)
+    }
+    
+    var teamSelectWelcomeOk: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 610, scaler: scaler)
+    }
+    
 }
