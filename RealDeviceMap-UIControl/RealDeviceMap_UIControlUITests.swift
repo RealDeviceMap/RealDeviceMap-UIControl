@@ -11,7 +11,7 @@ import Embassy
 import EnvoyAmbassador
 
 class RealDeviceMap_UIControlUITests: XCTestCase {
-        
+    
     var backendControlerURL: URL!
     var backendRawURL: URL!
     var isStarted = false
@@ -204,9 +204,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             }
         }
         
-        app.activate()
+        app.launch()
         while app.state != .runningForeground {
             sleep(1)
+            app.activate()
+            Log.debug("Waiting for App to run in foreground. Currently \(app.state).")
         }
         DeviceConfig.setup(app: app)
         
@@ -281,7 +283,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         if username != nil && !isLoggedIn {
-        
+            
             sleep(1 * config.delayMultiplier)
             deviceConfig.loginPasswordTextfield.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
@@ -330,10 +332,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         pos: deviceConfig.loginTerms,
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginTermsText,
-                        min: (red: 0.0, green: 0.0, blue: 0.0),
-                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                        screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.loginTermsText,
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                     Log.debug("Accepting Terms")
                     deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
@@ -343,10 +345,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         pos: deviceConfig.loginTerms2,
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginTerms2Text,
-                        min: (red: 0.0, green: 0.0, blue: 0.0),
-                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                        screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.loginTerms2Text,
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                     Log.debug("Accepting Updated Terms.")
                     deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
@@ -356,10 +358,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         pos: deviceConfig.loginPrivacy,
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginPrivacyText,
-                        min: (red: 0.0, green: 0.0, blue: 0.0),
-                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                        screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.loginPrivacyText,
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                     Log.debug("Accepting Privacy.")
                     deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
@@ -369,10 +371,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         pos: deviceConfig.loginBanned,
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginBannedText,
-                        min: (red: 0.0, green: 0.0, blue: 0.0),
-                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                        screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.loginBannedText,
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                     Log.error("Account \(username!) is banned.")
                     username = nil
@@ -387,10 +389,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         pos: deviceConfig.loginFailed,
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginFailedText,
-                        min: (red: 0.0, green: 0.0, blue: 0.0),
-                        max: (red: 0.3, green: 0.5, blue: 0.5))
+                        screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.loginFailedText,
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                     Log.error("Invalid credentials for \(username!)")
                     username = nil
@@ -404,7 +406,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         pos: deviceConfig.startup,
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70))
-                    || isTutorial()
+                        || isTutorial()
                     ) {
                     loggedIn = true
                     isLoggedIn = true
@@ -531,7 +533,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             }
             sleep(1 * config.delayMultiplier)
             deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
-
+            
             Log.info("Tutorial Done. Restarting...")
             newCreated = true
             newLogIn = false
@@ -747,7 +749,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         var currentQuests = self.config.questFullCount
         var currentItems = self.config.itemFullCount
-
+        
         var failedToGetJobCount = 0
         var failedCount = 0
         
@@ -895,7 +897,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.waitForData = true
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
-
+                                
                                 var locked = true
                                 while locked {
                                     usleep(100000 * self.config.delayMultiplier)
@@ -946,7 +948,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.waitForData = true
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
-
+                                
                                 var locked = true
                                 while locked {
                                     usleep(100000 * self.config.delayMultiplier)
@@ -1040,7 +1042,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 self.freeScreen()
-
+                                
                                 let start = Date()
                                 
                                 self.app.swipeLeft()
