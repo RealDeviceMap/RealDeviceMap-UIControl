@@ -72,6 +72,108 @@
             ReferencedContainer = "container:RealDeviceMap-UIControl.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "name"
+            value = "$(name)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "backendURL"
+            value = "$(backendURL)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "enableAccountManager"
+            value = "$(enableAccountManager)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "port"
+            value = "$(port)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "pokemonMaxTime"
+            value = "$(pokemonMaxTime)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "raidMaxTime"
+            value = "$(raidMaxTime)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "maxWarningTimeRaid"
+            value = "$(maxWarningTimeRaid)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "delayMultiplier"
+            value = "$(delayMultiplier)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "jitterValue"
+            value = "$(jitterValue)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "targetMaxDistance"
+            value = "$(targetMaxDistance)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "itemFullCount"
+            value = "$(itemFullCount)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "questFullCount"
+            value = "$(questFullCount)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "itemsPerStop"
+            value = "$(itemsPerStop)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "minDelayLogout"
+            value = "$(minDelayLogout)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "maxNoQuestCount"
+            value = "$(maxNoQuestCount)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "maxFailedCount"
+            value = "$(maxFailedCount)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "maxEmptyGMO"
+            value = "$(maxEmptyGMO)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "startupLocationLat"
+            value = "$(startupLocationLat)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "startupLocationLon"
+            value = "$(startupLocationLon)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "encoutnerMaxWait"
+            value = "$(encoutnerMaxWait)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

@@ -477,3 +477,23 @@ extension XCTestCase {
     }
     
 }
+
+extension String {
+    
+    func toBool() -> Bool? {
+        return Bool(self)
+    }
+    
+    func toInt() -> Int? {
+        return Int(self)
+    }
+    
+    func toUInt32() -> UInt32? {
+        return UInt32(self)
+    }
+    
+    func toDouble() -> Double? {
+        return Double(self)
+    }
+    
+}

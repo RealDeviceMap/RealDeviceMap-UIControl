@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E6D7FA8217E037E0022DA75 /* ConfigProto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D7FA7217E037E0022DA75 /* ConfigProto.swift */; };
 		2E6D7FAA217E03A70022DA75 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D7FA9217E03A70022DA75 /* Config.swift */; };
 		2E90E9A221A1BC7700E2D722 /* DeviceConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E90E9A121A1BC7700E2D722 /* DeviceConfig.swift */; };
 		2E90E9A421A1C0DC00E2D722 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E90E9A321A1C0DC00E2D722 /* Log.swift */; };
@@ -36,7 +35,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2E6D7FA7217E037E0022DA75 /* ConfigProto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigProto.swift; sourceTree = "<group>"; };
 		2E6D7FA9217E03A70022DA75 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		2E90E9A121A1BC7700E2D722 /* DeviceConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceConfig.swift; sourceTree = "<group>"; };
 		2E90E9A321A1C0DC00E2D722 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
@@ -139,7 +137,6 @@
 				2EEB5E57215E757E0039B79B /* Misc.swift */,
 				2EEB5E4A215E61DF0039B79B /* RealDeviceMap_UIControlUITests.swift */,
 				2EEB5E4C215E61DF0039B79B /* Info.plist */,
-				2E6D7FA7217E037E0022DA75 /* ConfigProto.swift */,
 				2E6D7FA9217E03A70022DA75 /* Config.swift */,
 				2E90E9A321A1C0DC00E2D722 /* Log.swift */,
 				2E90E9A921A1C24100E2D722 /* DeviceCoordinate.swift */,
@@ -309,7 +306,6 @@
 				2E90E9A821A1C20700E2D722 /* DeviceConfigProtocol.swift in Sources */,
 				2E90E9AC21A2D7C200E2D722 /* DeviceIPhoneNormal.swift in Sources */,
 				2EEB5E58215E757E0039B79B /* Misc.swift in Sources */,
-				2E6D7FA8217E037E0022DA75 /* ConfigProto.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
