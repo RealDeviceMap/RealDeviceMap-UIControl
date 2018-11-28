@@ -36,8 +36,9 @@ class BuildController {
         let outputPipe = Pipe()
         _ = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
         let error = String(data: errorPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        let output = String(data: outputPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         if error.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            Log.terminal(message: "Building Project Failed!\n\(error)")
+            Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
         }
         Log.info(message: "Building Project done")
         

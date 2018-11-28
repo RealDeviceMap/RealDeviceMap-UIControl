@@ -12,3 +12,9 @@ Manager/Package.resolved
 Podfile.lock
 Pods/
 *.xcworkspace
+
+# Manager
+Manager/logs/
+Manager/db.sqlite
+Manager/StORMlog.txt
+Manager/RDM-UIC-Manager

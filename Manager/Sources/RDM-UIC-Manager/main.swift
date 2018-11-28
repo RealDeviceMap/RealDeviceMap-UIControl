@@ -26,7 +26,7 @@ let path: String
 if let index = CommandLine.arguments.index(of: "-path"), CommandLine.arguments.count > index + 1 {
     path = CommandLine.arguments[index + 1]
 } else {
-    path = "."
+    path = ".."
 }
 let timeout: Int
 if let index = CommandLine.arguments.index(of: "-timeout"), CommandLine.arguments.count > index + 1, let number = Int(CommandLine.arguments[index + 1]) {
