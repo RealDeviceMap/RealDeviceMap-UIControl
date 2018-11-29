@@ -481,6 +481,9 @@ extension XCTestCase {
 extension String {
     
     func toBool() -> Bool? {
+        if self == "1" {
+            return true
+        }
         return Bool(self)
     }
     
