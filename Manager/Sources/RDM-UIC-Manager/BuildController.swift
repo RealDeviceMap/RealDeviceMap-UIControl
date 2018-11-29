@@ -124,17 +124,17 @@ class BuildController {
                 let timestamp = Int(Date().timeIntervalSince1970)
                 let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
                 let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
-
-                task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
                 
-                Log.info(message: "[\(device.name)] Starting xcodebuild")
                 lastChangedLock.lock()
                 lastChanged = Date()
                 lastChangedLock.unlock()
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 locked = true
                 self.buildLock.lock()
-                Log.debug(message: "[\(device.name)] Got build lock")
+                
+                Log.info(message: "[\(device.name)] Starting xcodebuild")
+                task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
+
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
                     let string = String(data: fileHandle.availableData, encoding: .utf8)
                     if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
