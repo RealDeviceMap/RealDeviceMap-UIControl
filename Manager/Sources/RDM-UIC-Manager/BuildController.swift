@@ -130,7 +130,7 @@ class BuildController {
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 locked = true
                 self.buildLock.lock()
-                while !self.isBuilding {
+                while self.isBuilding {
                     self.buildLock.unlock()
                     Threading.sleep(seconds: 1)
                     self.buildLock.lock()
