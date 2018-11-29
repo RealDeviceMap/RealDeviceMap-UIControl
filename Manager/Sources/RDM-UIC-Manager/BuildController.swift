@@ -114,8 +114,8 @@ class BuildController {
                 let errorPipe = Pipe()
                 
                 let timestamp = Int(Date().timeIntervalSince1970)
-                let fullLog = FileLogger(file: "./logs/\(timestamp)-xcodebuild.full.log")
-                let debugLog = FileLogger(file: "./logs/\(timestamp)-xcodebuild.debug.log")
+                let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
+                let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
 
                 task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
                 
