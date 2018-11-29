@@ -109,7 +109,7 @@ class BuildController {
         var contains = true
         
         let lastChangedLock = Threading.Lock()
-        var lastChanged = Date()
+        var lastChanged: Date?
         
         var task: Process?
         let xcodebuildQueue = Threading.getQueue(name: "BuildController-\(device.uuid)-runner", type: .serial)
@@ -118,6 +118,7 @@ class BuildController {
             var locked = false
             
             while contains {
+                
                 let outputPipe = Pipe()
                 let errorPipe = Pipe()
                 
@@ -125,12 +126,12 @@ class BuildController {
                 let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
                 let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
                 
-                lastChangedLock.lock()
-                lastChanged = Date()
-                lastChangedLock.unlock()
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 locked = true
                 self.buildLock.lock()
+                lastChangedLock.lock()
+                lastChanged = Date()
+                lastChangedLock.unlock()
                 
                 Log.info(message: "[\(device.name)] Starting xcodebuild")
                 task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
@@ -169,6 +170,11 @@ class BuildController {
                 }
                 outputPipe.fileHandleForReading.readabilityHandler = nil
                 errorPipe.fileHandleForReading.readabilityHandler = nil
+                
+                lastChangedLock.lock()
+                lastChanged = nil
+                lastChangedLock.unlock()
+                
                 Threading.sleep(seconds: 1.0)
             }
             task?.suspend()
@@ -177,7 +183,7 @@ class BuildController {
         while contains {
             
             lastChangedLock.lock()
-            if Int(Date().timeIntervalSince(lastChanged)) >= (timeout * device.delayMultiplier) {
+            if task!= nil && lastChanged != nil && Int(Date().timeIntervalSince(lastChanged!)) >= (timeout * device.delayMultiplier) {
                 task!.terminate()
                 Log.info(message: "[\(device.name)] Stopping xcodebuild. No output for over \(timeout * device.delayMultiplier)s")
             }
