@@ -26,6 +26,7 @@ class BuildController {
     private var timeout: Int = 60
     
     private var buildLock = Threading.Lock()
+    private var isBuilding = false
     
     public func start(path: String, timeout: Int) {
         
@@ -129,6 +130,13 @@ class BuildController {
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 locked = true
                 self.buildLock.lock()
+                while !self.isBuilding {
+                    self.buildLock.unlock()
+                    Threading.sleep(seconds: 1)
+                    self.buildLock.lock()
+                }
+                self.isBuilding = true
+                self.buildLock.unlock()
                 lastChangedLock.lock()
                 lastChanged = Date()
                 lastChangedLock.unlock()
@@ -142,6 +150,8 @@ class BuildController {
                         if string!.contains(string: "[STATUS] Started") && locked {
                             Log.debug(message: "[\(device.name)] Done building")
                             locked = false
+                            self.buildLock.lock()
+                            self.isBuilding = false
                             self.buildLock.unlock()
                         }
                         fullLog.uic(message: string!, all: true)
@@ -166,6 +176,8 @@ class BuildController {
                 Log.debug(message: "[\(device.name)] Xcodebuild ended")
                 if locked {
                     locked = false
+                    self.buildLock.lock()
+                    self.isBuilding = false
                     self.buildLock.unlock()
                 }
                 outputPipe.fileHandleForReading.readabilityHandler = nil
