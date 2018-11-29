@@ -111,12 +111,12 @@ class BuildController {
         let lastChangedLock = Threading.Lock()
         var lastChanged = Date()
         
-        let lockedLock = Threading.Lock()
-        var locked = false
-        
         var task: Process?
         let xcodebuildQueue = Threading.getQueue(name: "BuildController-\(device.uuid)-runner", type: .serial)
         xcodebuildQueue.dispatch {
+            
+            var locked = false
+            
             while contains {
                 let outputPipe = Pipe()
                 let errorPipe = Pipe()
@@ -132,21 +132,17 @@ class BuildController {
                 lastChanged = Date()
                 lastChangedLock.unlock()
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
-                lockedLock.lock()
                 locked = true
-                lockedLock.unlock()
                 self.buildLock.lock()
                 Log.debug(message: "[\(device.name)] Got build lock")
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
                     let string = String(data: fileHandle.availableData, encoding: .utf8)
                     if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                        lockedLock.lock()
                         if string!.contains(string: "[STATUS] Started") && locked {
                             Log.debug(message: "[\(device.name)] Done building")
                             locked = false
                             self.buildLock.unlock()
                         }
-                        lockedLock.unlock()
                         fullLog.uic(message: string!, all: true)
                         debugLog.uic(message: string!, all: false)
                         lastChangedLock.lock()
@@ -166,13 +162,11 @@ class BuildController {
 
                 }
                 task?.waitUntilExit()
-                lockedLock.lock()
                 Log.debug(message: "[\(device.name)] Xcodebuild ended")
                 if locked {
                     locked = false
                     self.buildLock.unlock()
                 }
-                lockedLock.unlock()
                 outputPipe.fileHandleForReading.readabilityHandler = nil
                 errorPipe.fileHandleForReading.readabilityHandler = nil
                 Threading.sleep(seconds: 1.0)
@@ -185,12 +179,6 @@ class BuildController {
             lastChangedLock.lock()
             if Int(Date().timeIntervalSince(lastChanged)) >= (timeout * device.delayMultiplier) {
                 task!.terminate()
-                lockedLock.lock()
-                if locked {
-                    locked = false
-                    self.buildLock.unlock()
-                }
-                lockedLock.unlock()
                 Log.info(message: "[\(device.name)] Stopping xcodebuild. No output for over \(timeout * device.delayMultiplier)s")
             }
             lastChangedLock.unlock()
