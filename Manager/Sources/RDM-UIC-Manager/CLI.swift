@@ -263,9 +263,13 @@ class CLI {
             defaultDevice.encoutnerMaxWait = encoutnerMaxWait!
         }
         
-        try! defaultDevice.save()
-        clear()
-        print("Defaults updated.\n\n")
+        do {
+            try defaultDevice.save()
+            clear()
+            print("Defaults updated.\n\n")
+        } catch {
+            print("Failed to update defaults.\n\n")
+        }
     }
     
     private func addDevice() {
@@ -393,10 +397,15 @@ class CLI {
         device.startupLocationLat = startupLocationLat!
         device.startupLocationLon = startupLocationLon!
         device.encoutnerMaxWait = encoutnerMaxWait!
-        try! device.create()
-        clear()
-        BuildController.global.addDevice(device: device)
-        print("Device added.\n\n")
+        do {
+            try device.create()
+            clear()
+            BuildController.global.addDevice(device: device)
+            print("Device added.\n\n")
+        } catch {
+            print("Failed to add device.\n\n")
+        }
+
     }
     
     private func editDevice() {
@@ -518,16 +527,20 @@ class CLI {
             device.encoutnerMaxWait = encoutnerMaxWait!
         }
         
-        try! device.save()
-        clear()
-        BuildController.global.removeDevice(device: device)
-        let tmpQueue = Threading.getQueue(name: UUID().uuidString, type: .serial)
-        tmpQueue.dispatch {
-            Threading.sleep(seconds: 10.0)
-            BuildController.global.addDevice(device: device)
-            Threading.destroyQueue(tmpQueue)
+        do {
+            try device.save()
+            clear()
+            BuildController.global.removeDevice(device: device)
+            let tmpQueue = Threading.getQueue(name: UUID().uuidString, type: .serial)
+            tmpQueue.dispatch {
+                Threading.sleep(seconds: 10.0)
+                BuildController.global.addDevice(device: device)
+                Threading.destroyQueue(tmpQueue)
+            }
+            print("Device updated.\n\n")
+        } catch {
+            print("Failed to update device.\n\n")
         }
-        print("Device updated.\n\n")
     }
 
     private func deleteDevice() {
@@ -550,10 +563,14 @@ class CLI {
             return
         }
         let device = devices[index - 1]
-        try! device.delete()
-        clear()
-        BuildController.global.removeDevice(device: device)
-        print("Device deleted.\n\n")
+        do {
+            try device.delete()
+            clear()
+            BuildController.global.removeDevice(device: device)
+            print("Device deleted.\n\n")
+        } catch {
+            print("Failed to delete device.\n\n")
+        }
     }
     
     
