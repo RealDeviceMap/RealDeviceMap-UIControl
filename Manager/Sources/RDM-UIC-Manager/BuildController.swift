@@ -25,6 +25,8 @@ class BuildController {
     private var path: String = ""
     private var timeout: Int = 60
     
+    private var buildLock = Threading.Lock()
+    
     public func start(path: String, timeout: Int) {
         
         self.path = path
@@ -100,7 +102,7 @@ class BuildController {
         
         Log.info(message: "Starting \(device.name)'s Manager")
         
-        let xcodebuild = Shell("xcodebuild", "test-without-building", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-destination", "id=\(device.uuid)", "-allowProvisioningUpdates", "-destination-timeout", "\(timeout)",
+        let xcodebuild = Shell("xcodebuild", "test-without-building", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-destination", "id=\(device.uuid)", "-allowProvisioningUpdates", "-destination-timeout", "\(timeout * device.delayMultiplier)",
             "name=\(device.name)", "backendURL=\(device.backendURL)", "enableAccountManager=\(device.enableAccountManager)", "port=\(device.port)", "pokemonMaxTime=\(device.pokemonMaxTime)", "raidMaxTime=\(device.raidMaxTime)", "maxWarningTimeRaid=\(device.maxWarningTimeRaid)", "delayMultiplier=\(device.delayMultiplier)", "jitterValue=\(device.jitterValue)", "targetMaxDistance=\(device.targetMaxDistance)", "itemFullCount=\(device.itemFullCount)", "questFullCount=\(device.questFullCount)", "itemsPerStop=\(device.itemsPerStop)", "minDelayLogout=\(device.minDelayLogout)", "maxNoQuestCount=\(device.maxNoQuestCount)", "maxFailedCount=\(device.maxFailedCount)", "maxEmptyGMO=\(device.maxEmptyGMO)", "startupLocationLat=\(device.startupLocationLat)", "startupLocationLon=\(device.startupLocationLon)", "encoutnerMaxWait=\(device.encoutnerMaxWait)"
         )
 
@@ -108,6 +110,10 @@ class BuildController {
         
         let lastChangedLock = Threading.Lock()
         var lastChanged = Date()
+        
+        let lockedLock = Threading.Lock()
+        var locked = false
+        
         var task: Process?
         let xcodebuildQueue = Threading.getQueue(name: "BuildController-\(device.uuid)-runner", type: .serial)
         xcodebuildQueue.dispatch {
@@ -125,9 +131,21 @@ class BuildController {
                 lastChangedLock.lock()
                 lastChanged = Date()
                 lastChangedLock.unlock()
+                Log.debug(message: "Waiting for build lock...")
+                lockedLock.lock()
+                locked = true
+                lockedLock.unlock()
+                self.buildLock.lock()
+                Log.debug(message: "Got build lock")
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
                     let string = String(data: fileHandle.availableData, encoding: .utf8)
                     if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                        lockedLock.lock()
+                        if string!.contains(string: "[STATUS] Started") && locked {
+                            locked = false
+                            self.buildLock.unlock()
+                        }
+                        lockedLock.unlock()
                         fullLog.uic(message: string!, all: true)
                         debugLog.uic(message: string!, all: false)
                         lastChangedLock.lock()
@@ -147,6 +165,12 @@ class BuildController {
 
                 }
                 task?.waitUntilExit()
+                lockedLock.lock()
+                if locked {
+                    locked = false
+                    self.buildLock.unlock()
+                }
+                lockedLock.unlock()
                 outputPipe.fileHandleForReading.readabilityHandler = nil
                 errorPipe.fileHandleForReading.readabilityHandler = nil
                 Threading.sleep(seconds: 1.0)
@@ -157,9 +181,15 @@ class BuildController {
         while contains {
             
             lastChangedLock.lock()
-            if Int(Date().timeIntervalSince(lastChanged)) >= timeout {
+            if Int(Date().timeIntervalSince(lastChanged)) >= (timeout * device.delayMultiplier) {
                 task!.terminate()
-                Log.info(message: "Stopping \(device.name)'s Task. No output for over \(timeout)s")
+                lockedLock.lock()
+                if locked {
+                    locked = false
+                    self.buildLock.unlock()
+                }
+                lockedLock.unlock()
+                Log.info(message: "Stopping \(device.name)'s Task. No output for over \(timeout * device.delayMultiplier)s")
             }
             lastChangedLock.unlock()
             

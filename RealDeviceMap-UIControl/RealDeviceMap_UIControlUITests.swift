@@ -140,6 +140,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     
     func test0Setup() {
         
+        print("[STATUS] Started")
+        
         shouldExit = false
         newCreated = false
         needsLogout = false

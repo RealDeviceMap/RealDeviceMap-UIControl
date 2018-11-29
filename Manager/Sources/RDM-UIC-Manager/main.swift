@@ -32,7 +32,7 @@ let timeout: Int
 if let index = CommandLine.arguments.index(of: "-timeout"), CommandLine.arguments.count > index + 1, let number = Int(CommandLine.arguments[index + 1]) {
     timeout = number
 } else {
-    timeout = 60
+    timeout = 150
 }
 // Start BuildController
 BuildController.global.start(path: path, timeout: timeout)
