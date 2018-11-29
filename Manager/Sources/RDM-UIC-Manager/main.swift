@@ -34,8 +34,14 @@ if let index = CommandLine.arguments.index(of: "-timeout"), CommandLine.argument
 } else {
     timeout = 150
 }
+let builds: Int
+if let index = CommandLine.arguments.index(of: "-builds"), CommandLine.arguments.count > index + 1, let number = Int(CommandLine.arguments[index + 1]) {
+    builds = number
+} else {
+    builds = 150
+}
 // Start BuildController
-BuildController.global.start(path: path, timeout: timeout)
+BuildController.global.start(path: path, timeout: timeout, maxSimultaneousBuilds: builds)
 
 // Start CLI
 CLI.global.start()

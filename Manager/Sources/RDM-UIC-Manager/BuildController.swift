@@ -25,13 +25,15 @@ class BuildController {
     private var path: String = ""
     private var timeout: Int = 60
     
+    private var maxSimultaneousBuilds: Int!
     private var buildLock = Threading.Lock()
-    private var isBuilding = false
+    private var buildingCount = 0
     
-    public func start(path: String, timeout: Int) {
+    public func start(path: String, timeout: Int, maxSimultaneousBuilds: Int) {
         
         self.path = path
         self.timeout = timeout
+        self.maxSimultaneousBuilds = maxSimultaneousBuilds
         
         print("[INFO] Building Project...")
         Log.info(message: "Building Project...")
@@ -123,25 +125,26 @@ class BuildController {
                 let outputPipe = Pipe()
                 let errorPipe = Pipe()
                 
-                let timestamp = Int(Date().timeIntervalSince1970)
-                let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
-                let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
-                
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 locked = true
                 self.buildLock.lock()
-                while self.isBuilding {
+                while self.buildingCount >= self.maxSimultaneousBuilds {
                     self.buildLock.unlock()
                     Threading.sleep(seconds: 1)
                     self.buildLock.lock()
                 }
-                self.isBuilding = true
+                self.buildingCount += 1
                 self.buildLock.unlock()
                 lastChangedLock.lock()
                 lastChanged = Date()
                 lastChangedLock.unlock()
                 
                 Log.info(message: "[\(device.name)] Starting xcodebuild")
+                
+                let timestamp = Int(Date().timeIntervalSince1970)
+                let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
+                let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
+                
                 task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
 
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
@@ -151,7 +154,7 @@ class BuildController {
                             Log.debug(message: "[\(device.name)] Done building")
                             locked = false
                             self.buildLock.lock()
-                            self.isBuilding = false
+                            self.buildingCount -= 1
                             self.buildLock.unlock()
                         }
                         fullLog.uic(message: string!, all: true)
@@ -177,7 +180,7 @@ class BuildController {
                 if locked {
                     locked = false
                     self.buildLock.lock()
-                    self.isBuilding = false
+                    self.buildingCount -= 1
                     self.buildLock.unlock()
                 }
                 outputPipe.fileHandleForReading.readabilityHandler = nil
