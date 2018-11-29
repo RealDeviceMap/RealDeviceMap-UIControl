@@ -183,7 +183,7 @@ class BuildController {
         while contains {
             
             lastChangedLock.lock()
-            if task!= nil && lastChanged != nil && Int(Date().timeIntervalSince(lastChanged!)) >= (timeout * device.delayMultiplier) {
+            if task != nil && lastChanged != nil && Int(Date().timeIntervalSince(lastChanged!)) >= (timeout * device.delayMultiplier) {
                 task!.terminate()
                 Log.info(message: "[\(device.name)] Stopping xcodebuild. No output for over \(timeout * device.delayMultiplier)s")
             }
