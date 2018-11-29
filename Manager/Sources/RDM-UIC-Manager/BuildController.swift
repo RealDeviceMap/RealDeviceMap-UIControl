@@ -127,21 +127,22 @@ class BuildController {
 
                 task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
                 
-                Log.info(message: "Starting xcodebuild for \(device.name)")
+                Log.info(message: "[\(device.name)] Starting xcodebuild")
                 lastChangedLock.lock()
                 lastChanged = Date()
                 lastChangedLock.unlock()
-                Log.debug(message: "Waiting for build lock...")
+                Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 lockedLock.lock()
                 locked = true
                 lockedLock.unlock()
                 self.buildLock.lock()
-                Log.debug(message: "Got build lock")
+                Log.debug(message: "[\(device.name)] Got build lock")
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
                     let string = String(data: fileHandle.availableData, encoding: .utf8)
                     if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
                         lockedLock.lock()
                         if string!.contains(string: "[STATUS] Started") && locked {
+                            Log.debug(message: "[\(device.name)] Done building")
                             locked = false
                             self.buildLock.unlock()
                         }
@@ -166,6 +167,7 @@ class BuildController {
                 }
                 task?.waitUntilExit()
                 lockedLock.lock()
+                Log.debug(message: "[\(device.name)] Xcodebuild ended")
                 if locked {
                     locked = false
                     self.buildLock.unlock()
@@ -189,7 +191,7 @@ class BuildController {
                     self.buildLock.unlock()
                 }
                 lockedLock.unlock()
-                Log.info(message: "Stopping \(device.name)'s Task. No output for over \(timeout * device.delayMultiplier)s")
+                Log.info(message: "[\(device.name)] Stopping xcodebuild. No output for over \(timeout * device.delayMultiplier)s")
             }
             lastChangedLock.unlock()
             
