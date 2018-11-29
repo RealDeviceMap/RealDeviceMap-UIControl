@@ -30,6 +30,7 @@ class BuildController {
         self.path = path
         self.timeout = timeout
         
+        print("[INFO] Building Project...")
         Log.info(message: "Building Project...")
         let xcodebuild = Shell("xcodebuild", "build-for-testing", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-allowProvisioningUpdates", "-allowProvisioningDeviceRegistration", "-destination", "generic/platform=iOS")
         let errorPipe = Pipe()
@@ -40,6 +41,7 @@ class BuildController {
         if error.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
         }
+        print("[INFO] Building Project done")
         Log.info(message: "Building Project done")
         
         devicesLock.lock()
