@@ -119,7 +119,7 @@ class CLI {
                 }
                 self.printTable(headers: ["Name", "Status"], rows: rows)
                 print("\nPress enter to exit...")
-                Threading.sleep(seconds: 10)
+                Threading.sleep(seconds: 1)
             }
         }
         
