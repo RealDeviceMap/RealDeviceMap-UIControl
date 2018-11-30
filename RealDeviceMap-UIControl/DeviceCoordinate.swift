@@ -12,18 +12,15 @@ struct DeviceCoordinate {
     
     public var x: Int
     public var y: Int
-    public var imageScale: Double
     
-    public init(x: Int, y: Int, imageScale: Double=1.0) {
+    public init(x: Int, y: Int) {
         self.x = x
         self.y = y
-        self.imageScale = imageScale
     }
     
-    public init(x: Int, y: Int, scaler: DeviceCoordinateScaler, imageScale: Double=1.0) {
+    public init(x: Int, y: Int, scaler: DeviceCoordinateScaler) {
         self.x = scaler.scaleX(x: x)
         self.y = scaler.scaleY(y: y)
-        self.imageScale = imageScale
     }
     
     public func toXCUICoordinate(app: XCUIApplication) -> XCUICoordinate {
@@ -31,11 +28,7 @@ struct DeviceCoordinate {
     }
     
     public func toXY() -> (x: Int, y: Int) {
-        if imageScale != 1.0 {
-            return (Int(Double(x) * imageScale), Int(Double(y) * imageScale))
-        } else {
-            return (x, y)
-        }
+        return (x, y)
     }
     
 }
@@ -46,21 +39,14 @@ struct DeviceCoordinateScaler {
     public var heightNow: Int
     public var widthTarget: Int
     public var heightTarget: Int
+    public var multiplier: Double
     
-    public func scaleX(x: Int, multiplier: Double=1.0) -> Int {
-        if multiplier != 1.0 {
-            return lround(Double(x) * Double(widthNow) / Double(widthTarget) * multiplier)
-        } else {
-            return lround(Double(x) * Double(widthNow) / Double(widthTarget))
-        }
+    public func scaleX(x: Int) -> Int {
+        return lround(Double(x) * Double(widthNow) / Double(widthTarget) * multiplier)
     }
     
-    public func scaleY(y: Int, multiplier: Double=1.0) -> Int {
-        if multiplier != 1.0 {
-            return lround(Double(y) * Double(heightNow) / Double(heightTarget) * multiplier)
-        } else {
-            return lround(Double(y) * Double(heightNow) / Double(heightTarget))
-        }
+    public func scaleY(y: Int) -> Int {
+        return lround(Double(y) * Double(heightNow) / Double(heightTarget) * multiplier)
     }
     
 }

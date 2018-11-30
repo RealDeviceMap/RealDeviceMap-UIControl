@@ -21,7 +21,7 @@ class DeviceConfig {
                 // This has no use and is an example only
                 global = DeviceIPhoneNormal(width: Int(app.frame.size.width), height: Int(app.frame.size.height))
             case 414: // iPhone Large
-                global = DeviceRatio1775(width: Int(app.frame.size.width), height: Int(app.frame.size.height), imageScale: 1.5)
+                global = DeviceRatio1775(width: Int(app.frame.size.width), height: Int(app.frame.size.height), multiplier: 1.5)
             default: // other iPhones
                 global = DeviceRatio1775(width: Int(app.frame.size.width), height: Int(app.frame.size.height))
             }
