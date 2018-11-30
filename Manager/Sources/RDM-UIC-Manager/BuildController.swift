@@ -29,6 +29,8 @@ class BuildController {
     private var buildLock = Threading.Lock()
     private var buildingCount = 0
     
+    public private(set) var statuse = [String: String]()
+    
     public func start(path: String, timeout: Int, maxSimultaneousBuilds: Int) {
         
         self.path = path
@@ -126,6 +128,7 @@ class BuildController {
                 let errorPipe = Pipe()
                 
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
+                self.statuse[device.uuid] = "Waiting for build"
                 locked = true
                 self.buildLock.lock()
                 while self.buildingCount >= self.maxSimultaneousBuilds {
@@ -140,6 +143,7 @@ class BuildController {
                 lastChangedLock.unlock()
                 
                 Log.info(message: "[\(device.name)] Starting xcodebuild")
+                self.statuse[device.uuid] = "Building"
                 
                 let timestamp = Int(Date().timeIntervalSince1970)
                 let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
@@ -152,11 +156,37 @@ class BuildController {
                     if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
                         if string!.contains(string: "[STATUS] Started") && locked {
                             Log.debug(message: "[\(device.name)] Done building")
+                            self.statuse[device.uuid] = "Running: Starting"
                             locked = false
                             self.buildLock.lock()
                             self.buildingCount -= 1
                             self.buildLock.unlock()
                         }
+                        if string!.contains(string: "[STATUS] Startup") {
+                            self.statuse[device.uuid] = "Running: Startup"
+                        }
+                        if string!.contains(string: "[STATUS] Logout") {
+                            self.statuse[device.uuid] = "Running: Logout"
+                        }
+                        if string!.contains(string: "[STATUS] Login") {
+                            self.statuse[device.uuid] = "Running: Login"
+                        }
+                        if string!.contains(string: "[STATUS] Tutorial") {
+                            self.statuse[device.uuid] = "Running: Tutorial"
+                        }
+                        if string!.contains(string: "[STATUS] Pokemon") {
+                            self.statuse[device.uuid] = "Running: Pokemon"
+                        }
+                        if string!.contains(string: "[STATUS] Raid") {
+                            self.statuse[device.uuid] = "Running: Raid"
+                        }
+                        if string!.contains(string: "[STATUS] Quest") {
+                            self.statuse[device.uuid] = "Running: Quest"
+                        }
+                        if string!.contains(string: "[STATUS] IV") {
+                            self.statuse[device.uuid] = "Running: IV"
+                        }
+                        
                         fullLog.uic(message: string!, all: true)
                         debugLog.uic(message: string!, all: false)
                         lastChangedLock.lock()

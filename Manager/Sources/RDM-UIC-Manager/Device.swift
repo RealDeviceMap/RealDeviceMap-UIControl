@@ -18,6 +18,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     
     var uuid: String
     var name: String
+    var enabled: Int = 1 // MARK: - TODO
     var backendURL: String
     var enableAccountManager: Int
     var port: Int

@@ -224,6 +224,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         if username != nil && !isLoggedIn {
             
+            print("[STATUS] Login")
+            
             var loaded = false
             var count = 0
             while !loaded {
@@ -435,6 +437,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         if newLogIn {
+            
+            print("[STATUS] Tutorial")
             
             sleep(4 * config.delayMultiplier)
             
@@ -757,6 +761,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         app.activate()
         
+        print("[STATUS] Startup")
+        
         while !shouldExit {
             
             if app.state != .runningForeground {
@@ -870,6 +876,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         
                         if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
                             if action == "scan_pokemon" {
+                                print("[STATUS] Pokemon")
                                 if hasWarning && self.config.enableAccountManager {
                                     Log.info("Account has a warning and tried to scan for Pokemon. Logging out!")
                                     let success = self.logOut()
@@ -922,6 +929,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                                 
                             } else if action == "scan_raid" {
+                                print("[STATUS] Raid")
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut()
@@ -972,6 +980,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
                             } else if action == "scan_quest" {
+                                print("[STATUS] Quest")
                                 Log.debug("Scanning for Quest")
                                 
                                 self.freeScreen()
@@ -1120,6 +1129,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.shouldExit = true
                                 return
                             } else if action == "scan_iv" {
+                                print("[STATUS] IV")
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut()

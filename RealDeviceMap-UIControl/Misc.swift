@@ -334,6 +334,8 @@ extension XCTestCase {
     
     func logOut() -> Bool {
         
+        print("[STATUS] Logout")
+        
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
