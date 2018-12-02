@@ -114,7 +114,7 @@ class CLI {
                 let devices = Device.getAll()
                 var rows = [[String]]()
                 for device in devices {
-                    let status = BuildController.global.statuse[device.uuid] ?? "?"
+                    let status = BuildController.global.getStatus(uuid: device.uuid) ?? "?"
                     rows.append([device.name, status])
                 }
                 self.printTable(headers: ["Name", "Status"], rows: rows)
