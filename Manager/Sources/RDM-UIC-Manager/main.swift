@@ -12,7 +12,11 @@ import SQLiteStORM
 
 let logsFolder = Dir("./logs")
 if !logsFolder.exists {
-    try! logsFolder.create()
+    do {
+        try logsFolder.create()
+    } catch {
+        Log.terminal(message: "Failed to create logs folder. \((error.localizedDescription))")
+    }
 }
 Log.logger = FileLogger(file: "./logs/\(Int(Date().timeIntervalSince1970))-main.log")
 
@@ -20,7 +24,11 @@ SQLiteConnector.db = "./db.sqlite"
 
 // Init Tables
 let device = Device()
-try! device.setup()
+do {
+    try device.setup()
+} catch {
+    Log.terminal(message: "Failed to setup ORM for Device. \((error.localizedDescription))")
+}
 
 let path: String
 if let index = CommandLine.arguments.index(of: "-path"), CommandLine.arguments.count > index + 1 {
