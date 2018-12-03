@@ -1172,6 +1172,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 Log.debug("Scanning prepared")
                                 sleep(1 * self.config.delayMultiplier)
                                 self.freeScreen()
+                                if self.config.fastIV {
+                                    self.app.swipeLeft()
+                                }
                                 
                                 var success = false
                                 var locked = true
