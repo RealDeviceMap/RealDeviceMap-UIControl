@@ -777,6 +777,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if app.state != .runningForeground {
                 app.terminate()
                 startupCount = 0
+                emptyGmoCount = 0
+                noEncounterCount = 0
+                noQuestCount = 0
+                failedCount = 0
                 isStarted = false
                 isStartupCompleted = false
                 app.activate()
