@@ -140,7 +140,7 @@ class CLI {
             UUID: \(device.uuid)
             Name: \(device.name)
             Backend URL: \(device.backendURL)
-            EnableAccountManager: \(device.enableAccountManager)
+            EnableAccountManager: \(device.enableAccountManager.toBool())
             Port: \(device.port)
             Pokemon Max Time: \(device.pokemonMaxTime)
             Raid Max Time: \(device.raidMaxTime)
@@ -158,6 +158,7 @@ class CLI {
             Startup Location Lat: \(device.startupLocationLat)
             Startup Location Lon: \(device.startupLocationLon)
             Encoutner Max Wait: \(device.encoutnerMaxWait)
+            Fast IV: \(device.fastIV.toBool())
             """
             
             print(row + "\n")
@@ -259,9 +260,15 @@ class CLI {
         if startupLocationLon  != nil {
             defaultDevice.startupLocationLon = startupLocationLon!
         }
+        
         let encoutnerMaxWait = askInt("Encoutner Max Wait (empty = \(defaultDevice.encoutnerMaxWait))")
         if encoutnerMaxWait  != nil {
             defaultDevice.encoutnerMaxWait = encoutnerMaxWait!
+        }
+        
+        let fastIV = askBool("Fast IV (empty = \(defaultDevice.fastIV.toBool()))")
+        if fastIV != nil {
+            defaultDevice.fastIV = fastIV!.toInt()
         }
         
         do {
@@ -377,6 +384,11 @@ class CLI {
             encoutnerMaxWait = defaultDevice.encoutnerMaxWait
         }
         
+        var fastIV = askBool("Fast IV (empty = \(defaultDevice.fastIV.toBool()))")?.toInt()
+        if fastIV == nil {
+            fastIV = defaultDevice.fastIV
+        }
+        
         device.uuid = uuid
         device.name = name
         device.backendURL = backendURL
@@ -398,6 +410,7 @@ class CLI {
         device.startupLocationLat = startupLocationLat!
         device.startupLocationLon = startupLocationLon!
         device.encoutnerMaxWait = encoutnerMaxWait!
+        device.fastIV = fastIV!
         do {
             try device.create()
             clear()
@@ -526,6 +539,11 @@ class CLI {
         let encoutnerMaxWait = askInt("Encoutner Max Wait (empty = \(device.encoutnerMaxWait))")
         if encoutnerMaxWait  != nil {
             device.encoutnerMaxWait = encoutnerMaxWait!
+        }
+        
+        let fastIV = askBool("Fast IV (empty = \(device.fastIV.toBool()))")
+        if fastIV != nil {
+            device.fastIV = fastIV!.toInt()
         }
         
         do {

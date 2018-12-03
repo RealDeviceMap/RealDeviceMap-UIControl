@@ -31,6 +31,7 @@ class Config {
     var maxNoEncounterCount: Int
     var startupLocation: (lat: Double, lon: Double)
     var encoutnerMaxWait: UInt32
+    var fastIV: Bool
     
     init() {
         
@@ -58,6 +59,7 @@ class Config {
         let startupLon = enviroment["startupLocationLon"]?.toDouble() ?? 1.0
         startupLocation = (startupLat, startupLon)
         encoutnerMaxWait = enviroment["encoutnerMaxWait"]?.toUInt32() ?? 7
+        fastIV = enviroment["fastIV"]?.toBool() ?? false
         
     }
     

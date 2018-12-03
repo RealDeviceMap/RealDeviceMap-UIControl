@@ -79,6 +79,11 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "fastIV"
+            value = "$(fastIV)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "backendURL"
             value = "$(backendURL)"
             isEnabled = "YES">

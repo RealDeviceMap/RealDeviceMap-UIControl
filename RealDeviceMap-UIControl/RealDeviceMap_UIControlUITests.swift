@@ -983,8 +983,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[STATUS] Quest")
                                 Log.debug("Scanning for Quest")
                                 
-                                self.freeScreen()
-                                
                                 self.zoom(out: false, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
                                 
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
@@ -1146,13 +1144,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     return
                                 }
                                 
-                                Log.debug("Scanning for IV")
-                                self.freeScreen()
                                 self.zoom(out: true, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
                                 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
                                 let id = data["id"] as? String ?? ""
+                                
+                                Log.debug("Scanning for IV at \(lat) \(lon)")
+                                
                                 let start = Date()
                                 self.lock.lock()
                                 self.waitRequiresPokemon = true
@@ -1162,6 +1161,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.waitForData = true
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
+                                sleep(1 * self.config.delayMultiplier)
                                 self.freeScreen()
                                 
                                 var success = false
@@ -1190,33 +1190,39 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 if success {
                                     sleep(4 * self.config.delayMultiplier)
                                     
-                                    var count = 0
-                                    var done = false
-                                    while count < 3 && !done {
+                                    if self.config.fastIV {
                                         self.freeScreen()
-                                        if count != 0 {
-                                            self.app.swipeLeft()
-                                        }
                                         self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
                                         self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
-                                        sleep(2 * self.config.delayMultiplier)
-                                        done = self.prepareEncounter()
-                                        count += 1
-                                    }
-                                    self.lock.lock()
-                                    if !done {
-                                        if self.noEncounterCount >= self.config.maxNoEncounterCount {
-                                            self.lock.unlock()
-                                            Log.debug("Stuck somewhere. Restarting")
-                                            self.app.terminate()
-                                            self.shouldExit = true
-                                            return
-                                        }
-                                        self.noEncounterCount += 1
                                     } else {
-                                        self.noEncounterCount = 0
+                                        var count = 0
+                                        var done = false
+                                        while count < 3 && !done {
+                                            self.freeScreen()
+                                            if count != 0 {
+                                                self.app.swipeLeft()
+                                            }
+                                            self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
+                                            self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
+                                            sleep(2 * self.config.delayMultiplier)
+                                            done = self.prepareEncounter()
+                                            count += 1
+                                        }
+                                        self.lock.lock()
+                                        if !done {
+                                            if self.noEncounterCount >= self.config.maxNoEncounterCount {
+                                                self.lock.unlock()
+                                                Log.debug("Stuck somewhere. Restarting")
+                                                self.app.terminate()
+                                                self.shouldExit = true
+                                                return
+                                            }
+                                            self.noEncounterCount += 1
+                                        } else {
+                                            self.noEncounterCount = 0
+                                        }
+                                        self.lock.unlock()
                                     }
-                                    self.lock.unlock()
                                 }
                                 
                             } else {
@@ -1244,8 +1250,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
             } else {
                 let screenshotComp = XCUIScreen.main.screenshot()
-                
-                print(deviceConfig.startup.toXY())
                 
                 if config.enableAccountManager && screenshotComp.rgbAtLocation(
                     pos: deviceConfig.startupLoggedOut,
@@ -1283,6 +1287,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     func zoom(out: Bool, app: XCUIApplication, coordStartup: XCUICoordinate) {
         
         if out != zoomedOut {
+            
+            self.freeScreen()
+            
             self.lock.lock()
             self.currentLocation = self.config.startupLocation
             self.lock.unlock()

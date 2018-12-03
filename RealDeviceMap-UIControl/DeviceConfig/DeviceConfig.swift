@@ -14,7 +14,6 @@ class DeviceConfig {
     
     public static func setup(app: XCUIApplication) {
         let ratio = Int(app.frame.size.height / app.frame.size.width * 1000)
-        print(app.frame.size, ratio)
         if ratio >= 1770 && ratio <= 1780 { // iPhones
             switch app.frame.size.width {
             case 375: // iPhone Normal
