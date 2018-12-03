@@ -9,6 +9,7 @@ import Foundation
 import XCTest
 import Embassy
 import EnvoyAmbassador
+import CoreLocation
 
 class RealDeviceMap_UIControlUITests: XCTestCase {
     
@@ -22,11 +23,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var firstWarningDate: Date?
     var jitterCorner = 0
     var gotQuest = false
+    var gotIV = false
     var noQuestCount = 0
     var noEncounterCount = 0
     var targetMaxDistance = 250.0
     var emptyGmoCount = 0
     var pokemonEncounterId: String?
+    var encounterDistance = 0.0
     
     var level: Int = 0
     
@@ -647,7 +650,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let wild = data?["wild"] as? Int ?? 0
                         //let forts = data?["forts"] as? Int ?? 0
                         let quests = data?["quests"] as? Int ?? 0
-                        //let encounters = data?["encounters"] as? Int ?? 0
+                        let encounters = data?["encounters"] as? Int ?? 0
                         let pokemonLat = data?["pokemon_lat"] as? Double
                         let pokemonLon = data?["pokemon_lon"] as? Double
                         let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
@@ -675,7 +678,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     if (nearby + wild) > 0 {
                                         if pokemonLat != nil && pokemonLon != nil && self.pokemonEncounterId == pokemonEncounterIdResult {
                                             self.waitRequiresPokemon = false
+                                            let oldLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
                                             self.currentLocation = (pokemonLat!, pokemonLon!)
+                                            let newLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
+                                            self.encounterDistance = newLocation.distance(from: oldLocation)
                                             self.pokemonEncounterId = nil
                                             self.waitForData = false
                                             toPrint = "[DEBUG] Got Data and found Pokemon"
@@ -707,6 +713,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         }
                         if !self.gotQuest && quests != 0 {
                             self.gotQuest = true
+                        }
+                        if !self.gotIV && encounters != 0 {
+                            self.gotIV = true
                         }
                         self.lock.unlock()
                         print(toPrint)
@@ -893,10 +902,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     return
                                 }
                                 
-                                Log.debug("Scanning for Pokemon")
-                                
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
+                                Log.debug("Scanning for Pokemon at \(lat) \(lon)")
+                                
                                 let start = Date()
                                 self.lock.lock()
                                 self.waitRequiresPokemon = true
@@ -946,10 +955,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     return
                                 }
                                 
-                                Log.debug("Scanning for Raid")
-                                
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
+                                Log.debug("Scanning for Raid at \(lat) \(lon)")
+                                
                                 let start = Date()
                                 self.lock.lock()
                                 self.currentLocation = (lat, lon)
@@ -981,7 +990,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                             } else if action == "scan_quest" {
                                 print("[STATUS] Quest")
-                                Log.debug("Scanning for Quest")
+                                
+                                let lat = data["lat"] as? Double ?? 0
+                                let lon = data["lon"] as? Double ?? 0
+                                let delay = data["delay"] as? Double ?? 0
+                                Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
                                 
                                 self.zoom(out: false, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
                                 
@@ -1000,10 +1013,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.shouldExit = true
                                     return
                                 }
-                                
-                                let lat = data["lat"] as? Double ?? 0
-                                let lon = data["lon"] as? Double ?? 0
-                                let delay = data["delay"] as? Double ?? 0
                                 
                                 if delay >= self.config.minDelayLogout && self.config.enableAccountManager {
                                     Log.debug("Switching account. Delay too large.")
@@ -1188,9 +1197,24 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                                 
                                 if success {
-                                    sleep(4 * self.config.delayMultiplier)
+                                    
+                                    self.lock.lock()
+                                    let delay = 1.0 + (3 / 75 * self.encounterDistance)
+                                    self.lock.unlock()
+                                    usleep(UInt32(delay * 1000000.0 * Double(self.config.delayMultiplier)))
                                     
                                     if self.config.fastIV {
+                                        
+                                        // Check if previus spin had quest data
+                                        self.lock.lock()
+                                        if self.gotIV {
+                                            self.noEncounterCount = 0
+                                        } else {
+                                            self.noEncounterCount += 1
+                                        }
+                                        self.gotIV = false
+                                        self.lock.unlock()
+                                        
                                         self.freeScreen()
                                         self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
                                         self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
@@ -1210,18 +1234,19 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         }
                                         self.lock.lock()
                                         if !done {
-                                            if self.noEncounterCount >= self.config.maxNoEncounterCount {
-                                                self.lock.unlock()
-                                                Log.debug("Stuck somewhere. Restarting")
-                                                self.app.terminate()
-                                                self.shouldExit = true
-                                                return
-                                            }
                                             self.noEncounterCount += 1
                                         } else {
                                             self.noEncounterCount = 0
                                         }
                                         self.lock.unlock()
+                                    }
+                                    
+                                    if self.noEncounterCount >= self.config.maxNoEncounterCount {
+                                        self.lock.unlock()
+                                        Log.debug("Stuck somewhere. Restarting")
+                                        self.app.terminate()
+                                        self.shouldExit = true
+                                        return
                                     }
                                 }
                                 
