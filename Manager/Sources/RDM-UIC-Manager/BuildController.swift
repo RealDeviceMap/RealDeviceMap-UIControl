@@ -23,6 +23,7 @@ class BuildController {
     private var activeDevices = [Device]()
     
     private var path: String = ""
+    private var derivedDataPath: String = ""
     private var timeout: Int = 60
     
     private var maxSimultaneousBuilds: Int!
@@ -45,15 +46,29 @@ class BuildController {
         return status
     }
     
-    public func start(path: String, timeout: Int, maxSimultaneousBuilds: Int) {
+    public func start(path: String, derivedDataPath: String, timeout: Int, maxSimultaneousBuilds: Int) {
         
         self.path = path
         self.timeout = timeout
         self.maxSimultaneousBuilds = maxSimultaneousBuilds
+        self.derivedDataPath = derivedDataPath
+        
+        print("[INFO] Preparing DerivedDataPath")
+        let derivedDataDir = Dir(derivedDataPath)
+        if derivedDataDir.exists {
+            try? derivedDataDir.forEachEntry { (name) in
+                let dir = Dir(derivedDataDir.path + name)
+                if dir.exists && dir.name != "Template" {
+                    let command = Shell("rm", "-r", "-f", dir.path)
+                    _ = command.run()
+                }
+            }
+        }
         
         print("[INFO] Building Project...")
         Log.info(message: "Building Project...")
-        let xcodebuild = Shell("xcodebuild", "build-for-testing", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-allowProvisioningUpdates", "-allowProvisioningDeviceRegistration", "-destination", "generic/platform=iOS")
+        let xcodebuild = Shell("xcodebuild", "build-for-testing", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-allowProvisioningUpdates", "-allowProvisioningDeviceRegistration", "-destination", "generic/platform=iOS", "-derivedDataPath", "\(derivedDataDir.path)/Template")
+        
         let errorPipe = Pipe()
         let outputPipe = Pipe()
         _ = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
@@ -64,6 +79,12 @@ class BuildController {
         }
         print("[INFO] Building Project done")
         Log.info(message: "Building Project done")
+        
+        let derivedDataLogsDir = Dir("\(derivedDataDir.path)/Template/Logs")
+        if derivedDataLogsDir.exists {
+            let command = Shell("rm", "-r", "-f", derivedDataLogsDir.path)
+            _ = command.run()
+        }
         
         devicesLock.lock()
         devicesToAdd = Device.getAll()
@@ -100,6 +121,12 @@ class BuildController {
                     activeDevices.remove(at: index)
                 }
                 activeDeviceLock.unlock()
+                let derivedDataDir = Dir(self.derivedDataPath + "/\(device.uuid)")
+                if derivedDataDir.exists {
+                    let command = Shell("rm", "-r", "-f", derivedDataDir.path)
+                    _ = command.run()
+                }
+                
                 Threading.destroyQueue(queue)
             }
             
@@ -108,6 +135,15 @@ class BuildController {
                 activeDeviceLock.lock()
                 activeDevices.append(device)
                 activeDeviceLock.unlock()
+                let derivedDataTemplateDir = self.derivedDataPath + "/Template"
+                let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)")
+                if derivedDataDir.exists {
+                    let command = Shell("rm", "-r", "-f", derivedDataDir.path)
+                    _ = command.run()
+                }
+                let command = Shell("cp", "-r", derivedDataTemplateDir, derivedDataDir.path)
+                _ = command.run()
+                
                 queue.dispatch {
                     self.deviceQueueRun(device: device)
                 }
@@ -121,7 +157,9 @@ class BuildController {
         
         Log.info(message: "Starting \(device.name)'s Manager")
         
-        let xcodebuild = Shell("xcodebuild", "test-without-building", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-destination", "id=\(device.uuid)", "-allowProvisioningUpdates", "-destination-timeout", "\(timeout * device.delayMultiplier)",
+        let derivedDataPath = self.derivedDataPath + "/" + device.uuid
+        
+        let xcodebuild = Shell("xcodebuild", "test-without-building", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-destination", "id=\(device.uuid)", "-allowProvisioningUpdates", "-destination-timeout", "\(timeout * device.delayMultiplier)", "-derivedDataPath", derivedDataPath,
             "name=\(device.name)", "backendURL=\(device.backendURL)", "enableAccountManager=\(device.enableAccountManager)", "port=\(device.port)", "pokemonMaxTime=\(device.pokemonMaxTime)", "raidMaxTime=\(device.raidMaxTime)", "maxWarningTimeRaid=\(device.maxWarningTimeRaid)", "delayMultiplier=\(device.delayMultiplier)", "jitterValue=\(device.jitterValue)", "targetMaxDistance=\(device.targetMaxDistance)", "itemFullCount=\(device.itemFullCount)", "questFullCount=\(device.questFullCount)", "itemsPerStop=\(device.itemsPerStop)", "minDelayLogout=\(device.minDelayLogout)", "maxNoQuestCount=\(device.maxNoQuestCount)", "maxFailedCount=\(device.maxFailedCount)", "maxEmptyGMO=\(device.maxEmptyGMO)", "startupLocationLat=\(device.startupLocationLat)", "startupLocationLon=\(device.startupLocationLon)", "encoutnerMaxWait=\(device.encoutnerMaxWait)", "fastIV=\(device.fastIV)"
         )
 

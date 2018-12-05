@@ -36,6 +36,12 @@ if let index = CommandLine.arguments.index(of: "-path"), CommandLine.arguments.c
 } else {
     path = ".."
 }
+let derivedDataPath: String
+if let index = CommandLine.arguments.index(of: "-derivedDataPath"), CommandLine.arguments.count > index + 1 {
+    derivedDataPath = CommandLine.arguments[index + 1]
+} else {
+    derivedDataPath = "./DerivedData"
+}
 let timeout: Int
 if let index = CommandLine.arguments.index(of: "-timeout"), CommandLine.arguments.count > index + 1, let number = Int(CommandLine.arguments[index + 1]) {
     timeout = number
@@ -49,7 +55,7 @@ if let index = CommandLine.arguments.index(of: "-builds"), CommandLine.arguments
     builds = 1
 }
 // Start BuildController
-BuildController.global.start(path: path, timeout: timeout, maxSimultaneousBuilds: builds)
+BuildController.global.start(path: path, derivedDataPath: derivedDataPath, timeout: timeout, maxSimultaneousBuilds: builds)
 
 // Start CLI
 CLI.global.start()
