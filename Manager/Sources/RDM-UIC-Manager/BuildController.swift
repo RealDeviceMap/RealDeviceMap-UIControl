@@ -59,7 +59,7 @@ class BuildController {
             try? derivedDataDir.forEachEntry { (name) in
                 let dir = Dir(derivedDataDir.path + name)
                 if dir.exists && dir.name != "Template" {
-                    let command = Shell("rm", "-r", "-f", dir.path)
+                    let command = Shell("rm", "-rf", dir.path)
                     _ = command.run()
                 }
             }
@@ -82,7 +82,7 @@ class BuildController {
         
         let derivedDataLogsDir = Dir("\(derivedDataDir.path)/Template/Logs")
         if derivedDataLogsDir.exists {
-            let command = Shell("rm", "-r", "-f", derivedDataLogsDir.path)
+            let command = Shell("rm", "-rf", derivedDataLogsDir.path)
             _ = command.run()
         }
         
@@ -123,7 +123,7 @@ class BuildController {
                 activeDeviceLock.unlock()
                 let derivedDataDir = Dir(self.derivedDataPath + "/\(device.uuid)")
                 if derivedDataDir.exists {
-                    let command = Shell("rm", "-r", "-f", derivedDataDir.path)
+                    let command = Shell("rm", "-rf", derivedDataDir.path)
                     _ = command.run()
                 }
                 
@@ -138,7 +138,7 @@ class BuildController {
                 let derivedDataTemplateDir = self.derivedDataPath + "/Template"
                 let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)")
                 if derivedDataDir.exists {
-                    let command = Shell("rm", "-r", "-f", derivedDataDir.path)
+                    let command = Shell("rm", "-rf", derivedDataDir.path)
                     _ = command.run()
                 }
                 let command = Shell("cp", "-r", derivedDataTemplateDir, derivedDataDir.path)
