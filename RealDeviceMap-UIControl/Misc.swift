@@ -172,6 +172,7 @@ extension XCTestCase {
         Log.debug("Searching Pokemon...")
         for x in 0...screenshotComp.image.cgImage!.width / 10  {
             for y in 0...screenshotComp.image.cgImage!.height / 10 {
+                print("Comparing at \(x),\(y)")
                 let color = screenshotComp.image.getPixelColor(pos: CGPoint(x: x * 10, y: y * 10))
                 var red: CGFloat = 0
                 var green: CGFloat = 0
@@ -191,7 +192,7 @@ extension XCTestCase {
                 
             }
         }
-        Log.debug("No Pokemon Found! ")
+        Log.debug("No Pokemon Found!")
         
         return false
     }
