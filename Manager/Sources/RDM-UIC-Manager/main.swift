@@ -12,9 +12,9 @@ import SQLiteStORM
 
 if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-help") || CommandLine.arguments.contains("-h") {
     print("""
-    The following flags are avilable:
+    The following flags are available:
       `-path path` (default = "..") [The Path to the Folder where UIC is at.]
-      `-derivedDataPath` path (default = "./DerivedData") [The Path to the DerivedData folder.]
+      `-derivedDataPath path` (default = "./DerivedData") [The Path to the DerivedData folder.]
       `-timeout seconds` (default = 300) [Restart after x seconds if a test doesn't print anything.]
       `-builds count` (default = 2) [Max synchronous builds.]
     """)
