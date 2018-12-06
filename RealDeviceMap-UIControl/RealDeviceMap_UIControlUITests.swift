@@ -659,7 +659,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
                         let onlyInvalidGmos = data?["only_invalid_gmos"] as? Bool ?? false
                         
-                        self.level = level
+                        if level != 0 {
+                            self.level = level
+                        }
                         
                         let toPrint: String
                         
