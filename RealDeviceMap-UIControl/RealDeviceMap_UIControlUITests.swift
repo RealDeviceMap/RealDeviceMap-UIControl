@@ -252,8 +252,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 count += 1
                 if count == 60 && !loaded {
                     count = 0
-                    app.terminate()
-                    app.activate()
+                    app.launch()
                     sleep(1 * config.delayMultiplier)
                 }
                 sleep(1 * config.delayMultiplier)
@@ -319,7 +318,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             while !loggedIn {
                 
                 if app.state != .runningForeground {
-                    app.activate()
+                    app.launch()
                     sleep(10 * config.delayMultiplier)
                 }
                 
@@ -331,8 +330,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     max: (red: 0.05, green: 0.3, blue: 0.4))
                     ) {
                     Log.debug("Got ban. Restarting...")
-                    app.terminate()
-                    app.activate()
+                    app.launch()
                     sleep(10 * config.delayMultiplier)
                 } else if (
                     screenshotComp.rgbAtLocation(
@@ -450,8 +448,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "tutorial_done"], blocking: true) { (result) in }
                 newCreated = true
                 newLogIn = false
-                app.terminate()
-                app.activate()
+                app.launch()
                 sleep(1 * config.delayMultiplier)
                 
                 return
@@ -546,8 +543,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             Log.info("Tutorial Done. Restarting...")
             newCreated = true
             newLogIn = false
-            app.terminate()
-            app.activate()
+            app.launch()
             sleep(1 * config.delayMultiplier)
         }
         
@@ -777,7 +773,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         while !shouldExit {
             
             if app.state != .runningForeground {
-                app.terminate()
                 startupCount = 0
                 emptyGmoCount = 0
                 noEncounterCount = 0
@@ -785,8 +780,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 failedCount = 0
                 isStarted = false
                 isStartupCompleted = false
-                app.activate()
-                sleep(1 * config.delayMultiplier)
+                app.launch()
+                while app.state != .runningForeground {
+                    sleep(1)
+                    app.activate()
+                    Log.debug("Waiting for App to run in foreground. Currently \(app.state).")
+                }
             } else {
                 app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0)).tap()
             }
