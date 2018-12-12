@@ -869,7 +869,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         } else if self.config.enableAccountManager == true, let data = result!["data"] as? [String: Any], let minLevel = data["min_level"] as? Int, let maxLevel = data["max_level"] as? Int {
                             self.minLevel = minLevel
                             self.maxLevel = maxLevel
-                            if self.level != 0 && self.level < minLevel || self.level > maxLevel {
+                            if self.level != 0 && (self.level < minLevel || self.level > maxLevel) {
                                 Log.info("Account is outside min/max Level. Current: \(self.level) Min/Max: \(minLevel)/\(maxLevel). Logging out!")
                                 let success = self.logOut()
                                 if !success {
