@@ -150,7 +150,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         needsLogout = false
         
         app.terminate()
-        
+
+        // Wake up device if screen is off (recently rebooted), then press home to get to home screen.
+        Log.info("Waking up the device")
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
+
         // Register on backend
         postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "init"], blocking: true) { (result) in
             if result == nil {
@@ -869,7 +874,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         } else if self.config.enableAccountManager == true, let data = result!["data"] as? [String: Any], let minLevel = data["min_level"] as? Int, let maxLevel = data["max_level"] as? Int {
                             self.minLevel = minLevel
                             self.maxLevel = maxLevel
-                            if self.level != 0 && self.level < minLevel || self.level > maxLevel {
+                            if self.level != 0 && (self.level < minLevel || self.level > maxLevel) {
                                 Log.info("Account is outside min/max Level. Current: \(self.level) Min/Max: \(minLevel)/\(maxLevel). Logging out!")
                                 let success = self.logOut()
                                 if !success {
