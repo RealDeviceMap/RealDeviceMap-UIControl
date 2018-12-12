@@ -150,7 +150,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         needsLogout = false
         
         app.terminate()
-        
+
+        // Wake up device if screen is off (recently rebooted), then press home to get to home screen.
+        Log.info("Waking up the device")
+        XCUIDevice.shared.press(.home)
+        XCUIDevice.shared.press(.home)
+
         // Register on backend
         postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "init"], blocking: true) { (result) in
             if result == nil {
