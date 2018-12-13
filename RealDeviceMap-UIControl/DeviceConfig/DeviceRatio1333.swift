@@ -104,7 +104,7 @@ class DeviceRatio1333: DeviceConfigProtocol {
     // MARK: - Pokestop Encounter
     
     var openPokestop: DeviceCoordinate {
-        return DeviceCoordinate(x: 828, y: 1215, scaler: scaler)
+        return DeviceCoordinate(x: 768, y: 950, scaler: scaler)
     }
     
     
