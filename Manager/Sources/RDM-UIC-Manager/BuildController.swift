@@ -67,7 +67,7 @@ class BuildController {
         
         print("[INFO] Building Project...")
         Log.info(message: "Building Project...")
-        let xcodebuild = Shell("xcodebuild", "build-for-testing", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-allowProvisioningUpdates", "-allowProvisioningDeviceRegistration", "-destination", "generic/platform=iOS", "-derivedDataPath", "\(derivedDataDir.path)/Template")
+        let xcodebuild = Shell("xcodebuild", "build-for-testing", "-workspace", "\(path)/RealDeviceMap-UIControl.xcworkspace", "-scheme", "RealDeviceMap-UIControl", "-destination", "generic/platform=iOS", "-derivedDataPath", "\(derivedDataDir.path)/Template")
         
         let errorPipe = Pipe()
         let outputPipe = Pipe()
