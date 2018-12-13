@@ -79,7 +79,7 @@ class DeviceRatio1333: DeviceConfigProtocol {
     // MARK: - Pokemon Encounter
     
     var encounterPokemonUpper: DeviceCoordinate {
-        return DeviceCoordinate(x: 764, y: 1316, scaler: scaler)
+        return DeviceCoordinate(x: 764, y: 1300, scaler: scaler)
     }
     var encounterPokemonLower: DeviceCoordinate {
         return DeviceCoordinate(x: 764, y: 1331, scaler: scaler)
