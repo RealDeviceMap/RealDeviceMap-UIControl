@@ -38,6 +38,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var startupLocationLon: Double
     var encoutnerMaxWait: Int
     var fastIV: Int
+    var ultraIV: Int
     
     override init() {
         self.uuid = ""
@@ -62,10 +63,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.startupLocationLon = 1
         self.encoutnerMaxWait = 7
         self.fastIV = 0
+        self.ultraIV = 0
         super.init()
     }
     
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encoutnerMaxWait: Int, fastIV: Int) {
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encoutnerMaxWait: Int, fastIV: Int, ultraIV: Int) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -88,6 +90,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.startupLocationLon = startupLocationLon
         self.encoutnerMaxWait = encoutnerMaxWait
         self.fastIV = fastIV
+        self.ultraIV = ultraIV
         super.init()
     }
     
@@ -118,6 +121,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         startupLocationLon = this.data["startupLocationLon"] as? Double ?? 1
         encoutnerMaxWait = this.data["encoutnerMaxWait"] as? Int ?? 7
         fastIV = this.data["fastIV"] as? Int ?? 0
+        ultraIV = this.data["ultraIV"] as? Int ?? 0
     }
     
     static func getAll() -> [Device] {
@@ -161,16 +165,22 @@ class Device: SQLiteStORM, Equatable, Hashable {
         try super.setup()
         
         var hasFastIV = false
+        var hasUltraIV = false
         let rows = try sqlRows("PRAGMA table_info(\(table()))", params: [String]())
         for row in rows {
             let name = row.data["name"] as! String
             if name == "fastIV" {
                 hasFastIV = true
+            } else if name == "ultraIV" {
+                hasUltraIV = true
             }
         }
         
         if !hasFastIV {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN fastIV INTEGER DEFAULT 0")
+        }
+        if !hasUltraIV {
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN ultraIV INTEGER DEFAULT 0")
         }
     }
     

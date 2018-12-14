@@ -159,6 +159,7 @@ class CLI {
             Startup Location Lon: \(device.startupLocationLon)
             Encoutner Max Wait: \(device.encoutnerMaxWait)
             Fast IV: \(device.fastIV.toBool())
+            Ultra IV: \(device.ultraIV.toBool())
             """
             
             print(row + "\n")
@@ -269,6 +270,11 @@ class CLI {
         let fastIV = askBool("Fast IV (empty = \(defaultDevice.fastIV.toBool()))")
         if fastIV != nil {
             defaultDevice.fastIV = fastIV!.toInt()
+        }
+        
+        let ultraIV = askBool("Ultra IV (empty = \(defaultDevice.ultraIV.toBool()))")
+        if ultraIV != nil {
+            defaultDevice.ultraIV = ultraIV!.toInt()
         }
         
         do {
@@ -389,6 +395,11 @@ class CLI {
             fastIV = defaultDevice.fastIV
         }
         
+        var ultraIV = askBool("Ultra IV (empty = \(defaultDevice.ultraIV.toBool()))")?.toInt()
+        if ultraIV == nil {
+            ultraIV = defaultDevice.ultraIV
+        }
+        
         device.uuid = uuid
         device.name = name
         device.backendURL = backendURL
@@ -411,6 +422,8 @@ class CLI {
         device.startupLocationLon = startupLocationLon!
         device.encoutnerMaxWait = encoutnerMaxWait!
         device.fastIV = fastIV!
+        device.ultraIV = ultraIV!
+        
         do {
             try device.create()
             clear()
@@ -544,6 +557,11 @@ class CLI {
         let fastIV = askBool("Fast IV (empty = \(device.fastIV.toBool()))")
         if fastIV != nil {
             device.fastIV = fastIV!.toInt()
+        }
+        
+        let ultraIV = askBool("Ultra IV (empty = \(device.ultraIV.toBool()))")
+        if ultraIV != nil {
+            device.ultraIV = ultraIV!.toInt()
         }
         
         do {

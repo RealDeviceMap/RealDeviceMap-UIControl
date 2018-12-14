@@ -178,6 +178,11 @@
             value = "$(encoutnerMaxWait)"
             isEnabled = "YES">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "ultraIV"
+            value = "$(ultraIV)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>

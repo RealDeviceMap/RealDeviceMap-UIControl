@@ -1163,7 +1163,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     return
                                 }
                                 
-                                self.zoom(out: true, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
+                                if !self.config.ultraIV {
+                                    self.zoom(out: true, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
+                                }
                                 
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
@@ -1181,9 +1183,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 sleep(1 * self.config.delayMultiplier)
-                                self.freeScreen()
-                                if self.config.fastIV {
-                                    self.app.swipeLeft()
+                                if !self.config.ultraIV {
+                                    self.freeScreen()
+                                    if self.config.fastIV {
+                                        self.app.swipeLeft()
+                                    }
                                 }
                                 
                                 var success = false
@@ -1195,7 +1199,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         locked = false
                                         self.waitForData = false
                                         failedCount += 1
-                                        self.freeScreen()
+                                        if !self.config.ultraIV {
+                                            self.freeScreen()
+                                        }
                                         Log.debug("Pokemon loading timed out.")
                                         self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "type": "job_failed", "action": action, "lat": lat, "lon": lon], blocking: true) { (result) in }
                                     } else {
@@ -1209,7 +1215,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
                                 
-                                if success {
+                                if success && !self.config.ultraIV {
                                     
                                     self.lock.lock()
                                     let delay = 1.0 + (3 / 75 * self.encounterDistance)

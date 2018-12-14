@@ -32,6 +32,7 @@ class Config {
     var startupLocation: (lat: Double, lon: Double)
     var encoutnerMaxWait: UInt32
     var fastIV: Bool
+    var ultraIV: Bool
     
     init() {
         
@@ -60,6 +61,7 @@ class Config {
         startupLocation = (startupLat, startupLon)
         encoutnerMaxWait = enviroment["encoutnerMaxWait"]?.toUInt32() ?? 7
         fastIV = enviroment["fastIV"]?.toBool() ?? false
+        ultraIV = enviroment["ultraIV"]?.toBool() ?? false
         
     }
     
