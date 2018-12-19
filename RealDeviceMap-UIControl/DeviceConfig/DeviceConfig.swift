@@ -24,6 +24,8 @@ class DeviceConfig {
             default: // other iPhones
                 global = DeviceRatio1775(width: Int(app.frame.size.width), height: Int(app.frame.size.height))
             }
+        } else if ratio >= 1330 && ratio <= 1340 { // iPad
+            global = DeviceRatio1333(width: Int(app.frame.size.width), height: Int(app.frame.size.height))
         } else {
             Log.error("Unsuported Device")
             fatalError("Unsuported Device")
