@@ -417,7 +417,7 @@ extension XCTestCase {
         while !done && deviceConfig.itemDeleteYs.count != 0 {
             let screenshot = XCUIScreen.main.screenshot()
             
-            if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) {
+            if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 let delete = normalized.withOffset(CGVector(dx: deviceConfig.itemDeleteX, dy: deviceConfig.itemDeleteYs[index]))
                 delete.tap()
                 sleep(1 * config.delayMultiplier)
@@ -452,6 +452,15 @@ extension XCTestCase {
             max: (red: 0.7, green: 0.15, blue: 0.6)
         )
     }
+
+    func itemIsEgg(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
+        return screenshot.rgbAtLocation(
+            pos: (x: x, y: y),
+            min: (red: 0.45, green: 0.6, blue: 0.7),
+            max: (red: 0.60, green: 0.7, blue: 0.8)
+        )
+    }
+
 
     func prepareEncounter() -> Bool {
         

@@ -138,6 +138,10 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var itemGiftX: Int {
         return scaler.scaleX(x: 133)
     }
+    var itemEggX: Int {
+        return scalar.scaleX(x: 145)
+    }
+
     var itemDeleteYs: [Int] {
         return [
             scaler.scaleY(y: 215),
