@@ -100,6 +100,8 @@ protocol DeviceConfigProtocol {
     var itemGiftX: Int { get }
     /** The Y values for all item delete buttons. */
     var itemDeleteYs: [Int] { get }
+    /** Blue pixel in egg at itemDeleteYs. */
+    var itemEggX: Int { get }
     
     
     // MARK: - Login
