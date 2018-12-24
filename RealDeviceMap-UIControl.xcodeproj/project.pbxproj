@@ -21,6 +21,7 @@
 		2EEB5E40215E61DF0039B79B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EEB5E3E215E61DF0039B79B /* LaunchScreen.storyboard */; };
 		2EEB5E4B215E61DF0039B79B /* RealDeviceMap_UIControlUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB5E4A215E61DF0039B79B /* RealDeviceMap_UIControlUITests.swift */; };
 		2EEB5E58215E757E0039B79B /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEB5E57215E757E0039B79B /* Misc.swift */; };
+		6641C36C21B9FCDF00D10877 /* DeviceRatio1333.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6641C36B21B9FCDF00D10877 /* DeviceRatio1333.swift */; };
 		85F53E2A1BC168949B1BB5C9 /* Pods_RealDeviceMap_UIControlUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50D618DA921EBD10BFB0AA78 /* Pods_RealDeviceMap_UIControlUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		2EEB5E57215E757E0039B79B /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		3F46BE95C792EAE6E0B7CF21 /* Pods-RealDeviceMap-UIControlUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealDeviceMap-UIControlUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests.release.xcconfig"; sourceTree = "<group>"; };
 		50D618DA921EBD10BFB0AA78 /* Pods_RealDeviceMap_UIControlUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RealDeviceMap_UIControlUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6641C36B21B9FCDF00D10877 /* DeviceRatio1333.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRatio1333.swift; sourceTree = "<group>"; };
 		CE212FE7DC432FB311B7EF39 /* Pods-RealDeviceMap-UIControlUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealDeviceMap-UIControlUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,6 +91,7 @@
 		2E90E9A021A1BC1800E2D722 /* DeviceConfig */ = {
 			isa = PBXGroup;
 			children = (
+				6641C36B21B9FCDF00D10877 /* DeviceRatio1333.swift */,
 				2E90E9A121A1BC7700E2D722 /* DeviceConfig.swift */,
 				2E90E9A521A1C1BF00E2D722 /* DeviceRatio1775.swift */,
 				2E90E9A721A1C20700E2D722 /* DeviceConfigProtocol.swift */,
@@ -302,6 +305,7 @@
 				2E90E9AA21A1C24100E2D722 /* DeviceCoordinate.swift in Sources */,
 				2E90E9A421A1C0DC00E2D722 /* Log.swift in Sources */,
 				2E90E9A621A1C1BF00E2D722 /* DeviceRatio1775.swift in Sources */,
+				6641C36C21B9FCDF00D10877 /* DeviceRatio1333.swift in Sources */,
 				2E6D7FAA217E03A70022DA75 /* Config.swift in Sources */,
 				2E90E9A821A1C20700E2D722 /* DeviceConfigProtocol.swift in Sources */,
 				2E90E9AC21A2D7C200E2D722 /* DeviceIPhoneNormal.swift in Sources */,
