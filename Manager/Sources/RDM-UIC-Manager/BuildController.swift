@@ -135,13 +135,13 @@ class BuildController {
                 activeDeviceLock.lock()
                 activeDevices.append(device)
                 activeDeviceLock.unlock()
-                let derivedDataTemplateDir = self.derivedDataPath + "/Template"
-                let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)")
+                let derivedDataTemplateDir = self.derivedDataPath + "/Template/."
+                let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)/")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
                     _ = command.run()
                 }
-                let command = Shell("cp", "-r", derivedDataTemplateDir, derivedDataDir.path)
+                let command = Shell("cp", "-a", derivedDataTemplateDir, derivedDataDir.path)
                 _ = command.run()
                 
                 queue.dispatch {
