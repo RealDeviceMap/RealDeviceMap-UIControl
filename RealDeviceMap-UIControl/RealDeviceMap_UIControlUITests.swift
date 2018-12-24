@@ -16,7 +16,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var backendControlerURL: URL!
     var backendRawURL: URL!
     var isStarted = false
-    var currentLocation: (lat: Double, lon: Double)? = (1.0, 1.0)
+    var currentLocation: (lat: Double, lon: Double)?
     var waitRequiresPokemon = false
     var waitForData = false
     var lock = NSLock()
