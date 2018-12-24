@@ -13,13 +13,13 @@ class BuildController {
     
     public static var global = BuildController()
     
-    private var devicesLock = Threading.Lock()
+    private var devicesLock = NSLock()
     private var devicesToRemove = [Device]()
     private var devicesToAdd = [Device]()
     
     private var managerQueue: ThreadQueue!
     
-    private var activeDeviceLock = Threading.Lock()
+    private var activeDeviceLock = NSLock()
     private var activeDevices = [Device]()
     
     private var path: String = ""
@@ -27,11 +27,11 @@ class BuildController {
     private var timeout: Int = 60
     
     private var maxSimultaneousBuilds: Int!
-    private var buildLock = Threading.Lock()
+    private var buildLock = NSLock()
     private var buildingCount = 0
     
     private var statuse = [String: String]()
-    private var statusLock = Threading.Lock()
+    private var statusLock = NSLock()
 
     private func setStatus(uuid: String, status: String) {
         statusLock.lock()
@@ -165,7 +165,7 @@ class BuildController {
 
         var contains = true
         
-        let lastChangedLock = Threading.Lock()
+        let lastChangedLock = NSLock()
         var lastChanged: Date?
         
         var task: Process?

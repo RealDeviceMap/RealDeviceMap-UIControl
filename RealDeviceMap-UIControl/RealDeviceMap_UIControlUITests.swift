@@ -16,7 +16,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var backendControlerURL: URL!
     var backendRawURL: URL!
     var isStarted = false
-    var currentLocation: (lat: Double, lon: Double)?
+    var currentLocation: (lat: Double, lon: Double)? = (1.0, 1.0)
     var waitRequiresPokemon = false
     var waitForData = false
     var lock = NSLock()
@@ -614,7 +614,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 self.lock.unlock()
                 return []
             }
-        }), delay: .delay(seconds: 0.1))
+        }), delay: .delay(seconds: 0))
         
         router["/data"] = DelayResponse(JSONResponse(handler: { environ -> Any in
             let input = environ["swsgi.input"] as! SWSGIInput
@@ -726,7 +726,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
             }
             return []
-        }), delay: .delay(seconds: 0.1))
+        }), delay: .delay(seconds: 0))
         
         // Start HTTP server to listen on the port
         try! server.start()
