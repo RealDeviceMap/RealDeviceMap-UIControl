@@ -614,7 +614,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 self.lock.unlock()
                 return []
             }
-        }), delay: .delay(seconds: 0))
+        }), delay: .delay(seconds: 0.01))
         
         router["/data"] = DelayResponse(JSONResponse(handler: { environ -> Any in
             let input = environ["swsgi.input"] as! SWSGIInput
@@ -726,7 +726,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
             }
             return []
-        }), delay: .delay(seconds: 0))
+        }), delay: .delay(seconds: 0.01))
         
         // Start HTTP server to listen on the port
         try! server.start()
