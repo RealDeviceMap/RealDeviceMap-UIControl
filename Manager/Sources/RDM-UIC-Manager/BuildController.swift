@@ -175,101 +175,101 @@ class BuildController {
             var locked = false
             
             while contains {
-                autoreleasepool {
-                    let outputPipe = Pipe()
-                    let errorPipe = Pipe()
-                
-                    Log.debug(message: "[\(device.name)] Waiting for build lock...")
-                    self.setStatus(uuid: device.uuid, status: "Waiting for build")
-                    locked = true
-                    self.buildLock.lock()
-                    while self.buildingCount >= self.maxSimultaneousBuilds {
-                        self.buildLock.unlock()
-                        Threading.sleep(seconds: 1)
-                        self.buildLock.lock()
-                    }
-                    self.buildingCount += 1
+                let outputPipe = Pipe()
+                let errorPipe = Pipe()
+            
+                Log.debug(message: "[\(device.name)] Waiting for build lock...")
+                self.setStatus(uuid: device.uuid, status: "Waiting for build")
+                locked = true
+                self.buildLock.lock()
+                while self.buildingCount >= self.maxSimultaneousBuilds {
                     self.buildLock.unlock()
-                    lastChangedLock.lock()
-                    lastChanged = Date()
-                    lastChangedLock.unlock()
-                
-                    Log.info(message: "[\(device.name)] Starting xcodebuild")
-                    self.setStatus(uuid: device.uuid, status: "Building")
-                
-                    let timestamp = Int(Date().timeIntervalSince1970)
-                    let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
-                    let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
-                
-                    task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
-
-                    outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
-                        let string = String(data: fileHandle.availableData, encoding: .utf8)
-                        if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                            if string!.contains(string: "[STATUS] Started") && locked {
-                                Log.debug(message: "[\(device.name)] Done building")
-                                self.setStatus(uuid: device.uuid, status: "Running: Starting")
-                                locked = false
-                                self.buildLock.lock()
-                                self.buildingCount -= 1
-                                self.buildLock.unlock()
-                            }
-                            if string!.contains(string: "[STATUS] Startup") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Startup")
-                            }
-                            if string!.contains(string: "[STATUS] Logout") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Logout")
-                            }
-                            if string!.contains(string: "[STATUS] Login") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Login")
-                            }
-                            if string!.contains(string: "[STATUS] Tutorial") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Tutorial")
-                            }
-                            if string!.contains(string: "[STATUS] Pokemon") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Pokemon")
-                            }
-                            if string!.contains(string: "[STATUS] Raid") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Raid")
-                            }
-                            if string!.contains(string: "[STATUS] Quest") {
-                                self.setStatus(uuid: device.uuid, status: "Running: Quest")
-                            }
-                            if string!.contains(string: "[STATUS] IV") {
-                                self.setStatus(uuid: device.uuid, status: "Running: IV")
-                            }
-                
-                            fullLog.uic(message: string!, all: true)
-                            debugLog.uic(message: string!, all: false)
-                            lastChangedLock.lock()
-                            lastChanged = Date()
-                            lastChangedLock.unlock()
-                        }
-                    }
-                    errorPipe.fileHandleForReading.readabilityHandler = { fileHandle in
-                        let string = String(data: fileHandle.availableData, encoding: .utf8)
-                        if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                            fullLog.uic(message: string!, all: true)
-                            debugLog.uic(message: string!, all: false)
-                            lastChangedLock.lock()
-                            lastChanged = Date()
-                            lastChangedLock.unlock()
-                        }
-
-                    }
-                    task?.waitUntilExit()
-                    Log.debug(message: "[\(device.name)] Xcodebuild ended")
-                    if locked {
-                        locked = false
-                        self.buildLock.lock()
-                        self.buildingCount -= 1
-                        self.buildLock.unlock()
-                    }
-                
-                    lastChangedLock.lock()
-                    lastChanged = nil
-                    lastChangedLock.unlock()
+                    Threading.sleep(seconds: 1)
+                    self.buildLock.lock()
                 }
+                self.buildingCount += 1
+                self.buildLock.unlock()
+                lastChangedLock.lock()
+                lastChanged = Date()
+                lastChangedLock.unlock()
+            
+                Log.info(message: "[\(device.name)] Starting xcodebuild")
+                self.setStatus(uuid: device.uuid, status: "Building")
+            
+                let timestamp = Int(Date().timeIntervalSince1970)
+                let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
+                let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
+            
+                task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
+
+                outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
+                    let string = String(data: fileHandle.availableData, encoding: .utf8)
+                    if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                        if string!.contains(string: "[STATUS] Started") && locked {
+                            Log.debug(message: "[\(device.name)] Done building")
+                            self.setStatus(uuid: device.uuid, status: "Running: Starting")
+                            locked = false
+                            self.buildLock.lock()
+                            self.buildingCount -= 1
+                            self.buildLock.unlock()
+                        }
+                        if string!.contains(string: "[STATUS] Startup") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Startup")
+                        }
+                        if string!.contains(string: "[STATUS] Logout") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Logout")
+                        }
+                        if string!.contains(string: "[STATUS] Login") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Login")
+                        }
+                        if string!.contains(string: "[STATUS] Tutorial") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Tutorial")
+                        }
+                        if string!.contains(string: "[STATUS] Pokemon") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Pokemon")
+                        }
+                        if string!.contains(string: "[STATUS] Raid") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Raid")
+                        }
+                        if string!.contains(string: "[STATUS] Quest") {
+                            self.setStatus(uuid: device.uuid, status: "Running: Quest")
+                        }
+                        if string!.contains(string: "[STATUS] IV") {
+                            self.setStatus(uuid: device.uuid, status: "Running: IV")
+                        }
+            
+                        fullLog.uic(message: string!, all: true)
+                        debugLog.uic(message: string!, all: false)
+                        lastChangedLock.lock()
+                        lastChanged = Date()
+                        lastChangedLock.unlock()
+                    }
+                }
+                errorPipe.fileHandleForReading.readabilityHandler = { fileHandle in
+                    let string = String(data: fileHandle.availableData, encoding: .utf8)
+                    if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                        fullLog.uic(message: string!, all: true)
+                        debugLog.uic(message: string!, all: false)
+                        lastChangedLock.lock()
+                        lastChanged = Date()
+                        lastChangedLock.unlock()
+                    }
+
+                }
+                task?.waitUntilExit()
+                errorPipe.fileHandleForReading.closeFile()
+                outputPipe.fileHandleForReading.closeFile()
+                Log.debug(message: "[\(device.name)] Xcodebuild ended")
+                if locked {
+                    locked = false
+                    self.buildLock.lock()
+                    self.buildingCount -= 1
+                    self.buildLock.unlock()
+                }
+            
+                lastChangedLock.lock()
+                lastChanged = nil
+                lastChangedLock.unlock()
                 Threading.sleep(seconds: 1.0)
             }
             task?.suspend()
