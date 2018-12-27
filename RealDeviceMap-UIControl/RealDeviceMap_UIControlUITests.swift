@@ -248,10 +248,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         max: (red: 1.0, green: 0.90, blue: 0.70))
                     ) {
                     Log.error("Account \(username!) is banned.")
-                    username = nil
-                    isLoggedIn = false
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
+                    username = nil
+                    isLoggedIn = false
                     sleep(7 * config.delayMultiplier)
                     shouldExit = true
                     return
@@ -388,8 +388,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
                         screenshotComp.rgbAtLocation(
                             pos: deviceConfig.loginPrivacyText,
-                            min: (red: 0.0, green: 0.0, blue: 0.0),
-                            max: (red: 0.3, green: 0.5, blue: 0.5))
+                            min: (red: 0.0, green: 0.75, blue: 0.55),
+                            max: (red: 1.0, green: 0.90, blue: 0.70))
                     ) {
                     Log.debug("Accepting Privacy.")
                     deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
@@ -405,10 +405,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             max: (red: 1.0, green: 0.90, blue: 0.70))
                     ) {
                     Log.error("Account \(username!) is banned.")
-                    username = nil
-                    isLoggedIn = false
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
+                    username = nil
+                    isLoggedIn = false
                     sleep(7 * config.delayMultiplier)
                     shouldExit = true
                     return

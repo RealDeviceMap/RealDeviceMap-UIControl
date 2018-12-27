@@ -212,11 +212,11 @@ class DeviceRatio1775: DeviceConfigProtocol {
     }
     
     var loginPrivacyText: DeviceCoordinate {
-        return DeviceCoordinate(x: 157, y: 380, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 720, scaler: scaler)
     }
     
     var loginPrivacy: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 690, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 600, scaler: scaler)
     }
     
     
