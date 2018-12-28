@@ -247,7 +247,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         min: (red: 0.0, green: 0.75, blue: 0.55),
                         max: (red: 1.0, green: 0.90, blue: 0.70))
                     ) {
-                    Log.error("Account \(username!) is banned.")
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
                     username = nil
                     isLoggedIn = false
