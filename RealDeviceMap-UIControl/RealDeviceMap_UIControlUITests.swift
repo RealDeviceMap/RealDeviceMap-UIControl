@@ -249,7 +249,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     ) {
                     Log.error("Account \(username!) is banned.")
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
-                    postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
                     username = nil
                     isLoggedIn = false
                     sleep(7 * config.delayMultiplier)
