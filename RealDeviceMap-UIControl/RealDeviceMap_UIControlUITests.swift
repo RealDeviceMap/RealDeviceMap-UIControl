@@ -616,7 +616,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: responseData, options: .prettyPrinted)
             let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
-            return HTTPResponse(content: jsonString)
+            
+            let repsonse = HTTPResponse(content: jsonString)
+            repsonse.headers = ["Content-Type": "application/json"]
+            return repsonse
         } catch {
             return HTTPResponse(.internalServerError)
         }
