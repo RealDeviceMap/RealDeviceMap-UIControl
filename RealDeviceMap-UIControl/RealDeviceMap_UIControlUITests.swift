@@ -614,7 +614,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             responseData = [String: Any]()
         }
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: responseData)
+            let jsonData = try JSONSerialization.data(withJSONObject: responseData, options: .prettyPrinted)
             let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
             return HTTPResponse(content: jsonString)
         } catch {
