@@ -293,7 +293,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             sleep(1 * config.delayMultiplier)
             deviceConfig.loginUsernameTextfield.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
-            continueAfterFailure = true
             app.typeText(username!)
         }
         
@@ -310,7 +309,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             sleep(1 * config.delayMultiplier)
             deviceConfig.loginPasswordTextfield.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
-            continueAfterFailure = true
             app.typeText(password!)
             
         }
@@ -403,7 +401,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     isLoggedIn = false
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
-                    sleep(7 * config.delayMultiplier)
                     shouldExit = true
                     return
                 } else if (
@@ -420,7 +417,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     username = nil
                     isLoggedIn = false
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
-                    sleep(7 * config.delayMultiplier)
                     shouldExit = true
                     return
                 } else if (
@@ -527,7 +523,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         if newLogIn {
             
-            continueAfterFailure = true
             app.typeText(username!)
             
         }
@@ -870,7 +865,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         self.username = nil
                         self.isLoggedIn = false
                         UserDefaults.standard.synchronize()
-                        sleep(7 * self.config.delayMultiplier)
                         self.shouldExit = true
                         return
                     }
@@ -904,7 +898,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.username = nil
                                 self.isLoggedIn = false
                                 UserDefaults.standard.synchronize()
-                                sleep(7 * self.config.delayMultiplier)
                                 self.shouldExit = true
                                 return
                             }
@@ -926,7 +919,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -979,7 +971,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1038,7 +1029,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1055,7 +1045,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1161,7 +1150,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.username = nil
                                 self.isLoggedIn = false
                                 UserDefaults.standard.synchronize()
-                                sleep(7 * self.config.delayMultiplier)
                                 self.shouldExit = true
                                 return
                             } else if action == "scan_iv" {
@@ -1177,7 +1165,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1323,7 +1310,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     self.username = nil
                     self.isLoggedIn = false
                     UserDefaults.standard.synchronize()
-                    sleep(7 * config.delayMultiplier)
                     self.shouldExit = true
                     return
                 } else if screenshotComp.rgbAtLocation(
@@ -2420,5 +2406,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     func test997() { runAll() }
     func test998() { runAll() }
     func test999() { runAll() }
+    
+    func test1000() {
+        sleep(10 * self.config.delayMultiplier)
+    }
     
 }
