@@ -712,6 +712,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         self.emptyGmoCount = 0
                         toPrint = "[DEBUG] Got Data outside Target-Area"
                     }
+                } else {
+                    toPrint = "[DEBUG] Got Data without GMO"
                 }
                 if !self.gotQuest && quests != 0 {
                     self.gotQuest = true
