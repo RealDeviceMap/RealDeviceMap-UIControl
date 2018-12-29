@@ -2407,7 +2407,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     func test998() { runAll() }
     func test999() { runAll() }
     
-    func test1000() {
+    func test9999() {
         sleep(10 * self.config.delayMultiplier)
     }
     
