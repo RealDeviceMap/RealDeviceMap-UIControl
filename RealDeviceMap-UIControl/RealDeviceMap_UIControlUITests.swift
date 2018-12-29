@@ -657,6 +657,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let targetLon = data?["lon_target"] as? Double ?? 0
                 let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
                 let onlyInvalidGmos = data?["only_invalid_gmos"] as? Bool ?? false
+                let containsGmos = data?["contains_gmos"] as? Bool ?? true
                 
                 if level != 0 {
                     self.level = level
@@ -671,7 +672,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if onlyInvalidGmos {
                     self.waitForData = false
                     toPrint = "[DEBUG] Got GMO but it was malformed. Skipping."
-                } else {
+                } else if containsGmos {
                     if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
                         self.emptyGmoCount = 0
                         
