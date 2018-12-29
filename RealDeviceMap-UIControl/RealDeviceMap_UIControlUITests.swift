@@ -560,181 +560,197 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             return
         }
         
-        let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
-        let router = Router()
-        let server = DefaultHTTPServer(eventLoop: loop, interface: "0.0.0.0", port: config.port, app: router.app)
-        
-        router["/loc"] = DelayResponse(JSONResponse(handler: { environ -> Any in
-            
-            self.lock.lock()
-            let currentLocation = self.currentLocation
-            if currentLocation != nil {
-                if self.waitRequiresPokemon {
-                    self.lock.unlock()
-                    
-                    let jitterValue = self.config.jitterValue
-                    
-                    let jitterLat: Double
-                    let jitterLon: Double
-                    switch self.jitterCorner {
-                    case 0:
-                        jitterLat = jitterValue
-                        jitterLon = jitterValue
-                        self.jitterCorner = 1
-                    case 1:
-                        jitterLat = -jitterValue
-                        jitterLon = jitterValue
-                        self.jitterCorner = 2
-                    case 2:
-                        jitterLat = -jitterValue
-                        jitterLon = -jitterValue
-                        self.jitterCorner = 3
-                    default:
-                        jitterLat = jitterValue
-                        jitterLon = -jitterValue
-                        self.jitterCorner = 0
-                    }
-                    
-                    return [
-                        "latitude": currentLocation!.lat + jitterLat,
-                        "longitude": currentLocation!.lon + jitterLon,
-                        "lat": currentLocation!.lat + jitterLat,
-                        "lng": currentLocation!.lon + jitterLon
-                    ]
-                } else {
-                    self.lock.unlock()
-                    return [
-                        "latitude": currentLocation!.lat,
-                        "longitude": currentLocation!.lon,
-                        "lat": currentLocation!.lat,
-                        "lng": currentLocation!.lon
-                    ]
-                }
-            } else {
-                self.lock.unlock()
-                return []
-            }
-        }), delay: .delay(seconds: 0.01))
-        
-        router["/data"] = DelayResponse(JSONResponse(handler: { environ -> Any in
-            let input = environ["swsgi.input"] as! SWSGIInput
-            DataReader.read(input) { data in
-                
-                self.lock.lock()
-                let currentLocation = self.currentLocation
-                let targetMaxDistance = self.targetMaxDistance
-                let pokemonEncounterId = self.pokemonEncounterId
-                self.lock.unlock()
-                
-                var jsonData: [String: Any]?
-                do {
-                    jsonData = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-                } catch {
-                    return
-                }
-                
-                if jsonData != nil && currentLocation != nil {
-                    jsonData!["lat_target"] = currentLocation!.lat
-                    jsonData!["lon_target"] = currentLocation!.lon
-                    jsonData!["target_max_distnace"] = targetMaxDistance
-                    jsonData!["username"] = self.username
-                    jsonData!["pokemon_encounter_id"] = pokemonEncounterId
-                    
-                    let url = self.backendRawURL
-                    
-                    self.postRequest(url: url!, data: jsonData!, blocking: true, completion: { (resultJson) in
-                        
-                        let data = resultJson?["data"] as? [String: Any]
-                        let inArea = data?["in_area"] as? Bool ?? false
-                        let level = data?["level"] as? Int ?? 0
-                        let nearby = data?["nearby"] as? Int ?? 0
-                        let wild = data?["wild"] as? Int ?? 0
-                        //let forts = data?["forts"] as? Int ?? 0
-                        let quests = data?["quests"] as? Int ?? 0
-                        let encounters = data?["encounters"] as? Int ?? 0
-                        let pokemonLat = data?["pokemon_lat"] as? Double
-                        let pokemonLon = data?["pokemon_lon"] as? Double
-                        let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
-                        let targetLat = data?["lat_target"] as? Double ?? 0
-                        let targetLon = data?["lon_target"] as? Double ?? 0
-                        let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
-                        let onlyInvalidGmos = data?["only_invalid_gmos"] as? Bool ?? false
-                        
-                        if level != 0 {
-                            self.level = level
-                        }
-                        
-                        let toPrint: String
-                        
-                        self.lock.lock()
-                        let diffLat = fabs((self.currentLocation?.lat ?? 0) - targetLat)
-                        let diffLon = fabs((self.currentLocation?.lon ?? 0) - targetLon)
-                        
-                        if onlyInvalidGmos {
-                            self.waitForData = false
-                            toPrint = "[DEBUG] Got GMO but it was malformed. Skipping."
-                        } else {
-                            if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
-                                self.emptyGmoCount = 0
-                                
-                                if self.pokemonEncounterId != nil {
-                                    if (nearby + wild) > 0 {
-                                        if pokemonLat != nil && pokemonLon != nil && self.pokemonEncounterId == pokemonEncounterIdResult {
-                                            self.waitRequiresPokemon = false
-                                            let oldLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
-                                            self.currentLocation = (pokemonLat!, pokemonLon!)
-                                            let newLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
-                                            self.encounterDistance = newLocation.distance(from: oldLocation)
-                                            self.pokemonEncounterId = nil
-                                            self.waitForData = false
-                                            toPrint = "[DEBUG] Got Data and found Pokemon"
-                                        } else {
-                                            toPrint = "[DEBUG] Got Data but didn't find Pokemon"
-                                        }
-                                    } else {
-                                        toPrint = "[DEBUG] Got Data without Pokemon"
-                                    }
-                                    
-                                } else if self.waitRequiresPokemon {
-                                    if (nearby + wild) > 0 {
-                                        toPrint = "[DEBUG] Got Data with Pokemon"
-                                        self.waitForData = false
-                                    } else {
-                                        toPrint = "[DEBUG] Got Data without Pokemon"
-                                    }
-                                } else {
-                                    toPrint = "[DEBUG] Got Data"
-                                    self.waitForData = false
-                                }
-                            } else if onlyEmptyGmos {
-                                self.emptyGmoCount += 1
-                                toPrint = "[DEBUG] Got Empty Data"
-                            } else {
-                                self.emptyGmoCount = 0
-                                toPrint = "[DEBUG] Got Data outside Target-Area"
-                            }
-                        }
-                        if !self.gotQuest && quests != 0 {
-                            self.gotQuest = true
-                        }
-                        if !self.gotIV && encounters != 0 {
-                            self.gotIV = true
-                        }
-                        self.lock.unlock()
-                        print(toPrint)
-                    })
-                }
-            }
-            return []
-        }), delay: .delay(seconds: 0.01))
-        
-        // Start HTTP server to listen on the port
-        try! server.start()
+        let webserverStartedLock = NSLock()
+        var webserverStarted = false
         
         // Run event loop
         DispatchQueue(label: "http_server").async {
+            let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
+            let router = Router()
+            let server = DefaultHTTPServer(eventLoop: loop, interface: "0.0.0.0", port: self.config.port, app: router.app)
+            
+            router["/loc"] = JSONResponse(handler: { environ -> Any in
+                
+                self.lock.lock()
+                let currentLocation = self.currentLocation
+                if currentLocation != nil {
+                    if self.waitRequiresPokemon {
+                        self.lock.unlock()
+                        
+                        let jitterValue = self.config.jitterValue
+                        
+                        let jitterLat: Double
+                        let jitterLon: Double
+                        switch self.jitterCorner {
+                        case 0:
+                            jitterLat = jitterValue
+                            jitterLon = jitterValue
+                            self.jitterCorner = 1
+                        case 1:
+                            jitterLat = -jitterValue
+                            jitterLon = jitterValue
+                            self.jitterCorner = 2
+                        case 2:
+                            jitterLat = -jitterValue
+                            jitterLon = -jitterValue
+                            self.jitterCorner = 3
+                        default:
+                            jitterLat = jitterValue
+                            jitterLon = -jitterValue
+                            self.jitterCorner = 0
+                        }
+                        
+                        return [
+                            "latitude": currentLocation!.lat + jitterLat,
+                            "longitude": currentLocation!.lon + jitterLon,
+                            "lat": currentLocation!.lat + jitterLat,
+                            "lng": currentLocation!.lon + jitterLon
+                        ]
+                    } else {
+                        self.lock.unlock()
+                        return [
+                            "latitude": currentLocation!.lat,
+                            "longitude": currentLocation!.lon,
+                            "lat": currentLocation!.lat,
+                            "lng": currentLocation!.lon
+                        ]
+                    }
+                } else {
+                    self.lock.unlock()
+                    return []
+                }
+            })
+            
+            router["/data"] = JSONResponse(handler: { environ -> Any in
+                let input = environ["swsgi.input"] as! SWSGIInput
+                DataReader.read(input) { data in
+            
+                    self.lock.lock()
+                    let currentLocation = self.currentLocation
+                    let targetMaxDistance = self.targetMaxDistance
+                    let pokemonEncounterId = self.pokemonEncounterId
+                    self.lock.unlock()
+            
+                    var jsonData: [String: Any]?
+                    do {
+                        jsonData = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    } catch {
+                        return
+                    }
+            
+                    if jsonData != nil && currentLocation != nil {
+                        jsonData!["lat_target"] = currentLocation!.lat
+                        jsonData!["lon_target"] = currentLocation!.lon
+                        jsonData!["target_max_distnace"] = targetMaxDistance
+                        jsonData!["username"] = self.username
+                        jsonData!["pokemon_encounter_id"] = pokemonEncounterId
+            
+                        let url = self.backendRawURL
+            
+                        self.postRequest(url: url!, data: jsonData!, blocking: true, completion: { (resultJson) in
+            
+                            let data = resultJson?["data"] as? [String: Any]
+                            let inArea = data?["in_area"] as? Bool ?? false
+                            let level = data?["level"] as? Int ?? 0
+                            let nearby = data?["nearby"] as? Int ?? 0
+                            let wild = data?["wild"] as? Int ?? 0
+                            //let forts = data?["forts"] as? Int ?? 0
+                            let quests = data?["quests"] as? Int ?? 0
+                            let encounters = data?["encounters"] as? Int ?? 0
+                            let pokemonLat = data?["pokemon_lat"] as? Double
+                            let pokemonLon = data?["pokemon_lon"] as? Double
+                            let pokemonEncounterIdResult = data?["pokemon_encounter_id"] as? String
+                            let targetLat = data?["lat_target"] as? Double ?? 0
+                            let targetLon = data?["lon_target"] as? Double ?? 0
+                            let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
+                            let onlyInvalidGmos = data?["only_invalid_gmos"] as? Bool ?? false
+            
+                            if level != 0 {
+                                self.level = level
+                            }
+            
+                            let toPrint: String
+            
+                            self.lock.lock()
+                            let diffLat = fabs((self.currentLocation?.lat ?? 0) - targetLat)
+                            let diffLon = fabs((self.currentLocation?.lon ?? 0) - targetLon)
+            
+                            if onlyInvalidGmos {
+                                self.waitForData = false
+                                toPrint = "[DEBUG] Got GMO but it was malformed. Skipping."
+                            } else {
+                                if inArea && diffLat < 0.0001 && diffLon < 0.0001 {
+                                    self.emptyGmoCount = 0
+            
+                                    if self.pokemonEncounterId != nil {
+                                        if (nearby + wild) > 0 {
+                                            if pokemonLat != nil && pokemonLon != nil && self.pokemonEncounterId == pokemonEncounterIdResult {
+                                                self.waitRequiresPokemon = false
+                                                let oldLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
+                                                self.currentLocation = (pokemonLat!, pokemonLon!)
+                                                let newLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
+                                                self.encounterDistance = newLocation.distance(from: oldLocation)
+                                                self.pokemonEncounterId = nil
+                                                self.waitForData = false
+                                                toPrint = "[DEBUG] Got Data and found Pokemon"
+                                            } else {
+                                                toPrint = "[DEBUG] Got Data but didn't find Pokemon"
+                                            }
+                                        } else {
+                                            toPrint = "[DEBUG] Got Data without Pokemon"
+                                        }
+            
+                                    } else if self.waitRequiresPokemon {
+                                        if (nearby + wild) > 0 {
+                                            toPrint = "[DEBUG] Got Data with Pokemon"
+                                            self.waitForData = false
+                                        } else {
+                                            toPrint = "[DEBUG] Got Data without Pokemon"
+                                        }
+                                    } else {
+                                        toPrint = "[DEBUG] Got Data"
+                                        self.waitForData = false
+                                    }
+                                } else if onlyEmptyGmos {
+                                    self.emptyGmoCount += 1
+                                    toPrint = "[DEBUG] Got Empty Data"
+                                } else {
+                                    self.emptyGmoCount = 0
+                                    toPrint = "[DEBUG] Got Data outside Target-Area"
+                                }
+                            }
+                            if !self.gotQuest && quests != 0 {
+                                self.gotQuest = true
+                            }
+                            if !self.gotIV && encounters != 0 {
+                                self.gotIV = true
+                            }
+                            self.lock.unlock()
+                            print(toPrint)
+                        })
+                    }
+                }
+                return []
+            })
+            
+            // Start HTTP server to listen on the port
+            try! server.start()
+        
+            webserverStartedLock.lock()
+            webserverStarted = true
+            webserverStartedLock.unlock()
+            
+            // Run Server Forever
             loop.runForever()
         }
+        
+        webserverStartedLock.lock()
+        while !webserverStarted {
+            webserverStartedLock.unlock()
+            sleep(1)
+            webserverStartedLock.lock()
+        }
+        webserverStartedLock.unlock()
         
         Log.info("Server running at localhost:\(config.port)")
         
