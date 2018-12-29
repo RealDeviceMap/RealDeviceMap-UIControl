@@ -75,7 +75,14 @@ class BuildController {
         let error = String(data: errorPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         let output = String(data: outputPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         if error.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
+            
+            for line in error.components(separatedBy: "\n") {
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.contains(string: "Using the first of multiple matching destinations") && !trimmed.contains(string: "Generic iOS Device") {
+                    Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
+                }
+            }
+            
         }
         print("[INFO] Building Project done")
         Log.info(message: "Building Project done")
