@@ -60,7 +60,7 @@ class BuildController {
                 let dir = Dir(derivedDataDir.path + name)
                 if dir.exists && dir.name != "Template" {
                     let command = Shell("rm", "-rf", dir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
             }
         }
@@ -91,7 +91,7 @@ class BuildController {
         let derivedDataLogsDir = Dir("\(derivedDataDir.path)/Template/Logs")
         if derivedDataLogsDir.exists {
             let command = Shell("rm", "-rf", derivedDataLogsDir.path)
-            _ = command.run()
+            _ = command.run(wait: true)
         }
         
         devicesLock.lock()
@@ -132,7 +132,7 @@ class BuildController {
                 let derivedDataDir = Dir(self.derivedDataPath + "/\(device.uuid)")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
                 
                 Threading.destroyQueue(queue)
@@ -147,10 +147,10 @@ class BuildController {
                 let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)/")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
                 let command = Shell("cp", "-a", derivedDataTemplateDir, derivedDataDir.path)
-                _ = command.run()
+                _ = command.run(wait: true)
                 
                 queue.dispatch {
                     self.deviceQueueRun(device: device)

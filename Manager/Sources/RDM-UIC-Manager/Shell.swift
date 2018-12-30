@@ -15,7 +15,7 @@ class Shell {
         self.args = args
     }
     
-    func run(outputPipe: Any?=nil, errorPipe: Any?=nil, inputPipe: Any?=nil) -> Process {
+    func run(outputPipe: Any?=nil, errorPipe: Any?=nil, inputPipe: Any?=nil, wait: Bool=false) -> Process {
         let task = Process()
         task.launchPath = "/usr/bin/env"
         task.arguments = args
@@ -29,6 +29,9 @@ class Shell {
             task.standardOutput = outputPipe
         }
         task.launch()
+        if wait {
+            task.waitUntilExit()
+        }
         return task
     }
     
