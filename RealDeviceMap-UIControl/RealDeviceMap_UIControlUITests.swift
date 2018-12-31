@@ -787,6 +787,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         var failedToGetJobCount = 0
         var failedCount = 0
+        emptyGmoCount = 0
+        noEncounterCount = 0
+        noQuestCount = 0
         
         app.activate()
         
