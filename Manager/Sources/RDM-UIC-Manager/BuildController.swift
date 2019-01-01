@@ -60,7 +60,7 @@ class BuildController {
                 let dir = Dir(derivedDataDir.path + name)
                 if dir.exists && dir.name != "Template" {
                     let command = Shell("rm", "-rf", dir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
             }
         }
@@ -75,7 +75,15 @@ class BuildController {
         let error = String(data: errorPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         let output = String(data: outputPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         if error.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
+            
+            for line in error.components(separatedBy: "\n") {
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed != "" && !trimmed.contains(string: "Using the first of multiple matching destinations") && !trimmed.contains(string: "Generic iOS Device") {
+                    Log.debug(message: "Abort triggered by line: \"\(trimmed)\"")
+                    Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
+                }
+            }
+            
         }
         print("[INFO] Building Project done")
         Log.info(message: "Building Project done")
@@ -83,7 +91,7 @@ class BuildController {
         let derivedDataLogsDir = Dir("\(derivedDataDir.path)/Template/Logs")
         if derivedDataLogsDir.exists {
             let command = Shell("rm", "-rf", derivedDataLogsDir.path)
-            _ = command.run()
+            _ = command.run(wait: true)
         }
         
         devicesLock.lock()
@@ -124,7 +132,7 @@ class BuildController {
                 let derivedDataDir = Dir(self.derivedDataPath + "/\(device.uuid)")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
                 
                 Threading.destroyQueue(queue)
@@ -139,10 +147,10 @@ class BuildController {
                 let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)/")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
                 let command = Shell("cp", "-a", derivedDataTemplateDir, derivedDataDir.path)
-                _ = command.run()
+                _ = command.run(wait: true)
                 
                 queue.dispatch {
                     self.deviceQueueRun(device: device)
