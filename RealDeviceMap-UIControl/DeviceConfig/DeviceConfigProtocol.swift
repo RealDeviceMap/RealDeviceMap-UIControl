@@ -116,9 +116,9 @@ protocol DeviceConfigProtocol {
     var loginConfirm: DeviceCoordinate { get }
     /** ? pixel in background of suspension notice */ //TODO: - Where?
     var loginBannedBackground: DeviceCoordinate { get }
-    /** Black pixel in "Failed to login" popup thats white in all other login popups */
+    /** Green pixel in "TRY A DIFFERENT ACCOUNT" button of "Failed to login" popup*/
     var loginBannedText: DeviceCoordinate { get }
-    /** Green pixel in "Retry" button of "Failed to login" popup */
+    /** Green pixel in "Retry" button of "Failed to login" popup*/
     var loginBanned: DeviceCoordinate { get }
     /** "Switch Accounts" button of "Failed to login" popup */
     var loginBannedSwitchAccount: DeviceCoordinate { get }
@@ -134,9 +134,9 @@ protocol DeviceConfigProtocol {
     var loginFailedText: DeviceCoordinate { get }
     /** Green pixel in button of "Invalid Credential" popup */
     var loginFailed: DeviceCoordinate { get }
-    /** Black pixel in privcy popup thats white in all other login popups */
+    /** Green pixel in button of privacy popup (Privacy button) */
     var loginPrivacyText: DeviceCoordinate { get }
-    /** Green pixel in button of privacy popup */
+    /** Green pixel in button of privacy popup (OK button)*/
     var loginPrivacy: DeviceCoordinate { get }
     
     
