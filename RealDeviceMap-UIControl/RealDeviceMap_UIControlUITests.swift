@@ -250,7 +250,23 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             var count = 0
             while !loaded {
                 let screenshotComp = XCUIScreen.main.screenshot()
-                if screenshotComp.rgbAtLocation(
+                if (screenshotComp.rgbAtLocation(
+                    pos: deviceConfig.loginBanned,
+                    min: (red: 0.0, green: 0.75, blue: 0.55),
+                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.loginBannedText,
+                        min: (red: 0.0, green: 0.75, blue: 0.55),
+                        max: (red: 1.0, green: 0.90, blue: 0.70))
+                    ) {
+                    deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
+                    username = nil
+                    isLoggedIn = false
+                    sleep(7 * config.delayMultiplier)
+                    shouldExit = true
+                    return
+                }
+                else if screenshotComp.rgbAtLocation(
                     pos: self.deviceConfig.startup,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
                     max: (red: 1.0, green: 0.90, blue: 0.70)) {
@@ -380,8 +396,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
                         screenshotComp.rgbAtLocation(
                             pos: deviceConfig.loginPrivacyText,
-                            min: (red: 0.0, green: 0.0, blue: 0.0),
-                            max: (red: 0.3, green: 0.5, blue: 0.5))
+                            min: (red: 0.0, green: 0.75, blue: 0.55),
+                            max: (red: 1.0, green: 0.90, blue: 0.70))
                     ) {
                     Log.debug("Accepting Privacy.")
                     deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
@@ -393,12 +409,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
                         screenshotComp.rgbAtLocation(
                             pos: deviceConfig.loginBannedText,
-                            min: (red: 0.0, green: 0.0, blue: 0.0),
-                            max: (red: 0.3, green: 0.5, blue: 0.5))
+                            min: (red: 0.0, green: 0.75, blue: 0.55),
+                            max: (red: 1.0, green: 0.90, blue: 0.70))
                     ) {
                     Log.error("Account \(username!) is banned.")
-                    username = nil
-                    isLoggedIn = false
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
                     shouldExit = true
