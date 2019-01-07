@@ -885,7 +885,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         self.username = nil
                         self.isLoggedIn = false
                         UserDefaults.standard.synchronize()
-                        sleep(7 * self.config.delayMultiplier)
                         self.shouldExit = true
                         return
                     }
@@ -919,7 +918,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.username = nil
                                 self.isLoggedIn = false
                                 UserDefaults.standard.synchronize()
-                                sleep(7 * self.config.delayMultiplier)
                                 self.shouldExit = true
                                 return
                             }
@@ -941,7 +939,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -994,7 +991,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1053,7 +1049,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1070,7 +1065,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1176,7 +1170,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.username = nil
                                 self.isLoggedIn = false
                                 UserDefaults.standard.synchronize()
-                                sleep(7 * self.config.delayMultiplier)
                                 self.shouldExit = true
                                 return
                             } else if action == "scan_iv" {
@@ -1192,7 +1185,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.username = nil
                                     self.isLoggedIn = false
                                     UserDefaults.standard.synchronize()
-                                    sleep(7 * self.config.delayMultiplier)
                                     self.shouldExit = true
                                     return
                                 }
@@ -1338,7 +1330,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     self.username = nil
                     self.isLoggedIn = false
                     UserDefaults.standard.synchronize()
-                    sleep(7 * self.config.delayMultiplier)
                     self.shouldExit = true
                     return
                 } else if screenshotComp.rgbAtLocation(
