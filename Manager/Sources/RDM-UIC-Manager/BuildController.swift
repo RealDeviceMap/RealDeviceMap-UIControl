@@ -60,7 +60,7 @@ class BuildController {
                 let dir = Dir(derivedDataDir.path + name)
                 if dir.exists && dir.name != "Template" {
                     let command = Shell("rm", "-rf", dir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
             }
         }
@@ -75,7 +75,15 @@ class BuildController {
         let error = String(data: errorPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         let output = String(data: outputPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         if error.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
+            
+            for line in error.components(separatedBy: "\n") {
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed != "" && !trimmed.contains(string: "Using the first of multiple matching destinations") && !trimmed.contains(string: "Generic iOS Device") {
+                    Log.debug(message: "Abort triggered by line: \"\(trimmed)\"")
+                    Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
+                }
+            }
+            
         }
         print("[INFO] Building Project done")
         Log.info(message: "Building Project done")
@@ -83,7 +91,7 @@ class BuildController {
         let derivedDataLogsDir = Dir("\(derivedDataDir.path)/Template/Logs")
         if derivedDataLogsDir.exists {
             let command = Shell("rm", "-rf", derivedDataLogsDir.path)
-            _ = command.run()
+            _ = command.run(wait: true)
         }
         
         devicesLock.lock()
@@ -124,7 +132,7 @@ class BuildController {
                 let derivedDataDir = Dir(self.derivedDataPath + "/\(device.uuid)")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
                 
                 Threading.destroyQueue(queue)
@@ -135,14 +143,14 @@ class BuildController {
                 activeDeviceLock.lock()
                 activeDevices.append(device)
                 activeDeviceLock.unlock()
-                let derivedDataTemplateDir = self.derivedDataPath + "/Template"
-                let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)")
+                let derivedDataTemplateDir = self.derivedDataPath + "/Template/."
+                let derivedDataDir = File(self.derivedDataPath + "/\(device.uuid)/")
                 if derivedDataDir.exists {
                     let command = Shell("rm", "-rf", derivedDataDir.path)
-                    _ = command.run()
+                    _ = command.run(wait: true)
                 }
-                let command = Shell("cp", "-r", derivedDataTemplateDir, derivedDataDir.path)
-                _ = command.run()
+                let command = Shell("cp", "-a", derivedDataTemplateDir, derivedDataDir.path)
+                _ = command.run(wait: true)
                 
                 queue.dispatch {
                     self.deviceQueueRun(device: device)
@@ -175,10 +183,9 @@ class BuildController {
             var locked = false
             
             while contains {
-                
                 let outputPipe = Pipe()
                 let errorPipe = Pipe()
-                
+            
                 Log.debug(message: "[\(device.name)] Waiting for build lock...")
                 self.setStatus(uuid: device.uuid, status: "Waiting for build")
                 locked = true
@@ -193,14 +200,14 @@ class BuildController {
                 lastChangedLock.lock()
                 lastChanged = Date()
                 lastChangedLock.unlock()
-                
+            
                 Log.info(message: "[\(device.name)] Starting xcodebuild")
                 self.setStatus(uuid: device.uuid, status: "Building")
-                
+            
                 let timestamp = Int(Date().timeIntervalSince1970)
                 let fullLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.full.log")
                 let debugLog = FileLogger(file: "./logs/\(timestamp)-\(device.name)-xcodebuild.debug.log")
-                
+            
                 task = xcodebuild.run(outputPipe: outputPipe, errorPipe: errorPipe)
 
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
@@ -238,7 +245,7 @@ class BuildController {
                         if string!.contains(string: "[STATUS] IV") {
                             self.setStatus(uuid: device.uuid, status: "Running: IV")
                         }
-                        
+            
                         fullLog.uic(message: string!, all: true)
                         debugLog.uic(message: string!, all: false)
                         lastChangedLock.lock()
@@ -258,6 +265,8 @@ class BuildController {
 
                 }
                 task?.waitUntilExit()
+                errorPipe.fileHandleForReading.closeFile()
+                outputPipe.fileHandleForReading.closeFile()
                 Log.debug(message: "[\(device.name)] Xcodebuild ended")
                 if locked {
                     locked = false
@@ -265,13 +274,10 @@ class BuildController {
                     self.buildingCount -= 1
                     self.buildLock.unlock()
                 }
-                outputPipe.fileHandleForReading.readabilityHandler = nil
-                errorPipe.fileHandleForReading.readabilityHandler = nil
-                
+            
                 lastChangedLock.lock()
                 lastChanged = nil
                 lastChangedLock.unlock()
-                
                 Threading.sleep(seconds: 1.0)
             }
             task?.suspend()
