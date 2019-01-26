@@ -404,7 +404,7 @@ extension XCTestCase {
     }
     
     func clearItems() {
-        log.test("Starting ClearItems()")
+        Log.test("Starting ClearItems()")
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var done = false
