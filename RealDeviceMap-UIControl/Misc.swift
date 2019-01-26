@@ -408,6 +408,9 @@ extension XCTestCase {
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var done = false
+        var deleteResult:Bool
+        var giftResult:Bool
+        var eggResult:Bool
         
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
@@ -420,9 +423,9 @@ extension XCTestCase {
             
             if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 
-                var deleteResult = itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index])
-                var giftResult = itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index])
-                var eggResult = itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index])
+                deleteResult = itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index])
+                giftResult = itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index])
+                eggResult = itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index])
                 Log.test("itemHasDelete: \(deleteResult), itemIsGift: \(giftResult), itemIsEgg: \(eggResult) at point (\(deviceConfig.itemDeleteX), \(deviceConfig.itemDeleteYs[index]))")
                 let delete = normalized.withOffset(CGVector(dx: deviceConfig.itemDeleteX, dy: deviceConfig.itemDeleteYs[index]))
                 delete.tap()
