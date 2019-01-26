@@ -404,7 +404,7 @@ extension XCTestCase {
     }
     
     func clearItems() {
-        
+        log.test("Starting ClearItems()")
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var done = false
@@ -416,22 +416,35 @@ extension XCTestCase {
 
         while !done && deviceConfig.itemDeleteYs.count != 0 {
             let screenshot = XCUIScreen.main.screenshot()
+
             
             if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
+                
+                var deleteResult = itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index])
+                var giftResult = itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index])
+                var eggResult = itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index])
+                log.test("itemHasDelete: \(deleteResult), itemIsGift: \(giftResult), itemIsEgg: \(eggResult) at point (\(deviceConfig.itemDeleteX), \(deviceConfig.itemDeleteYs[index]))")
                 let delete = normalized.withOffset(CGVector(dx: deviceConfig.itemDeleteX, dy: deviceConfig.itemDeleteYs[index]))
                 delete.tap()
+                log.test("Tapped itemDelete Button")
                 sleep(1 * config.delayMultiplier)
+                log.test("Tapping and Holding Item Increase for Delete")
                 deviceConfig.itemDeleteIncrease.toXCUICoordinate(app: app).press(forDuration: 3)
+                log.test("Tapping Delete")
                 deviceConfig.itemDeleteConfirm.toXCUICoordinate(app: app).tap()
+                
                 sleep(1 * config.delayMultiplier)
             } else if index + 1 < deviceConfig.itemDeleteYs.count {
                 index += 1
+                log.test("index < count of ItemDeleteYs. Index incremented")
             } else {
+                log.test("clearItems() call completed, Done = True")
                 done = true
             }
         }
         
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+        log.test("Closing Menu")
         sleep(1 * config.delayMultiplier)
     }
     

@@ -23,4 +23,7 @@ class Log {
         print("[DEBUG] \(message)")
     }
     
+    public static func test(_ message: String){
+        print("[Egg-Debug] \(message)")
+
 }
