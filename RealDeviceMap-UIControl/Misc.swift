@@ -423,28 +423,28 @@ extension XCTestCase {
                 var deleteResult = itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index])
                 var giftResult = itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index])
                 var eggResult = itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index])
-                log.test("itemHasDelete: \(deleteResult), itemIsGift: \(giftResult), itemIsEgg: \(eggResult) at point (\(deviceConfig.itemDeleteX), \(deviceConfig.itemDeleteYs[index]))")
+                Log.test("itemHasDelete: \(deleteResult), itemIsGift: \(giftResult), itemIsEgg: \(eggResult) at point (\(deviceConfig.itemDeleteX), \(deviceConfig.itemDeleteYs[index]))")
                 let delete = normalized.withOffset(CGVector(dx: deviceConfig.itemDeleteX, dy: deviceConfig.itemDeleteYs[index]))
                 delete.tap()
-                log.test("Tapped itemDelete Button")
+                Log.test("Tapped itemDelete Button")
                 sleep(1 * config.delayMultiplier)
-                log.test("Tapping and Holding Item Increase for Delete")
+                Log.test("Tapping and Holding Item Increase for Delete")
                 deviceConfig.itemDeleteIncrease.toXCUICoordinate(app: app).press(forDuration: 3)
-                log.test("Tapping Delete")
+                Log.test("Tapping Delete")
                 deviceConfig.itemDeleteConfirm.toXCUICoordinate(app: app).tap()
                 
                 sleep(1 * config.delayMultiplier)
             } else if index + 1 < deviceConfig.itemDeleteYs.count {
                 index += 1
-                log.test("index < count of ItemDeleteYs. Index incremented")
+                Log.test("index < count of ItemDeleteYs. Index incremented")
             } else {
-                log.test("clearItems() call completed, Done = True")
+                Log.test("clearItems() call completed, Done = True")
                 done = true
             }
         }
         
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
-        log.test("Closing Menu")
+        Log.test("Closing Menu")
         sleep(1 * config.delayMultiplier)
     }
     
