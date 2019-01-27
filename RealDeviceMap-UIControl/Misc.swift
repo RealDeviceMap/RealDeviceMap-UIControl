@@ -459,6 +459,7 @@ extension XCTestCase {
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         Log.test("Closing Menu")
         sleep(1 * config.delayMultiplier)
+        }
     }
     
     func itemHasDelete(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
