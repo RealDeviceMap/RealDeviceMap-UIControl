@@ -487,7 +487,7 @@ extension XCTestCase {
         )
     }
 
-    func itemIsEggActive(_ screenshot: XCUIScreenshot, x: Int, y: Int) - > Bool {
+    func itemIsEggActive(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
         return screenshot.rgbAtLocation(
             pos: (x: x, y: y),
             min: (red: 0.8, green: 0.88, blue: 0.87),
