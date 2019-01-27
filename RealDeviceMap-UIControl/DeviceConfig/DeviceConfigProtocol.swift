@@ -103,9 +103,9 @@ protocol DeviceConfigProtocol {
     /** Blue pixel in egg at itemDeleteYs */
     var itemEggX: Int { get }
     /** Lucky Egg Menu Item: Will always be first after deletetion unless active Credit: */
-    var itemEggMenuItem: Int { get }
+    var itemEggMenuItem: DeviceCoordinate { get }
     /** Tap Location for Egg Deployment */ 
-    var itemEggDeploy: Int { get }
+    var itemEggDeploy: DeviceCoordinate { get }
     
     // MARK: - Login
     
