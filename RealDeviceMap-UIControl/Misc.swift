@@ -457,7 +457,7 @@ extension XCTestCase {
         return screenshot.rgbAtLocation(
             pos: (x: x, y: y),
             min: (red: 0.50, green: 0.50, blue: 0.50),
-            max: (red: 0.75, green: 0.75, blue: 0.75)
+            max: (red: 0.75, green: 0.80, blue: 0.75)
         )
     }
     
@@ -472,8 +472,8 @@ extension XCTestCase {
     func itemIsEgg(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
         return screenshot.rgbAtLocation(
             pos: (x: x, y: y),
-            min: (red: 0.45, green: 0.6, blue: 0.7),
-            max: (red: 0.60, green: 0.7, blue: 0.8)
+            min: (red: 0.45, green: 0.6, blue: 0.65),
+            max: (red: 0.60, green: 0.7, blue: 0.75)
         )
     }
 
