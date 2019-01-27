@@ -141,7 +141,12 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var itemEggX: Int {
         return scaler.scaleX(x: 148)
     }
-
+    var itemEggMenuItem: DeviceCoordinate {
+        return DeviceCoordinate(x: 325, y: 250, scaler: scaler) //Anywhere in the first menu item
+    }
+    var itemEggDeploy: DeviceCoordinate {
+        return DeviceCoordinate(x: 315, y: 880, scaler: scaler) // Taps the egg to deploy
+    }
     var itemDeleteYs: [Int] {
         return [
             scaler.scaleY(y: 215),

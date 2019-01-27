@@ -139,7 +139,13 @@ class DeviceRatio1333: DeviceConfigProtocol {
         return scaler.scaleX(x: 296)
     }
     var itemEggX: Int {
-        return scaler.scaleX(x: 325)
+        return scaler.scaleX(x: 325) 
+    }
+    var itemEggMenuItem: DeviceCoordinate {
+        return DeviceCoordinate(x: 325, y: 325, scaler: scaler) //Anywhere in the first menu item Credit: @Bushe
+    }
+    var itemEggDeploy: DeviceCoordinate {
+        return DeviceCoordinate(x: 768, y: 1500, scaler: scaler) // Taps the egg to deploy (iPad needs to tap below the egg to deploy) Credit @ Bushe
     }
     var itemDeleteYs: [Int] {
         return [

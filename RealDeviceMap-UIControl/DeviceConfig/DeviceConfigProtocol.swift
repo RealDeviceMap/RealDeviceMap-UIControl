@@ -100,9 +100,12 @@ protocol DeviceConfigProtocol {
     var itemGiftX: Int { get }
     /** The Y values for all item delete buttons. */
     var itemDeleteYs: [Int] { get }
-    /** Blue pixel in egg at itemDeleteYs. */
+    /** Blue pixel in egg at itemDeleteYs */
     var itemEggX: Int { get }
-    
+    /** Lucky Egg Menu Item: Will always be first after deletetion unless active Credit: */
+    var itemEggMenuItem: Int { get }
+    /** Tap Location for Egg Deployment */ 
+    var itemEggDeploy: Int { get }
     
     // MARK: - Login
     

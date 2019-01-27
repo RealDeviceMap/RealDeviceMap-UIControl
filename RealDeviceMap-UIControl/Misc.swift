@@ -408,6 +408,7 @@ extension XCTestCase {
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var done = false
+        var hasEgg = false
         var deleteResult:Bool
         var giftResult:Bool
         var eggResult:Bool
@@ -420,6 +421,9 @@ extension XCTestCase {
         while !done && deviceConfig.itemDeleteYs.count != 0 {
             let screenshot = XCUIScreen.main.screenshot()
 
+            if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
+                hasEgg = true
+            }
             
             if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEggActive(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 
@@ -446,6 +450,12 @@ extension XCTestCase {
             }
         }
         
+        if hasEgg {
+            deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+            deviceConfig.itemEggDeploy.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         Log.test("Closing Menu")
         sleep(1 * config.delayMultiplier)
