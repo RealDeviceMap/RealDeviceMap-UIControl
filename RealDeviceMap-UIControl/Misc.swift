@@ -421,7 +421,7 @@ extension XCTestCase {
             let screenshot = XCUIScreen.main.screenshot()
 
             
-            if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
+            if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEggActive(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 
                 deleteResult = itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index])
                 giftResult = itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index])
@@ -477,7 +477,14 @@ extension XCTestCase {
         )
     }
 
-
+    func itemIsEggActive(_ screenshot: XCUIScreenshot, x: Int, y: Int) - > Bool {
+        return screenshot.rgbAtLocation(
+            pos: (x: x, y: y),
+            min: (red: 0.8, green: 0.88, blue: 0.87),
+            max: (red: 0.9, green: 0.93, blue: 0.93)
+        )
+    }
+    
     func prepareEncounter() -> Bool {
         
         let start = Date()
