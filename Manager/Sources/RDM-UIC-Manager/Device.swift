@@ -180,7 +180,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
             } else if name == "ultraIV" {
                 hasUltraIV = true
             } else if name == "deployEggs" {
-                hasDeployEggs == true
+                hasDeployEggs = true
             }
         }
         
