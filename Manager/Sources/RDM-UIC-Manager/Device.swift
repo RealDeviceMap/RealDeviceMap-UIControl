@@ -39,6 +39,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var encoutnerMaxWait: Int
     var fastIV: Int
     var ultraIV: Int
+    var deployEggs: Bool
     
     override init() {
         self.uuid = ""
@@ -64,10 +65,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.encoutnerMaxWait = 7
         self.fastIV = 0
         self.ultraIV = 0
+        self.deployEggs = 0
         super.init()
     }
     
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encoutnerMaxWait: Int, fastIV: Int, ultraIV: Int) {
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encoutnerMaxWait: Int, fastIV: Int, ultraIV: Int, deployEggs: Bool) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -91,6 +93,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.encoutnerMaxWait = encoutnerMaxWait
         self.fastIV = fastIV
         self.ultraIV = ultraIV
+        self.deployEggs = deployEggs
         super.init()
     }
     
@@ -122,6 +125,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         encoutnerMaxWait = this.data["encoutnerMaxWait"] as? Int ?? 7
         fastIV = this.data["fastIV"] as? Int ?? 0
         ultraIV = this.data["ultraIV"] as? Int ?? 0
+        deployEggs = this.data["deployEggs"] as? Int ?? 0
     }
     
     static func getAll() -> [Device] {
@@ -173,6 +177,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
                 hasFastIV = true
             } else if name == "ultraIV" {
                 hasUltraIV = true
+            } else if name == "deployEggs" {
+                hasDeployEggs == true
             }
         }
         
@@ -181,6 +187,9 @@ class Device: SQLiteStORM, Equatable, Hashable {
         }
         if !hasUltraIV {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN ultraIV INTEGER DEFAULT 0")
+        }
+        if !hasDeployEggs {
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN deployEggs INTEGER DEFAULT 0")
         }
     }
     
