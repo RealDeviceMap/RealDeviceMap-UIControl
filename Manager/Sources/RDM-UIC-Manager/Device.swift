@@ -170,6 +170,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
         
         var hasFastIV = false
         var hasUltraIV = false
+        var hasDeployEggs = false
+        
         let rows = try sqlRows("PRAGMA table_info(\(table()))", params: [String]())
         for row in rows {
             let name = row.data["name"] as! String
