@@ -39,7 +39,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var encoutnerMaxWait: Int
     var fastIV: Int
     var ultraIV: Int
-    var deployEggs: Bool
+    var deployEggs: Int
     
     override init() {
         self.uuid = ""
