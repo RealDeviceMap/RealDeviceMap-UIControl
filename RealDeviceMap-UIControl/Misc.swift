@@ -409,9 +409,6 @@ extension XCTestCase {
         var index = 0
         var done = false
         var hasEgg = false
-        var deleteResult:Bool
-        var giftResult:Bool
-        var eggResult:Bool
         
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
@@ -427,30 +424,21 @@ extension XCTestCase {
             
             if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEggActive(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 
-                deleteResult = itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index])
-                giftResult = itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index])
-                eggResult = itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index])
-                Log.test("itemHasDelete: \(deleteResult), itemIsGift: \(giftResult), itemIsEgg: \(eggResult) at point (\(deviceConfig.itemDeleteX), \(deviceConfig.itemDeleteYs[index]))")
                 let delete = normalized.withOffset(CGVector(dx: deviceConfig.itemDeleteX, dy: deviceConfig.itemDeleteYs[index]))
                 delete.tap()
-                Log.test("Tapped itemDelete Button")
                 sleep(1 * config.delayMultiplier)
-                Log.test("Tapping and Holding Item Increase for Delete")
                 deviceConfig.itemDeleteIncrease.toXCUICoordinate(app: app).press(forDuration: 3)
-                Log.test("Tapping Delete")
                 deviceConfig.itemDeleteConfirm.toXCUICoordinate(app: app).tap()
                 
                 sleep(1 * config.delayMultiplier)
             } else if index + 1 < deviceConfig.itemDeleteYs.count {
                 index += 1
-                Log.test("index < count of ItemDeleteYs. Index incremented")
             } else {
-                Log.test("clearItems() call completed, Done = True")
                 done = true
             }
         }
         let deployEnabled = config.deployEggs
-
+        Log.test("deployEnabled: \(deployEnabled)")
         if hasEgg && deployEnabled {
             deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
