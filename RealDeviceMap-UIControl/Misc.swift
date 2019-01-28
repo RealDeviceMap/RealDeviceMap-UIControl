@@ -449,7 +449,7 @@ extension XCTestCase {
                 done = true
             }
         }
-        let deployEnabled = config.deployEggs
+        let deployEnabled = config.deployEggs.toBool()
 
         if hasEgg && deployEnabled {
             deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()

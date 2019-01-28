@@ -160,6 +160,7 @@ class CLI {
             Encoutner Max Wait: \(device.encoutnerMaxWait)
             Fast IV: \(device.fastIV.toBool())
             Ultra IV: \(device.ultraIV.toBool())
+            deployEggs: \(device.deployEggs.toBool())
             """
             
             print(row + "\n")
@@ -277,6 +278,11 @@ class CLI {
             defaultDevice.ultraIV = ultraIV!.toInt()
         }
         
+        let deployEggs = askBool("Deploy Eggs (empy = \(defaultDevice.deployEggs.toBool()))")
+        if deployEggs != nil {
+            defaultDevice.deployEggs = deployEggs!.toInt()
+        }
+
         do {
             try defaultDevice.save()
             clear()
@@ -399,6 +405,11 @@ class CLI {
         if ultraIV == nil {
             ultraIV = defaultDevice.ultraIV
         }
+
+        var deployEggs = askBool("Deploy Eggs (empty = \(defaultDevice.deployEggs.toBool()))")?.toInt()
+        if deployEggs == nil {
+            deployEggs = defaultDevice.deployEggs
+        }       
         
         device.uuid = uuid
         device.name = name
@@ -423,7 +434,8 @@ class CLI {
         device.encoutnerMaxWait = encoutnerMaxWait!
         device.fastIV = fastIV!
         device.ultraIV = ultraIV!
-        
+        device.deployEggs = deployEggs!
+
         do {
             try device.create()
             clear()
@@ -562,6 +574,11 @@ class CLI {
         let ultraIV = askBool("Ultra IV (empty = \(device.ultraIV.toBool()))")
         if ultraIV != nil {
             device.ultraIV = ultraIV!.toInt()
+        }
+
+        let deployEggs = askBool("Deploy Eggs (empty = \(device.deployEggs.toBool()))")
+        if deployEggs != nil {
+            device.deployEggs = deployEggs!.toInt()
         }
         
         do {
