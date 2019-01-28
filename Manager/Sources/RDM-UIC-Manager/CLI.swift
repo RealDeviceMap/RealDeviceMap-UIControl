@@ -578,7 +578,7 @@ class CLI {
 
         let deployEggs = askBool("Deploy Eggs (empty = \(device.deployEggs.toBool()))")
         if deployEggs != nil {
-            device.deployEggs = deployEggs.toInt()
+            device.deployEggs = deployEggs!.toInt()
         }
         
         do {
