@@ -1346,7 +1346,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     min: (0.40, 0.80, 0.60),
                     max: (0.50, 0.90, 0.65)) {
                     Log.info("Trying to fix persisting login")
-                    
+                    deviceConfig.closeFailedLogin.toXCUICoordinate(app: app).tap()
+                    Log.info("Should have just tapped the try another account button?")
                     }
 
                     Log.debug("App still in Startup")
