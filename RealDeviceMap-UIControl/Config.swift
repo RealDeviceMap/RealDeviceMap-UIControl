@@ -63,7 +63,7 @@ class Config {
         encoutnerMaxWait = enviroment["encoutnerMaxWait"]?.toUInt32() ?? 7
         fastIV = enviroment["fastIV"]?.toBool() ?? false
         ultraIV = enviroment["ultraIV"]?.toBool() ?? false
-        deployEggs = enviroment["DeployEggs"]?.toBool() ?? false
+        deployEggs = enviroment["deployEggs"]?.toBool() ?? false
     }
     
 }
