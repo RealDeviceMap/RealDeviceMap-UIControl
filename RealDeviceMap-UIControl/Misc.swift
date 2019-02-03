@@ -440,7 +440,7 @@ extension XCTestCase {
             }
         }
         Log.test("Arize whats this display: \(config.deployEggs)")
-        var deployEnabled = config.deployEggs
+        var deployEnabled: Bool = config.deployEggs
         Log.test("deployEnabled: \(deployEnabled)")
         if hasEgg && deployEnabled {
             deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()
