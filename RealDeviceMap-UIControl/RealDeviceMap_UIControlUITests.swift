@@ -1340,7 +1340,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     Log.info("App Started")
                     isStarted = true
                     sleep(1 * config.delayMultiplier)
-                } else {
+                }else {
+                    if screenshotComp.rgbAtLocation(
+                    pos: deviceConfig.closeFailedLogin,
+                    min: (0.40, 0.80, 0.60),
+                    max: (0.50, 0.90, 0.65)) {
+                    Log.info("Trying to fix persisting login")
+                    deviceConfig.closeFailedLogin.toXCUICoordinate(app: app).tap()
+                    Log.info("Should have just tapped the try another account button?")
+                    }
+
                     Log.debug("App still in Startup")
                     if startupCount == 30 {
                         Log.info("App stuck in Startup. Restarting...")

@@ -48,7 +48,9 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var compareWarningR: DeviceCoordinate {
         return DeviceCoordinate(x: 1400, y: 1800, scaler: scaler)
     }
-    
+    var closeFailedLogin: DeviceCoordinate {
+        return DeviceCoordinate(x: 768, y: 1360, scaler: scaler)
+    }
     
     // MARK: - Misc
     
