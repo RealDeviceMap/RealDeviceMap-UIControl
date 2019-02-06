@@ -1345,9 +1345,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     pos: deviceConfig.closeFailedLogin,
                     min: (0.40, 0.80, 0.60),
                     max: (0.50, 0.90, 0.65)) {
-                    Log.info("Trying to fix persisting login")
+					Log.info("Failed Login Screen Detected")
+                    Log.info("Dr. OTxID36774 Loves You")
                     deviceConfig.closeFailedLogin.toXCUICoordinate(app: app).tap()
-                    Log.info("Should have just tapped the try another account button?")
+                    Log.info("Clicking Retry on Failed Login Popup")
                     }
 
                     Log.debug("App still in Startup")
