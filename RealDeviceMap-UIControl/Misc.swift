@@ -447,11 +447,12 @@ extension XCTestCase {
             sleep(1 * config.delayMultiplier)
             deviceConfig.itemEggDeploy.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-
-        deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
-        Log.test("Closing Menu")
-        sleep(1 * config.delayMultiplier)
+        } else {
+            deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+            Log.test("Closing Menu")
         }
+        sleep(1 * config.delayMultiplier)
+        
     }
     
     func itemHasDelete(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
