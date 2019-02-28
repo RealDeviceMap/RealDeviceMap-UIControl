@@ -173,22 +173,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if result == nil {
                 Log.error("Failed to connect to Backend!")
                 self.shouldExit = true
+                sleep(1 * self.config.delayMultiplier)
                 return
             } else if result!["status"] as? String != "ok" {
                 let error = result!["error"] ?? "? (no error sent)"
                 Log.error("Backend returned a error: \(error)")
                 self.shouldExit = true
+                sleep(1 * self.config.delayMultiplier)
                 return
             }
             let data = result!["data"] as? [String: Any]
             if data == nil {
                 Log.error("Backend did not include data!")
                 self.shouldExit = true
+                sleep(1 * self.config.delayMultiplier)
                 return
             }
             if data!["assigned"] as? Bool == false {
                 Log.error("Device is not assigned to an instance!")
                 self.shouldExit = true
+                sleep(1 * self.config.delayMultiplier)
                 return
             }
             if let firstWarningTimestamp = data!["first_warning_timestamp"] as? Int {
@@ -393,8 +397,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
                         screenshotComp.rgbAtLocation(
                             pos: deviceConfig.loginBannedText,
-                            min: (red: 0.0, green: 0.75, blue: 0.55),
-                            max: (red: 1.0, green: 0.90, blue: 0.70))
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                     Log.error("Account \(username!) is banned.")
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
@@ -1324,8 +1328,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         max: (red: 1.0, green: 0.90, blue: 0.70)) &&
                     screenshotComp.rgbAtLocation(
                         pos: deviceConfig.loginBannedText,
-                        min: (red: 0.0, green: 0.75, blue: 0.55),
-                        max: (red: 1.0, green: 0.90, blue: 0.70))
+                        min: (red: 0.0, green: 0.0, blue: 0.0),
+                        max: (red: 0.3, green: 0.5, blue: 0.5))
                     ) {
                         Log.info("Clicking \"try again\" on failed login screen")
                         deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
