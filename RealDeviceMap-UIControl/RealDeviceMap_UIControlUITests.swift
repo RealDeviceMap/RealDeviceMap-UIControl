@@ -1317,13 +1317,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     UserDefaults.standard.synchronize()
                     self.shouldExit = true
                     return
-                } else if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.startup,
-                    min: (0.00, 0.75, 0.55),
-                    max: (1.00, 0.90, 0.70)) {
-                    Log.info("App Started")
-                    isStarted = true
-                    sleep(1 * config.delayMultiplier)
                 } else if (
                     screenshotComp.rgbAtLocation(
                         pos: deviceConfig.loginBanned,
@@ -1341,6 +1334,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         sleep(7 * config.delayMultiplier)
                         shouldExit = true
                         return
+                } else if screenshotComp.rgbAtLocation(
+                    pos: deviceConfig.startup,
+                    min: (0.00, 0.75, 0.55),
+                    max: (1.00, 0.90, 0.70)) {
+                    Log.info("App Started")
+                    isStarted = true
+                    sleep(1 * config.delayMultiplier)
                 } else {
                     Log.debug("App still in Startup")
                     if startupCount == 30 {
