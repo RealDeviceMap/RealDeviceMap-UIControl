@@ -250,23 +250,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             var count = 0
             while !loaded {
                 let screenshotComp = XCUIScreen.main.screenshot()
-                if (screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.loginBanned,
-                    min: (red: 0.0, green: 0.75, blue: 0.55),
-                    max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginBannedText,
-                        min: (red: 0.0, green: 0.75, blue: 0.55),
-                        max: (red: 1.0, green: 0.90, blue: 0.70))
-                    ) {
-                    deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
-                    username = nil
-                    isLoggedIn = false
-                    sleep(7 * config.delayMultiplier)
-                    shouldExit = true
-                    return
-                }
-                else if screenshotComp.rgbAtLocation(
+                if screenshotComp.rgbAtLocation(
                     pos: self.deviceConfig.startup,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
                     max: (red: 1.0, green: 0.90, blue: 0.70)) {
@@ -1340,17 +1324,24 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     Log.info("App Started")
                     isStarted = true
                     sleep(1 * config.delayMultiplier)
-                }else {
-                    if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.closeFailedLogin,
-                    min: (0.40, 0.80, 0.60),
-                    max: (0.50, 0.90, 0.65)) {
-					Log.info("Failed Login Screen Detected")
-                    Log.info("Dr. OTxID36774 Loves You")
-                    deviceConfig.closeFailedLogin.toXCUICoordinate(app: app).tap()
-                    Log.info("Clicking Retry on Failed Login Popup")
-                    }
-
+                } else if (
+                    screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.loginBanned,
+                        min: (red: 0.0, green: 0.75, blue: 0.55),
+                        max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                    screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.loginBannedText,
+                        min: (red: 0.0, green: 0.75, blue: 0.55),
+                        max: (red: 1.0, green: 0.90, blue: 0.70))
+                    ) {
+                        Log.info("Clicking \"try again\" on failed login screen")
+                        deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
+                        username = nil
+                        isLoggedIn = false
+                        sleep(7 * config.delayMultiplier)
+                        shouldExit = true
+                        return
+                } else {
                     Log.debug("App still in Startup")
                     if startupCount == 30 {
                         Log.info("App stuck in Startup. Restarting...")
