@@ -36,7 +36,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var maxEmptyGMO: Int
     var startupLocationLat: Double
     var startupLocationLon: Double
-    var encoutnerMaxWait: Int
+    var encounterMaxWait: Int
+    var encounterDelay: Double
     var fastIV: Int
     var ultraIV: Int
     var deployEggs: Int
@@ -62,14 +63,15 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.maxEmptyGMO = 5
         self.startupLocationLat = 1
         self.startupLocationLon = 1
-        self.encoutnerMaxWait = 7
+        self.encounterMaxWait = 7
+        self.encounterDelay = 1.0
         self.fastIV = 0
         self.ultraIV = 0
         self.deployEggs = 0
         super.init()
     }
     
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encoutnerMaxWait: Int, fastIV: Int, ultraIV: Int, deployEggs: Int) {
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -90,7 +92,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.maxEmptyGMO = maxEmptyGMO
         self.startupLocationLat = startupLocationLat
         self.startupLocationLon = startupLocationLon
-        self.encoutnerMaxWait = encoutnerMaxWait
+        self.encounterMaxWait = encounterMaxWait
+        self.encounterDelay = encounterDelay
         self.fastIV = fastIV
         self.ultraIV = ultraIV
         self.deployEggs = deployEggs
@@ -122,7 +125,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
         maxEmptyGMO = this.data["maxEmptyGMO"] as? Int ?? 5
         startupLocationLat = this.data["startupLocationLat"] as? Double ?? 1
         startupLocationLon = this.data["startupLocationLon"] as? Double ?? 1
-        encoutnerMaxWait = this.data["encoutnerMaxWait"] as? Int ?? 7
+        encounterMaxWait = this.data["encounterMaxWait"] as? Int ?? 7
+        encounterDelay = this.data["encounterDelay"] as? Double ?? 1.0
         fastIV = this.data["fastIV"] as? Int ?? 0
         ultraIV = this.data["ultraIV"] as? Int ?? 0
         deployEggs = this.data["deployEggs"] as? Int ?? 0
@@ -171,6 +175,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
         var hasFastIV = false
         var hasUltraIV = false
         var hasDeployEggs = false
+        var hasEncounterMaxWait = false
+        var hasEncounterDelay = false
         
         let rows = try sqlRows("PRAGMA table_info(\(table()))", params: [String]())
         for row in rows {
@@ -181,6 +187,10 @@ class Device: SQLiteStORM, Equatable, Hashable {
                 hasUltraIV = true
             } else if name == "deployEggs" {
                 hasDeployEggs = true
+            } else if name == "encounterMaxWait" {
+                hasEncounterMaxWait = true
+            } else if name == "encounterDelay" {
+                hasEncounterDelay = true
             }
         }
         
@@ -193,6 +203,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         if !hasDeployEggs {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN deployEggs INTEGER DEFAULT 0")
         }
+        if !hasEncounterMaxWait {
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN encounterMaxWait INTEGER DEFAULT 7")
+        }
+        if !hasEncounterDelay {
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN encounterDelay DOUBLE DEFAULT 1.0") } 
     }
     
 }
