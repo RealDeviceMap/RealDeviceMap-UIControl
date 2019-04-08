@@ -29,6 +29,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var emptyGmoCount = 0
     var pokemonEncounterId: String?
     var encounterDistance = 0.0
+    var encounterDelay = 1.0
     
     var level: Int = 0
     
@@ -1195,12 +1196,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.targetMaxDistance = self.config.targetMaxDistance
                                 self.currentLocation = (lat, lon)
                                 self.waitForData = true
+                                self.encounterDelay = self.config.encounterDelay
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 sleep(1 * self.config.delayMultiplier)
                                 if !self.config.ultraIV {
                                     self.freeScreen()
                                     if self.config.fastIV {
+                                        usleep(UInt32(1000000.0 * Double(self.config.encounterDelay)))
                                         self.app.swipeLeft()
                                     }
                                 }

@@ -30,7 +30,8 @@ class Config {
     var maxEmptyGMO: Int
     var maxNoEncounterCount: Int
     var startupLocation: (lat: Double, lon: Double)
-    var encoutnerMaxWait: UInt32
+    var encounterMaxWait: UInt32
+    var encounterDelay: Double
     var fastIV: Bool
     var ultraIV: Bool
     var deployEggs: Bool
@@ -60,7 +61,8 @@ class Config {
         let startupLat = enviroment["startupLocationLat"]?.toDouble() ?? 1.0
         let startupLon = enviroment["startupLocationLon"]?.toDouble() ?? 1.0
         startupLocation = (startupLat, startupLon)
-        encoutnerMaxWait = enviroment["encoutnerMaxWait"]?.toUInt32() ?? 7
+        encounterMaxWait = enviroment["encounterMaxWait"]?.toUInt32() ?? 7
+        encounterDelay = enviroment["encounterDelay"]?.toDouble() ?? 1.0
         fastIV = enviroment["fastIV"]?.toBool() ?? false
         ultraIV = enviroment["ultraIV"]?.toBool() ?? false
         deployEggs = enviroment["deployEggs"]?.toBool() ?? false

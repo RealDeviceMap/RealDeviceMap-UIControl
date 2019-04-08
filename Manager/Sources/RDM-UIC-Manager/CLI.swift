@@ -157,7 +157,8 @@ class CLI {
             Max Empty GMO: \(device.maxEmptyGMO)
             Startup Location Lat: \(device.startupLocationLat)
             Startup Location Lon: \(device.startupLocationLon)
-            Encoutner Max Wait: \(device.encoutnerMaxWait)
+            Encounter Max Wait: \(device.encounterMaxWait)
+            Encounter Delay: \(device.encounterDelay)
             Fast IV: \(device.fastIV.toBool())
             Ultra IV: \(device.ultraIV.toBool())
             deployEggs: \(device.deployEggs.toBool())
@@ -263,11 +264,16 @@ class CLI {
             defaultDevice.startupLocationLon = startupLocationLon!
         }
         
-        let encoutnerMaxWait = askInt("Encoutner Max Wait (empty = \(defaultDevice.encoutnerMaxWait))")
-        if encoutnerMaxWait  != nil {
-            defaultDevice.encoutnerMaxWait = encoutnerMaxWait!
+        let encounterMaxWait = askInt("Encounter Max Wait (empty = \(defaultDevice.encounterMaxWait))")
+        if encounterMaxWait  != nil {
+            defaultDevice.encounterMaxWait = encounterMaxWait!
         }
         
+        let encounterDelay = askDouble("Encounter Delay (empty = \(defaultDevice.encounterDelay))")
+        if encounterDelay  != nil {
+            defaultDevice.encounterDelay = encounterDelay!
+        }
+
         let fastIV = askBool("Fast IV (empty = \(defaultDevice.fastIV.toBool()))")
         if fastIV != nil {
             defaultDevice.fastIV = fastIV!.toInt()
@@ -391,11 +397,15 @@ class CLI {
             startupLocationLon = defaultDevice.startupLocationLon
         }
         
-        var encoutnerMaxWait = askInt("Encoutner Max Wait (empty = \(defaultDevice.encoutnerMaxWait))")
-        if encoutnerMaxWait == nil {
-            encoutnerMaxWait = defaultDevice.encoutnerMaxWait
+        var encounterMaxWait = askInt("Encounter Max Wait (empty = \(defaultDevice.encounterMaxWait))")
+        if encounterMaxWait == nil {
+            encounterMaxWait = defaultDevice.encounterMaxWait
         }
-        
+
+        var encounterDelay = askDouble("Encounter Delay (empty = \(defaultDevice.encounterDelay))")
+        if encounterDelay == nil {
+            encounterDelay = defaultDevice.encounterDelay
+        }
         var fastIV = askBool("Fast IV (empty = \(defaultDevice.fastIV.toBool()))")?.toInt()
         if fastIV == nil {
             fastIV = defaultDevice.fastIV
@@ -431,7 +441,8 @@ class CLI {
         device.maxEmptyGMO = maxEmptyGMO!
         device.startupLocationLat = startupLocationLat!
         device.startupLocationLon = startupLocationLon!
-        device.encoutnerMaxWait = encoutnerMaxWait!
+        device.encounterMaxWait = encounterMaxWait!
+        device.encounterDelay = encounterDelay!
         device.fastIV = fastIV!
         device.ultraIV = ultraIV!
         device.deployEggs = deployEggs!
@@ -561,11 +572,17 @@ class CLI {
         if startupLocationLon  != nil {
             device.startupLocationLon = startupLocationLon!
         }
-        let encoutnerMaxWait = askInt("Encoutner Max Wait (empty = \(device.encoutnerMaxWait))")
-        if encoutnerMaxWait  != nil {
-            device.encoutnerMaxWait = encoutnerMaxWait!
+        
+        let encounterMaxWait = askInt("Encounter Max Wait (empty = \(device.encounterMaxWait))")
+        if encounterMaxWait  != nil {
+            device.encounterMaxWait = encounterMaxWait!
         }
         
+        let encounterDelay = askDouble("Encounter Delay (empty = \(device.encounterDelay))")
+        if encounterDelay  != nil {
+            device.encounterDelay = encounterDelay!
+        }
+
         let fastIV = askBool("Fast IV (empty = \(device.fastIV.toBool()))")
         if fastIV != nil {
             device.fastIV = fastIV!.toInt()

@@ -174,8 +174,13 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
-            key = "encoutnerMaxWait"
-            value = "$(encoutnerMaxWait)"
+            key = "encounterMaxWait"
+            value = "$(encounterMaxWait)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "encounterDelay"
+            value = "$(encounterDelay)"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable

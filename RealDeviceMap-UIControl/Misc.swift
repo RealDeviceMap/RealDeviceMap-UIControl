@@ -186,6 +186,7 @@ extension XCTestCase {
                         blue > 0.3 && blue < 0.4
                     ) {
                     Log.debug("Pokemon Found!")
+                    usleep(UInt32(1000000 * config.encounterDelay))
                     normalized.withOffset(CGVector(dx: x * 10, dy: y * 10)).tap()
                     return true
                 }
@@ -492,7 +493,7 @@ extension XCTestCase {
     func prepareEncounter() -> Bool {
         
         let start = Date()
-        while UInt32(Date().timeIntervalSince(start)) <= (config.encoutnerMaxWait * config.delayMultiplier) {
+        while UInt32(Date().timeIntervalSince(start)) <= (config.encounterMaxWait * config.delayMultiplier) {
             
             self.freeScreen(run: false)
             
