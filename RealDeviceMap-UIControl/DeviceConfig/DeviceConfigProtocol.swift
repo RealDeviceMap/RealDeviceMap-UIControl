@@ -55,6 +55,7 @@ protocol DeviceConfigProtocol {
     
     /** Coord to click at to enter Pokemon encounter. */
     var encounterPokemonUpper: DeviceCoordinate { get }
+    var encounterPokemonUpperHigher: DeviceCoordinate { get }
     /** Coord to click at to enter Pokemon encounter. */
     var encounterPokemonLower: DeviceCoordinate { get }
     /** Green pixel in green button of no AR(+) button. */
