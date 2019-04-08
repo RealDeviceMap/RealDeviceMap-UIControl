@@ -1254,7 +1254,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         
                                         self.freeScreen()
                                         self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
+                                        usleep(300000)
                                         self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
+	                                    usleep(300000)
+	                                    self.deviceConfig.encounterPokemonUpperHigher.toXCUICoordinate(app: self.app).tap()
                                     } else {
                                         var count = 0
                                         var done = false
@@ -1264,7 +1267,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                                 self.app.swipeLeft()
                                             }
                                             self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
+                                            usleep(300000)
                                             self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
+	                                        usleep(300000)
+	                                        self.deviceConfig.encounterPokemonUpperHigher.toXCUICoordinate(app: self.app).tap()
                                             sleep(2 * self.config.delayMultiplier)
                                             done = self.prepareEncounter()
                                             count += 1
