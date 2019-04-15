@@ -1371,13 +1371,21 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     func zoom(out: Bool, app: XCUIApplication, coordStartup: XCUICoordinate) {
         
         if out != zoomedOut {
-            
-            self.freeScreen()
-            
+
             self.lock.lock()
             self.currentLocation = self.config.startupLocation
             self.lock.unlock()
+            
             sleep(2 * self.config.delayMultiplier)
+            
+            self.freeScreen()
+            
+            sleep(2 * self.config.delayMultiplier)
+
+            self.freeScreen()
+            
+            sleep(2 * self.config.delayMultiplier)
+
             if out {
                 coordStartup.tap()
                 app.swipeUp()
