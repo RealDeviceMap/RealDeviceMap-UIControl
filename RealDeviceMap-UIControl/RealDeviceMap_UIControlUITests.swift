@@ -32,6 +32,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var encounterDelay = 1.0
     
     var level: Int = 0
+    var systemAlertMonitorToken: NSObjectProtocol? = nil
     
     var shouldExit: Bool {
         get {
@@ -162,6 +163,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         newCreated = false
         needsLogout = false
         
+        if let systemAlertMonitorToken = self.systemAlertMonitorToken {
+            Log.info("Unregistered UI Interruption Monitor")
+            removeUIInterruptionMonitor(systemAlertMonitorToken)
+            self.systemAlertMonitorToken = nil
+        }
+        
         app.terminate()
 
         // Wake up device if screen is off (recently rebooted), then press home to get to home screen.
@@ -239,6 +246,39 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         DeviceConfig.setup(app: app)
         
+        Log.info("Registered UI Interruption Monitor")
+        systemAlertMonitorToken = addUIInterruptionMonitor(withDescription: "System Dialog") {
+            (alert) -> Bool in
+            let okButton = alert.buttons["OK"]
+            if okButton.exists {
+                okButton.tap()
+            }
+            
+            let allowButton = alert.buttons["Allow"]
+            if allowButton.exists {
+                allowButton.tap()
+            }
+            
+            let dismissButton = alert.buttons["Dismiss"]
+            if dismissButton.exists {
+                dismissButton.tap()
+            }
+            
+            let trustButton = alert.buttons["Trust"]
+            if trustButton.exists {
+                trustButton.tap()
+            }
+            
+            let notNowButton = alert.buttons["Not Now"]
+            if notNowButton.exists {
+                notNowButton.tap()
+            }
+            
+            return true
+        }
+
+        app.tap()        
+
     }
     
     func part1LoginSetup() {
@@ -1400,6 +1440,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     }
     
     func runAll() {
+        defer {
+            if let systemAlertMonitorToken = self.systemAlertMonitorToken {
+                Log.info("Unregistered UI Interruption Monitor")
+                removeUIInterruptionMonitor(systemAlertMonitorToken)
+            }
+        }
         
         while true {
             switch lastTestIndex {
