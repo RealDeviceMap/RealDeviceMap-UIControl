@@ -864,13 +864,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     
                     isStartupCompleted = true
                     
-                    if needsLogout {
-                        needsLogout = false
+                    if self.needsLogout {
                         let success = self.logOut()
                         if !success {
                             return
                         }
                         
+                        self.needsLogout = false
                         self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "logged_out"], blocking: true) { (result) in }
                         self.username = nil
                         self.isLoggedIn = false
@@ -901,6 +901,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 Log.info("Account is outside min/max Level. Current: \(self.level) Min/Max: \(minLevel)/\(maxLevel). Logging out!")
                                 let success = self.logOut()
                                 if !success {
+                                    self.needsLogout = true
                                     return
                                 }
                                 
@@ -922,6 +923,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     Log.info("Account has a warning and tried to scan for Pokemon. Logging out!")
                                     let success = self.logOut()
                                     if !success {
+                                        self.needsLogout = true
                                         return
                                     }
                                     
@@ -974,6 +976,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut()
                                     if !success {
+                                        self.needsLogout = true
                                         return
                                     }
                                     
@@ -1032,6 +1035,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut()
                                     if !success {
+                                        self.needsLogout = true
                                         return
                                     }
                                     
@@ -1047,6 +1051,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     Log.debug("Switching account. Delay too large.")
                                     let success = self.logOut()
                                     if !success {
+                                        self.needsLogout = true
                                         return
                                     }
                                     
@@ -1153,6 +1158,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             } else if action == "switch_account" {
                                 let success = self.logOut()
                                 if !success {
+                                    self.needsLogout = true
                                     return
                                 }
                                 
@@ -1168,6 +1174,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     let success = self.logOut()
                                     if !success {
+                                        self.needsLogout = true
                                         return
                                     }
                                     
