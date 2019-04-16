@@ -151,6 +151,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         backendControlerURL = URL(string: config.backendURLBaseString + "/controler")!
         backendRawURL = URL(string: config.backendURLBaseString + "/raw")!
         continueAfterFailure = true
+        needsLogout = false
         
     }
     
@@ -160,7 +161,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         shouldExit = false
         newCreated = false
-        needsLogout = false
         
         app.terminate()
 
