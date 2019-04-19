@@ -28,8 +28,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var targetMaxDistance = 250.0
     var emptyGmoCount = 0
     var pokemonEncounterId: String?
+    var listScatterPokemon = false
+    var scatterPokemon = [[String: Any]]()
     var encounterDistance = 0.0
-    var encounterDelay = 1.0
     
     var level: Int = 0
     var systemAlertMonitorToken: NSObjectProtocol? = nil
@@ -677,6 +678,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         let currentLocation = self.currentLocation
         let targetMaxDistance = self.targetMaxDistance
         let pokemonEncounterId = self.pokemonEncounterId
+        let listScatterPokemon = self.listScatterPokemon
         self.lock.unlock()
         
         var jsonData: [String: Any]?
@@ -692,6 +694,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             jsonData!["target_max_distnace"] = targetMaxDistance
             jsonData!["username"] = self.username
             jsonData!["pokemon_encounter_id"] = pokemonEncounterId
+            jsonData!["list_scatter_pokemon"] = listScatterPokemon
+            jsonData!["uuid"] = self.config.uuid
             
             let url = self.backendRawURL
             
@@ -740,6 +744,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     let newLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
                                     self.encounterDistance = newLocation.distance(from: oldLocation)
                                     self.pokemonEncounterId = nil
+                                    if self.listScatterPokemon {
+                                        self.listScatterPokemon = false
+                                        self.scatterPokemon = data?["scatter_pokemon"] as? [[String: Any]] ?? [[String: Any]]()
+                                    }
                                     self.waitForData = false
                                     toPrint = "[DEBUG] Got Data and found Pokemon"
                                 } else {
@@ -791,11 +799,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         let server = Server()
-        try! server.start(onPort: UInt16(self.config.port))
-        server.route(.get, "loc", handleLocRequest)
-        server.route(.post, "loc", handleLocRequest)
-        server.route(.get, "data", handleDataRequest)
-        server.route(.post, "data", handleDataRequest)
+        try! server.start(port: self.config.port)
+        server.route(.GET, "loc", handleLocRequest)
+        server.route(.POST, "loc", handleLocRequest)
+        server.route(.GET, "data", handleDataRequest)
+        server.route(.POST, "data", handleDataRequest)
     
         Log.info("Server running at localhost:\(config.port)")
         
@@ -1243,16 +1251,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.targetMaxDistance = self.config.targetMaxDistance
                                 self.currentLocation = (lat, lon)
                                 self.waitForData = true
-                                self.encounterDelay = self.config.encounterDelay
+                                self.listScatterPokemon = true
+                                self.scatterPokemon = [[String: Any]]()
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 sleep(1 * self.config.delayMultiplier)
                                 if !self.config.ultraIV {
                                     self.freeScreen()
-                                    if self.config.fastIV {
-                                        usleep(UInt32(1000000.0 * Double(self.config.encounterDelay)))
-                                        self.app.swipeLeft()
-                                    }
                                 }
                                 
                                 var success = false
@@ -1286,15 +1291,17 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     let delay = 1.0 + (3 / 75 * self.encounterDistance)
                                     self.lock.unlock()
                                     usleep(UInt32(delay * 1000000.0 * Double(self.config.delayMultiplier)))
+                                    usleep(UInt32(1000000.0 * Double(self.config.encounterDelay)))
                                     
                                     if self.config.fastIV {
                                         
-                                        // Check if previus spin had quest data
+                                        // Check if previus scan had iv data
                                         self.lock.lock()
                                         if self.gotIV {
                                             self.noEncounterCount = 0
                                         } else {
                                             self.noEncounterCount += 1
+                                            self.app.swipeLeft()
                                         }
                                         self.gotIV = false
                                         self.lock.unlock()
@@ -1338,6 +1345,51 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         self.shouldExit = true
                                         return
                                     }
+                                    
+                                    self.lock.lock()
+                                    let scatterPokemon = self.scatterPokemon
+                                    self.lock.unlock()
+                                    
+                                    for pokemon in scatterPokemon {
+                                     
+                                        let lat = pokemon["lat"] as? Double ?? 0
+                                        let lon = pokemon["lon"] as? Double ?? 0
+                                        
+                                        self.lock.lock()
+                                        self.currentLocation = (lat, lon)
+                                        let delay = 1.0 + (3 / 75 * self.encounterDistance)
+                                        self.lock.unlock()
+                                        usleep(UInt32(delay * 1000000.0 * Double(self.config.delayMultiplier)))
+                                        usleep(UInt32(1000000.0 * Double(self.config.encounterDelay)))
+                                        
+                                        if self.config.fastIV {
+                                            self.freeScreen()
+                                            self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
+                                            usleep(300000)
+                                            self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
+                                            usleep(300000)
+                                            self.deviceConfig.encounterPokemonUpperHigher.toXCUICoordinate(app: self.app).tap()
+                                        } else {
+                                            var count = 0
+                                            var done = false
+                                            while count < 3 && !done {
+                                                self.freeScreen()
+                                                if count != 0 {
+                                                    self.app.swipeLeft()
+                                                }
+                                                self.deviceConfig.encounterPokemonLower.toXCUICoordinate(app: self.app).tap()
+                                                usleep(300000)
+                                                self.deviceConfig.encounterPokemonUpper.toXCUICoordinate(app: self.app).tap()
+                                                usleep(300000)
+                                                self.deviceConfig.encounterPokemonUpperHigher.toXCUICoordinate(app: self.app).tap()
+                                                sleep(2 * self.config.delayMultiplier)
+                                                done = self.prepareEncounter()
+                                                count += 1
+                                            }
+                                        }
+                                        
+                                    }
+                                    
                                 }
                                 
                             } else {
