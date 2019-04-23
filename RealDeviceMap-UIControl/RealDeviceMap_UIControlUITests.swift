@@ -800,13 +800,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         Log.info("Server running at localhost:\(config.port)")
         
         // Start Heartbeat
-        let heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: true) { (_) in
-            self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "heartbeat"]) { (cake) in /* The cake is a lie! */ }
+        DispatchQueue(label: "heartbeat_sender").async {
+            while true {
+                sleep(5)
+                self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "heartbeat"]) { (cake) in /* The cake is a lie! */ }
+            }
         }
         
-        defer {
-            heartbeatTimer.invalidate()
-        }
         
         // Time to start the actuall work
         runLoop()
