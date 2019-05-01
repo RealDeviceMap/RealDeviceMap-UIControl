@@ -60,7 +60,7 @@ class DeviceRatio1333: DeviceConfigProtocol {
     // MARK: - Logout
     
     var settingsButton: DeviceCoordinate {
-        return DeviceCoordinate(x: 1445, y: 410, scaler: scaler)
+        return DeviceCoordinate(x: 1445, y: 270, scaler: scaler)
     }
     var logoutDragStart: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1980, scaler: scaler)
