@@ -24,6 +24,19 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 807, y: 177, scaler: scaler)
     }
+    //Find coords by scaling to 640x1136
+    var ageVerification : DeviceCoordinate {
+        return DeviceCoordinate(x: 222, y: 815, scaler: scaler)
+    }
+    var ageVerificationYear : DeviceCoordinate {
+        return DeviceCoordinate(x: 475, y: 690, scaler: scaler)
+    }
+    var ageVerificationDragStart : DeviceCoordinate {
+        return DeviceCoordinate(x: 475, y: 1025, scaler: scaler)
+    }
+    var ageVerificationDragEnd : DeviceCoordinate {
+        return DeviceCoordinate(x: 475, y: 380, scaler: scaler)
+    }
     var passenger: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1567, scaler: scaler)
     }

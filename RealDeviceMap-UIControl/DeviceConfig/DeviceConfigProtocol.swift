@@ -15,6 +15,11 @@ protocol DeviceConfigProtocol {
     var startup: DeviceCoordinate { get }
     /** Green pixel in green button of log in button if not logged in. */
     var startupLoggedOut: DeviceCoordinate { get }
+    /** Green pixel in green button of submit if not age verified. */
+    var ageVerification: DeviceCoordinate { get }
+    var ageVerificationYear: DeviceCoordinate { get }
+    var ageVerificationDragStart: DeviceCoordinate { get }
+    var ageVerificationDragEnd: DeviceCoordinate { get }
     /** ? pixel in ? of logged out. */ //TODO: - Where?
     var passenger: DeviceCoordinate { get }
     /** ? pixel in ? of weather popup */ //TODO: - Where?

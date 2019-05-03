@@ -320,6 +320,28 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(1 * config.delayMultiplier)
             }
             
+            let screenshotComp = XCUIScreen.main.screenshot()
+            if screenshotComp.rgbAtLocation(
+                pos: self.deviceConfig.ageVerification,
+                min: (0.15, 0.33, 0.17),
+                max: (0.25, 0.43, 0.27)) {
+                Log.debug("App is in age verification.")
+                
+                print("[STATUS] Age verification")
+                //Open the year select
+                deviceConfig.ageVerificationYear.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+                //Slide
+                deviceConfig.ageVerificationDragStart.toXCUICoordinate(app: app).press(forDuration: 0.1, thenDragTo: deviceConfig.ageVerificationDragEnd.toXCUICoordinate(app: app))
+                sleep(1 * config.delayMultiplier)
+                //Tap to select
+                deviceConfig.ageVerificationDragStart.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+                //Submit
+                deviceConfig.ageVerification.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+            }
+
             sleep(1 * config.delayMultiplier)
             deviceConfig.loginNewPlayer.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
