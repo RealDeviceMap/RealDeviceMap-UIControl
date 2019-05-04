@@ -274,6 +274,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 notNowButton.tap()
             }
             
+            let alwaysButton = alert.buttons["Always"]
+            if alwaysButton.exists {
+                alwaysButton.tap()
+            }
+            
             return true
         }
 
