@@ -394,11 +394,26 @@ extension XCTestCase {
         app.swipeRight()
         sleep(1 * config.delayMultiplier)
     
-        for _ in 0...2 {
-            deviceConfig.questDelete.toXCUICoordinate(app: app).tap()
-            sleep(1 * config.delayMultiplier)
-            deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
-            sleep(1 * config.delayMultiplier)
+        let screenshotComp = XCUIScreen.main.screenshot()
+        
+        if screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27))
+        {
+            Log.test("Clearing stacked quests")
+            
+            for _ in 0...2 {
+                deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+                deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+            }
+        } else {
+            Log.test("Clearing quests")
+            for _ in 0...2 {
+                deviceConfig.questDelete.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+                deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+            }
         }
 
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
