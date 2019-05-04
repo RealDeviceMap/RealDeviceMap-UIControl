@@ -53,9 +53,9 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var itemDeleteYs: [Int] {
         return [
             252,
-            520,
+            516,
             785,
-            1050,
+            1053,
             1315
         ]
     }
