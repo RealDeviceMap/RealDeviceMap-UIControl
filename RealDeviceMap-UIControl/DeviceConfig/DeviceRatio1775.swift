@@ -132,6 +132,9 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var questDelete: DeviceCoordinate {
         return DeviceCoordinate(x: 598, y: 530, scaler: scaler)
     }
+    var questDeleteWithStack: DeviceCoordinate {
+        return DeviceCoordinate(x: 600, y: 700, scaler: scaler)
+    }
     var questDeleteConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
     }
