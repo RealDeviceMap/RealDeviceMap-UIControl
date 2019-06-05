@@ -75,7 +75,8 @@ protocol DeviceConfigProtocol {
     var encounterPokemonRun: DeviceCoordinate { get }
     /** Rex pixel in in switch Pokeball button. */
     var encounterPokeball: DeviceCoordinate { get }
-    
+    /** Check White Pixel in AR button above Scroll bar of Toggel */
+    var checkARPersistence: DeviceCoordinate { get }
     
     // MARK: - Pokestop Encounter
     
@@ -160,8 +161,9 @@ protocol DeviceConfigProtocol {
     var compareTutorialL: DeviceCoordinate { get }
     /** Dark pixel in warning initial Tutorial screen on the right side. */
     var compareTutorialR: DeviceCoordinate { get }
-    /** Next button in bottom left. */
+    /** Next button in bottom right. */
     var tutorialNext: DeviceCoordinate { get }
+    /** Character Setup Main Selection buttons */
     /** Are you done? -> Yes. */
     var tutorialStyleDone: DeviceCoordinate { get }
     /** Ok button on catch overview screen. */
@@ -174,10 +176,33 @@ protocol DeviceConfigProtocol {
     var tutorialUsernameOk: DeviceCoordinate { get }
     /** Confirm username button. */
     var tutorialUsernameConfirm: DeviceCoordinate { get }
+    /** Green On Willow */
+    var tutorialProfessorCheck: DeviceCoordinate { get }
+    /** Name Says It All **/
     
+    /** Back Button in Bottom Left of Avatar Setup **/
+    var tutorialBack: DeviceCoordinate { get }
+    /** Center of the Item Menu in Avatar Customization **/
+    var tutorialSelectY: Int { get }
+    /** X Location of Physical Options in Avatar Customization **/
+    var tutorialPhysicalXs: [Int] { get }
+    /** Location of all Hair Color Options that are not Default **/
+    var tutorialHairXs: [Int] { get }
+    /** Location of all Eye Color Options that are not Default **/
+    var tutorialEyeXs: [Int] { get }
+    /** Location of all Skin Color Options that are not Default **/
+    var tutorialSkinXs: [Int] { get }
+    /** X button in center of screen below Avatar Items **/
+    var tutorialStyleBack: DeviceCoordinate { get }
+    /** Pink Change button above avatar items when selecting new item **/
+    var tutorialStyleChange: DeviceCoordinate { get }
     
-    // MARK: - Adevture Sync
-    
+    var tutorialMaleStyleXs: [Int] { get }
+    var tutorialFemaleStyleXs: [Int] { get }
+    var tutorialPoseAndBackpackX: Int { get }
+    var tutorialSharedStyleXs: [Int] { get }
+
+    // MARK: - Adventure Sync
     /** Pink Pixel in background of "Rewards" in adventure sync popup */
     var adventureSyncRewards: DeviceCoordinate { get }
     /** Green/Blue or Pixel in claim/close button of adventure sync popup */

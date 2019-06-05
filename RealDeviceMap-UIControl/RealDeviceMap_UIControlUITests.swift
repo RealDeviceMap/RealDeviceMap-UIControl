@@ -175,7 +175,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         Log.info("Waking up the device")
         XCUIDevice.shared.press(.home)
         XCUIDevice.shared.press(.home)
-
+        
         // Register on backend
         postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "init"], blocking: true) { (result) in
             if result == nil {
@@ -304,7 +304,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     pos: self.deviceConfig.startup,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
                     max: (red: 1.0, green: 0.90, blue: 0.70)) {
-                    Log.info("Tried to log in but allready logged in.")
+                    Log.info("Tried to log in but already logged in.")
                     needsLogout = true
                     isLoggedIn = true
                     newLogIn = false
@@ -517,6 +517,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     
     func part5TutorialStart() {
         
+        
         if shouldExit || username == nil || !isLoggedIn || !config.enableAccountManager {
             return
         }
@@ -537,51 +538,95 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 
                 return
             }
+			
+            let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
             
-            Log.info("Solving Tutorial for \(username!)")
+            Log.tutorial("Solving Tutorial for \(username!)")
             
+            /* Start Reworked Changes Here */
+            /* 9 clicks to get through initial Willow Speech */
             for _ in 1...9 {
                 deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
                 usleep(UInt32(1500000 * config.delayMultiplier))
             }
             sleep(2 * config.delayMultiplier)
-            for _ in 1...4 {
-                deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
-                usleep(UInt32(1500000 * config.delayMultiplier))
-            }
-            
-            deviceConfig.tutorialStyleDone.toXCUICoordinate(app: app).tap()
-            sleep(3 * config.delayMultiplier)
+            var gender:Bool = tutorialGenderSelection()
+            tutorialPhysicalFeature()
+            tutorialStyleSelection(gender)
+            Log.tutorial("Begin Willow Encounter Speech")
             deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
             usleep(UInt32(1500000 * config.delayMultiplier))
             deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
             sleep(3 * config.delayMultiplier)
-            
+            Log.tutorial("Willow Encounter Speech Ended, Beginning search for Encounter")
+
             while !findAndClickPokemon() {
                 app.swipeLeft()
             }
+            // Add Pixel Check to check for AR+ Settings and do not tap if on, else clear it //
             
-            sleep(4 * config.delayMultiplier)
-            deviceConfig.encounterNoAR.toXCUICoordinate(app: app).tap()
-            sleep(2 * config.delayMultiplier)
-            deviceConfig.encounterNoARConfirm.toXCUICoordinate(app: app).tap()
-            sleep(3 * config.delayMultiplier)
-            deviceConfig.encounterTmp.toXCUICoordinate(app: app).tap()
-            sleep(3 * config.delayMultiplier)
-            for _ in 1...5 {
-                app.swipeUp()
+            sleep(6 * config.delayMultiplier)
+            
+            let ConfirmARScreenshot = XCUIScreen.main.screenshot()
+            Log.tutorial("Checking for AR+ Mode")
+            if !ConfirmARScreenshot.rgbAtLocation(
+                pos: deviceConfig.checkARPersistence,
+                min: (red: 0.94, green: 0.94, blue: 0.94),
+                max: (red: 1.0, green: 1.0, blue: 1.0)) {
+                Log.tutorial("AR Mode Prompts detected, Closing and Disabling")
+                sleep(4 * config.delayMultiplier)
+                deviceConfig.encounterNoAR.toXCUICoordinate(app: app).tap()
+                sleep(2 * config.delayMultiplier)
+                deviceConfig.encounterNoARConfirm.toXCUICoordinate(app: app).tap()
                 sleep(3 * config.delayMultiplier)
+                deviceConfig.encounterTmp.toXCUICoordinate(app: app).tap()
+                
             }
-            sleep(10 * config.delayMultiplier)
-            deviceConfig.tutorialCatchOk.toXCUICoordinate(app: app).tap()
-            sleep(7 * config.delayMultiplier)
-            deviceConfig.tutorialCatchClose.toXCUICoordinate(app: app).tap()
             sleep(3 * config.delayMultiplier)
+            Log.tutorial("AR+ Disabled")
+            
+            var CaptureAttempts: Int = 0
+            var Captured: Bool = false
+            
+            while !Captured {
+                
+                for _ in 1...5 {
+                    app.swipeUp()
+                    sleep(3 * config.delayMultiplier)
+                }
+                sleep(10 * config.delayMultiplier)
+                
+                let screenshotComp = XCUIScreen.main.screenshot()
+                
+                if screenshotComp.rgbAtLocation(
+                    pos: deviceConfig.tutorialStyleDone,
+                    min: (red: 0.95, green: 0.99, blue: 0.94),
+                    max: (red: 0.98, green: 1.00, blue: 0.96)) {
+                    
+                    sleep(1 * config.delayMultiplier)
+                    deviceConfig.tutorialCatchOk.toXCUICoordinate(app: app).tap()
+                    sleep(7 * config.delayMultiplier)
+                    deviceConfig.tutorialCatchClose.toXCUICoordinate(app: app).tap()
+                    sleep(3 * config.delayMultiplier)
+                    
+                Captured = true
+                } else {
+                    CaptureAttempts += 1
+                    if CaptureAttempts > 3 {
+                        Log.tutorial("ERROR 26 is the devil")
+                        postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_warning"], blocking: true) { (result) in }
+                        app.terminate()
+                        
+                    }
+                }
+            }
+            
+            
             for _ in 1...2 {
                 deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
                 sleep(1 * config.delayMultiplier)
             }
-            self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "tutorial_done"], blocking: true) { (result) in }
+            
         }
         
     }
@@ -593,12 +638,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         if newLogIn {
-            
             app.typeText(username!)
             
         }
-        
     }
+    
     
     func part7TutorialEnd() {
         
@@ -612,18 +656,34 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             deviceConfig.tutorialKeybordDone.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
             deviceConfig.tutorialUsernameOk.toXCUICoordinate(app: app).tap()
-            sleep(1 * config.delayMultiplier)
+            sleep(5 * config.delayMultiplier)
             deviceConfig.tutorialUsernameConfirm.toXCUICoordinate(app: app).tap()
-            sleep(4 * config.delayMultiplier)
+            sleep(5 * config.delayMultiplier)
             
-            for _ in 1...6 {
-                deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
+            var Completed = false
+            
+            while !Completed {
+                
+                let screenshotComp = XCUIScreen.main.screenshot()
+                
+                if screenshotComp.rgbAtLocation(
+                pos: deviceConfig.tutorialProfessorCheck,
+                min: (red: 0.85, green: 0.95, blue: 0.00),
+                max: (red: 0.92, green: 1.00, blue: 0.05)) {
+                    Log.tutorial("Tapping Willow on Pokestop Introduction")
+                    deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+                    sleep(2 * config.delayMultiplier)
+                } else {
+                    Log.tutorial("Willow Prompt Completed!")
+                    Completed = true
+                }
             }
+            
             sleep(1 * config.delayMultiplier)
             deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
             
             Log.info("Tutorial Done. Restarting...")
+            self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "tutorial_done"], blocking: true) { (result) in }
             newCreated = true
             newLogIn = false
             app.launch()

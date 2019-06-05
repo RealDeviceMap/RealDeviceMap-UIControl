@@ -118,7 +118,9 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var encounterPokeball: DeviceCoordinate {
         return DeviceCoordinate(x: 1365, y: 1696, scaler: scaler)
     }
-    
+    var checkARPersistence: DeviceCoordinate {
+        return DeviceCoordinate(x: 555, y: 100, scaler: scaler)
+    }
     
     // MARK: - Pokestop Encounter
     
@@ -265,6 +267,10 @@ class DeviceRatio1333: DeviceConfigProtocol {
         return DeviceCoordinate(x: 1400, y: 1949, scaler: scaler)
     }
     
+    var tutorialBack: DeviceCoordinate {
+        return DeviceCoordinate(x: 200, y: 1949, scaler: scaler)
+    }
+    
     var tutorialStyleDone: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1024, scaler: scaler)
     }
@@ -288,7 +294,91 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var tutorialUsernameConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
     }
+    var tutorialProfessorCheck: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+       var tutorialSelectY: Int {
+        return scaler.scaleY(y: 0)
+    }
     
+    
+    var tutorialPhysicalXs: [Int] {
+        return [
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0)
+        ]
+    }
+    
+    var tutorialHairXs: [Int] {
+        return [
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0)
+        ]
+    }
+    
+    var tutorialEyeXs: [Int] {
+        return [
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0)    
+        ]
+    }
+    var tutorialSkinXs: [Int] {
+        return [
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0)
+        ]
+    }
+
+    var tutorialStyleBack: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+
+    var tutorialStyleChange: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+
+    var tutorialInvalidUser: DeviceCoordinate {
+        return DeviceCoordinate(x: 0,y: 0, scaler: scaler)
+    }
+
+    var tutorialUserTextbox: DeviceCoordinate {
+        return DeviceCoordinate(x: 0,y: 0, scaler: scaler)
+    }
+
+    var tutorialMaleStyleXs: [Int] {
+        return [
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+        ]
+    }
+
+    var tutorialFemaleStyleXs: [Int] {
+        return [
+            scaler.scaleX(x: 0), 
+            scaler.scaleX(x: 0), 
+            scaler.scaleX(x: 0), 
+            scaler.scaleX(x: 0) 
+        ]
+    }
+
+    var tutorialPoseAndBackpackX: Int {
+        return scaler.scaleX(x: 0)
+    }
+    
+    var tutorialSharedStyleXs: [Int] {
+        return [
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0),
+            scaler.scaleX(x: 0)
+        ]
+    }
     
     // MARK: - Adevture Sync
     var adventureSyncRewards: DeviceCoordinate {
@@ -319,6 +409,5 @@ class DeviceRatio1333: DeviceConfigProtocol {
     
     var teamSelectWelcomeOk: DeviceCoordinate {
         return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
-    }
-    
+    }   
 }

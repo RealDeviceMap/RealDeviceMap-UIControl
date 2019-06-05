@@ -9,8 +9,8 @@ import Foundation
 
 class DeviceIPhoneNormal: DeviceRatio1775 {
 
-    // This has no porpous expect to show how a override for a specific resolution works
-    // All values not overriden here default to DeviceRatio562s values
+    
+    // All values not overriden here default to DeviceRatio1775s values
     override var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 375, y: 690)
     }
@@ -31,6 +31,9 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     }
     override var closeFailedLogin: DeviceCoordinate {
         return DeviceCoordinate(x: 383, y: 779)
+    }
+    override var loginNewPlayer: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 925)
     }
     
     

@@ -118,7 +118,9 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var encounterPokeball: DeviceCoordinate {
         return DeviceCoordinate(x: 570, y: 990, scaler: scaler)
     }
-    
+    var checkARPersistence: DeviceCoordinate {
+        return DeviceCoordinate(x: 557, y: 101, scaler: scaler)
+    }
     
     // MARK: - Pokestop Encounter
     
@@ -288,6 +290,89 @@ class DeviceRatio1775: DeviceConfigProtocol {
     
     var tutorialUsernameConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
+    }
+
+    var tutorialProfessorCheck: DeviceCoordinate {
+        return DeviceCoordinate(x: 390, y: 866, scaler: scaler)
+    }
+
+    var tutorialSelectY: Int {
+        return scaler.scaleY(y: 930)
+    }
+    var tutorialBack: DeviceCoordinate {
+        return DeviceCoordinate(x: 75, y: 1085, scaler: scaler)
+    }
+    
+    var tutorialPhysicalXs: [Int] {
+        return [
+            scaler.scaleX(x: 150),
+            scaler.scaleX(x: 320),
+            scaler.scaleX(x: 490)
+        ]
+    }
+    
+    var tutorialHairXs: [Int] {
+        return [
+            scaler.scaleX(x: 35),
+            scaler.scaleX(x: 350),
+            scaler.scaleX(x: 530)
+        ]
+    }
+    
+    var tutorialEyeXs: [Int] {
+        return [
+            scaler.scaleX(x: 265),
+            scaler.scaleX(x: 440),
+            scaler.scaleX(x: 615)
+            
+        ]
+    }
+    
+    var tutorialSkinXs: [Int] {
+        return [
+            scaler.scaleX(x: 40),
+            scaler.scaleX(x: 390),
+            scaler.scaleX(x: 570)
+        ]
+    }
+    
+    var tutorialStyleBack: DeviceCoordinate {
+        return DeviceCoordinate(x:320, y:1085, scaler: scaler)
+    }
+    
+    var tutorialStyleChange: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 760, scaler: scaler)
+    }
+    
+    var tutorialMaleStyleXs: [Int] {
+        return [
+            scaler.scaleX(x: 95),
+            scaler.scaleX(x: 230),
+            scaler.scaleX(x: 365),
+            scaler.scaleX(x: 500),
+        ]
+    }
+
+    var tutorialSharedStyleXs: [Int] {
+        return [
+            scaler.scaleX(x: 85),
+            scaler.scaleX(x: 260),
+            scaler.scaleX(x: 450),
+            scaler.scaleX(x: 620)
+        ]
+    }
+    
+    var tutorialFemaleStyleXs: [Int] {
+        return [
+            scaler.scaleX(x: 95), 
+            scaler.scaleX(x: 230),
+            scaler.scaleX(x: 500),
+            scaler.scaleX(x: 625)
+        ]
+    }
+
+    var tutorialPoseAndBackpackX: Int {
+        return scaler.scaleX(x: 320)
     }
     
     

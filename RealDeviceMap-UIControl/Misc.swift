@@ -124,7 +124,7 @@ extension XCTestCase {
             completion(resultDict)
         }
     }
-    
+	
     func checkHasWarning(screenshot: XCUIScreenshot?=nil) -> Bool {
         
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
@@ -161,6 +161,297 @@ extension XCTestCase {
             return false
         }
     
+    }
+    /*
+    // Planned detection for partially completed reloads, but doesn't seem worth it now :shrug:
+    func failedTutorialMethod1(screenshot: XCUIScreenshot?=nil) -> Bool {
+        
+        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.compareTutorialL,
+            min: (red: 0.3, green: 0.5, blue: 0.6),
+            max: (red: 0.4, green: 0.6, blue: 0.7)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.compareWarningR,
+                min: (red: 0.3, green: 0.5, blue: 0.6),
+                max: (red: 0.4, green: 0.6, blue: 0.7)) {
+            return true
+        } else {
+            return false
+        }
+        
+    }
+    
+    func failedTutorialMethod2(screenshot: XCUIScreenshot?=nil) -> Bool{
+    
+        //let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        /*
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.tutorialProfessorCheck,
+            min: (red: 0.85, green: 0.9, blue: 0.00),
+            max: (red: 0.92, green: 1.0, blue: 0.03)) {
+            return
+        }
+        */
+        return true
+        
+    }
+    
+    func failedTutorialMethod3(screenshot: XCUIScreenshot?=nil) -> Bool{
+        
+        //let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        
+        /*if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.tutorialProfessorCheck,
+            min: (red: 0.85, green: 0.9, blue: 0.00),
+            max: (red: 0.92, green: 1.0, blue: 0.03)) {
+            return
+        }*/
+        return true
+    }
+    
+    func failedTutorialMethod4(screenshot: XCUIScreenshot?=nil) -> Bool {
+        
+        //let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        
+        /*if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.tutorialProfessorCheck,
+            min: (red: 0.85, green: 0.9, blue: 0.00),
+            max: (red: 0.92, green: 1.0, blue: 0.03)) {
+            return
+        }*/
+        return true
+    }
+    */
+    func tutorialGenderSelection() -> Bool {
+        Log.tutorial("Calling tutorialGenderSelection()")
+        
+        let GenderBool = Bool.random()
+        Log.tutorial("Gender Boolean is: \(GenderBool)")
+        if GenderBool {
+            Log.tutorial("Selecting Male Avatar")
+            /** Gender Bool is true, chooses Male **/
+            deviceConfig.tutorialBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+        } else {
+            Log.tutorial("Selecting Female Avatar")
+            /** Gender Bool is False, chooses Female **/
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+        }
+        
+        deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+        usleep(UInt32(1500000 * config.delayMultiplier))
+        return GenderBool
+    }
+    
+    func tutorialPhysicalFeature() {
+        
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx:0,dy:0))
+        
+        Log.tutorial("Begin Random Physical Feature Selection")
+        
+        let i = Int.random(in: 0...2)
+        
+        let selectPhysical = normalized.withOffset(CGVector(dx: deviceConfig.tutorialPhysicalXs[i], dy: deviceConfig.tutorialSelectY))
+        selectPhysical.tap()
+        usleep(UInt32(1500000 * config.delayMultiplier))
+        // Break Off into switch to Handle the fact each features X array
+        switch i {
+
+        case 0:
+            Log.tutorial("Choosing Random Hair Color")
+            
+            let randomInt = Int.random(in: 0...2)
+            
+            let newFeature = normalized.withOffset(CGVector(dx: deviceConfig.tutorialHairXs[randomInt], dy: deviceConfig.tutorialSelectY))
+            newFeature.tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            Log.tutorial("Accepting New Hair Color")
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            Log.tutorial("Completed Random Hair Color Selection")
+            
+        case 1:
+            Log.tutorial("Choosing Random Eye Color")
+            
+            let randomInt = Int.random(in: 0...2)
+            
+            let newFeature = normalized.withOffset(CGVector(dx:deviceConfig.tutorialEyeXs[randomInt], dy: deviceConfig.tutorialSelectY))
+            newFeature.tap()
+            
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            Log.tutorial("Accepting New Eye Color")
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            Log.tutorial("Completed Random Eye Color Selection")
+            
+        case 2:
+            Log.tutorial("Choosing Random Skin Color")
+            
+            let randomInt = Int.random(in: 0...2)
+            
+            let newFeature = normalized.withOffset(CGVector(dx:deviceConfig.tutorialSkinXs[randomInt], dy: deviceConfig.tutorialSelectY))
+            
+            newFeature.tap()
+            
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            Log.tutorial("Accepting New Hair Color")
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(1500000 * config.delayMultiplier))
+            Log.tutorial("Completed Random Hair Color Selection")
+            
+        default:
+            Log.error("Something Had Gone Terribly Fucking Wrong")
+            app.launch()
+        }
+    }
+    
+    func tutorialStyleSelection(_ gender: Bool) {
+        Log.info("Passed Modified Gender Bool and its now: \(gender)")
+        
+        Log.tutorial("Beginning Random Accessory Selection")
+        
+        var poseX: Int
+        var hatX: Int
+        var shirtX: Int
+        var backpackX: Int
+        
+        switch gender {
+        case true:
+            poseX = deviceConfig.tutorialMaleStyleXs[0]
+            hatX = deviceConfig.tutorialMaleStyleXs[1]
+            shirtX = deviceConfig.tutorialMaleStyleXs[2]
+            backpackX = deviceConfig.tutorialMaleStyleXs[3]
+        case false:
+            poseX = deviceConfig.tutorialFemaleStyleXs[0]
+            hatX = deviceConfig.tutorialFemaleStyleXs[1]
+            shirtX = deviceConfig.tutorialFemaleStyleXs[2]
+            backpackX = deviceConfig.tutorialFemaleStyleXs[3]
+        default:
+            Log.error("SHITS FUCKED in gender switch Case in StyleSelection")
+        }
+        
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0,dy: 0))
+        let styleGroup = Int.random(in:0...3)
+        let styleType = Int.random(in:0...3)
+        
+        switch styleGroup {
+        case 0: //Poses
+            
+            Log.tutorial("Changing Pose")
+            let select = normalized.withOffset(CGVector(dx: poseX, dy:deviceConfig.tutorialSelectY))
+            select.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            let selectPose = normalized.withOffset(CGVector(dx: deviceConfig.tutorialPoseAndBackpackX, dy:deviceConfig.tutorialSelectY))
+            selectPose.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            Log.tutorial("Accepting Item Style Change")
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+        
+        case 1: //Hats
+            
+            Log.tutorial("Randomly Selected Hat")
+            let select = normalized.withOffset(CGVector(dx: hatX, dy:deviceConfig.tutorialSelectY))
+            select.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            let selectShirt = normalized.withOffset(CGVector(dx: deviceConfig.tutorialSharedStyleXs[styleType], dy:deviceConfig.tutorialSelectY))
+            selectShirt.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            Log.tutorial("Accepting Item Style Change")
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            
+        case 2: //Shirts
+            
+            Log.tutorial("Randomly Selected Shirt")
+            let select = normalized.withOffset(CGVector(dx: shirtX, dy:deviceConfig.tutorialSelectY))
+            select.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            let selectShirt = normalized.withOffset(CGVector(dx: deviceConfig.tutorialSharedStyleXs[styleType], dy:deviceConfig.tutorialSelectY))
+            selectShirt.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            Log.tutorial("Accepting Item Style Change")
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            
+        case 3: //Backpack
+            
+            Log.tutorial("Changing Backpack")
+            let select = normalized.withOffset(CGVector(dx: backpackX, dy:deviceConfig.tutorialSelectY))
+            select.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            let selectBackpack = normalized.withOffset(CGVector(dx: deviceConfig.tutorialPoseAndBackpackX, dy:deviceConfig.tutorialSelectY))
+            selectBackpack.tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            Log.tutorial("Accepting Item Style Change")
+            deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialStyleBack.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+            usleep(UInt32(2000000 * config.delayMultiplier))
+            
+        default:
+            Log.error("SHITS FUCKED in styleGroup switch Case in StyleSelection")
+        }
+        
+        let screenshotComp = XCUIScreen.main.screenshot()
+        
+        while !screenshotComp.rgbAtLocation(
+            pos: deviceConfig.tutorialStyleDone,
+            min: (red: 0.40, green: 0.78, blue: 0.57),
+            max: (red: 0.50 , green: 0.88 , blue: 0.67)
+            ) {
+                Log.tutorial("Missed a Click Somewhere, Try Upping ConfigDelay\nCorrecting by completing avatar selection")
+                deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
+                usleep(UInt32(2000000 * config.delayMultiplier))
+                
+        }
+        Log.tutorial("Accepting Avatar Customization")
+        /* Accept Avatar Selection */
+        deviceConfig.tutorialStyleDone.toXCUICoordinate(app: app).tap()
+        sleep(3 * config.delayMultiplier)
+        
+    }
+    
+    func tutorialGenUsername(_ length: Int) -> String {
+        let usableCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0..<length).map{ _ in usableCharacters.randomElement()!})
     }
     
     func findAndClickPokemon(screenshot: XCUIScreenshot?=nil) -> Bool {

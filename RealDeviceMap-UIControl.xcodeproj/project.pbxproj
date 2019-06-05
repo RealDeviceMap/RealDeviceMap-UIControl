@@ -265,7 +265,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8F7CBC5DD5DF383735CB4CA1 /* [CP] Check Pods Manifest.lock */ = {
@@ -466,14 +466,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3847GWWNP4;
 				INFOPLIST_FILE = "RealDeviceMap-UIControl/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "yourname.RealDeviceMap-UIControl";
+				PRODUCT_BUNDLE_IDENTIFIER = "Random.RealDeviceMap-UIControl";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -485,14 +485,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM =;
 				INFOPLIST_FILE = "RealDeviceMap-UIControl/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "yourname.RealDeviceMap-UIControl";
+				PRODUCT_BUNDLE_IDENTIFIER = "Random.RealDeviceMap-UIControl";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -504,7 +504,7 @@
 			baseConfigurationReference = CE212FE7DC432FB311B7EF39 /* Pods-RealDeviceMap-UIControlUITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3847GWWNP4;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/RealDeviceMap-UIControl",
@@ -515,7 +515,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "yourname.RealDeviceMap-UIControlUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Random.RealDeviceMap-UIControlUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -528,7 +528,7 @@
 			baseConfigurationReference = 3F46BE95C792EAE6E0B7CF21 /* Pods-RealDeviceMap-UIControlUITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3847GWWNP4;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/RealDeviceMap-UIControl",
@@ -539,7 +539,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "yourname.RealDeviceMap-UIControlUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Random.RealDeviceMap-UIControlUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
