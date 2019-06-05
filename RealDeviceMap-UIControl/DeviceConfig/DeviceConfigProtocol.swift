@@ -36,6 +36,8 @@ protocol DeviceConfigProtocol {
     var compareWarningL: DeviceCoordinate { get }
     /** Black pixel in warning (First Strike) popup on the right side. */
     var compareWarningR: DeviceCoordinate { get }
+	/** Trying to Fix The persisting Login Issue **/
+	var closeFailedLogin: DeviceCoordinate { get }
     
     // MARK: - Misc
     /** Button to opten nenu. Also white pixel in Pokeball on main screen. */

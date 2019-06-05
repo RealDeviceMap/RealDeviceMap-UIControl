@@ -29,8 +29,8 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var encounterTmp: DeviceCoordinate {
         return DeviceCoordinate(x: 0, y: 0)
     }
-    override var loginNewPlayer: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 925)
+    override var closeFailedLogin: DeviceCoordinate {
+        return DeviceCoordinate(x: 383, y: 779)
     }
     
     
