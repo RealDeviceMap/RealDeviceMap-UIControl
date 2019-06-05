@@ -47,7 +47,7 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
         return 686
     }
     override var itemGiftX: Int {
-        return 154
+        return 156
     }
     override var itemEggX: Int {
         return 173
