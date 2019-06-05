@@ -416,6 +416,7 @@ extension XCTestCase {
             }
         }
 
+        self.freeScreen()
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         Log.test("Clearing quests Time to Complete: \(String(format: "%.3f", Date().timeIntervalSince(start)))s")
         sleep(1 * config.delayMultiplier)
