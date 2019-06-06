@@ -7,7 +7,7 @@ let package = Package(
     products: [],
     dependencies: [
         .package(url: "https://github.com/PerfectlySoft/Perfect-HTTPServer.git", from: "3.0.18"),
-        .package(url: "https://github.com/SwiftORM/SQLite-StORM.git", from: "3.0.0")
+        .package(url: "https://github.com/SwiftORM/SQLite-StORM.git", from: "3.1.0")
     ],
     targets: [
         .target(name: "RDM-UIC-Manager", dependencies: ["PerfectHTTPServer","SQLiteStORM"])
