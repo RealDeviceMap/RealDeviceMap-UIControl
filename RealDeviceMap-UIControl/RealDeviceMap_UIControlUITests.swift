@@ -833,6 +833,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     let newLocation = CLLocation(latitude: self.currentLocation!.lat, longitude: self.currentLocation!.lon)
                                     self.encounterDistance = newLocation.distance(from: oldLocation)
                                     self.pokemonEncounterId = nil
+                                    if self.listScatterPokemon {
+                                        self.listScatterPokemon = false
+                                        self.scatterPokemon = data?["scatter_pokemon"] as? [[String: Any]] ?? [[String: Any]]()
+                                    }
                                     self.waitForData = false
                                     toPrint = "[DEBUG] Got Data and found Pokemon"
                                 } else {
@@ -1342,6 +1346,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.currentLocation = (lat, lon)
                                 self.waitForData = true
                                 self.encounterDelay = self.config.encounterDelay
+                                self.listScatterPokemon = true
+                                self.scatterPokemon = [[String: Any]]()
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 sleep(1 * self.config.delayMultiplier)
