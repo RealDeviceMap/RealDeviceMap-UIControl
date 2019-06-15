@@ -712,18 +712,27 @@ class CLI {
             }
             
         }
-        printTable(table)
+        var tableSorted = [(header: String, rows: [String])]()
+        for header in headers {
+            if let column = table.first(where: { (column) -> Bool in
+                return column.key == header
+            }) {
+                tableSorted.append((header: header, rows: column.value))
+            }
+        }
+        
+        printTable(tableSorted)
     }
     
-    private func printTable(_ table: [String: [String]]) {
+    private func printTable(_ table: [(header: String, rows: [String])]) {
         
         var columnSizes = [Int]()
         for column in table {
             var maxSize = 0
-            if column.key.count > maxSize {
-                maxSize = column.key.count
+            if column.header.count > maxSize {
+                maxSize = column.header.count
             }
-            for row in column.value {
+            for row in column.rows {
                 if row.count > maxSize {
                     maxSize = row.count
                 }
@@ -738,14 +747,14 @@ class CLI {
                 rows.append("")
                 rows.append("")
             }
-            rows[0] += getPrintFill(column.key, to: columnSizes[x], with: " ")
+            rows[0] += getPrintFill(column.header, to: columnSizes[x], with: " ")
             rows[1] += getPrintFill("", to: columnSizes[x], with: "=")
             if x < table.count - 1 {
                 rows[0] += "|"
                 rows[1] += "|"
             }
             var i = 2
-            for row in column.value {
+            for row in column.rows {
                 if x == 0 {
                     rows.append("")
                 }

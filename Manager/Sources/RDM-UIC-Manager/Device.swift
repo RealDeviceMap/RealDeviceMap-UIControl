@@ -147,6 +147,9 @@ class Device: SQLiteStORM, Equatable, Hashable {
                 rows.append(row)
             }
         }
+        rows.sort { (lhs, rhs) -> Bool in
+            return lhs.name < rhs.name
+        }
         return rows
     }
     
