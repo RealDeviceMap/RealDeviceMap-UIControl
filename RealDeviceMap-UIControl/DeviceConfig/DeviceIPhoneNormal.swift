@@ -12,7 +12,7 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     
     // All values not overriden here default to DeviceRatio1775s values
     override var startup: DeviceCoordinate {
-        return DeviceCoordinate(x: 375, y: 690)
+        return DeviceCoordinate(x: 375, y: 960)
     }
     override var loginTerms2Text: DeviceCoordinate {
         return DeviceCoordinate(x: 188, y: 450)
