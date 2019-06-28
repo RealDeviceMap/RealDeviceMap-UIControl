@@ -19,7 +19,7 @@ class DeviceRatio1775: DeviceConfigProtocol {
     // MARK: - Startup
     
     var startup: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 590, scaler: scaler)
+        return DeviceCoordinate(x: 280, y: 800, scaler: scaler)
     }
     var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 175, scaler: scaler)
