@@ -1292,7 +1292,22 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 if success {
                                     self.freeScreen()
                                     Log.debug("Spinning Pokestop")
+                                    var attempts = 0
                                     self.spin()
+                                    while (attempts < 5){
+                                        attempts += 1
+                                        self.lock.lock()
+                                        if !self.gotQuest {
+                                            self.lock.unlock()
+                                            usleep(100000 * self.config.delayMultiplier)
+                                            self.freeScreen()
+                                            self.app.swipeLeft()
+                                            self.spin()
+                                        } else {
+                                            self.lock.unlock()
+                                            break
+                                        }
+                                    }
                                     currentQuests += 1
                                     currentItems += self.config.itemsPerStop
                                 }
