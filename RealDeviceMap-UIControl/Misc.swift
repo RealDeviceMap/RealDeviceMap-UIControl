@@ -491,8 +491,7 @@ extension XCTestCase {
     
     func freeScreen(run: Bool=true) {
         
-        var screenshot = XCUIScreen.main.screenshot()
-        screenshot = clickPassengerWarning()
+        var screenshot = clickPassengerWarning()
         
         if screenshot.rgbAtLocation(
             pos: deviceConfig.encounterNoAR,
@@ -523,7 +522,6 @@ extension XCTestCase {
                 sleep(2 * config.delayMultiplier)
                 deviceConfig.adventureSyncButton.toXCUICoordinate(app: app).tap()
                 sleep(2 * config.delayMultiplier)
-                screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning()
             } else if screenshot.rgbAtLocation(
                 pos: deviceConfig.adventureSyncButton,
@@ -532,7 +530,6 @@ extension XCTestCase {
             ) {
                 deviceConfig.adventureSyncButton.toXCUICoordinate(app: app).tap()
                 sleep(2 * config.delayMultiplier)
-                screenshot = XCUIScreen.main.screenshot()
                 screenshot = clickPassengerWarning()
             }
         }
@@ -569,7 +566,6 @@ extension XCTestCase {
             sleep(2 * config.delayMultiplier)
             deviceConfig.teamSelectWelcomeOk.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
         }
         
@@ -582,7 +578,6 @@ extension XCTestCase {
             sleep(1 * config.delayMultiplier)
             deviceConfig.closeWeather2.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
-            screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
         }
         
@@ -593,7 +588,6 @@ extension XCTestCase {
         ) {
             deviceConfig.encounterPokemonRun.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
-            screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
         }
 
@@ -603,7 +597,6 @@ extension XCTestCase {
             max: (red: 1.00, green: 1.00, blue: 1.00)) {
             deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
-            screenshot = XCUIScreen.main.screenshot()
             screenshot = clickPassengerWarning()
         }
 
