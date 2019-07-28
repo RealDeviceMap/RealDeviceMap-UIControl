@@ -82,6 +82,12 @@ protocol DeviceConfigProtocol {
     
     /** Coord to click at to open Pokestop. */
     var openPokestop: DeviceCoordinate { get }
+    /** Upper R logo on girl **/
+    var rocketLogoGirl: DeviceCoordinate { get }
+    /** Upper R logo on guy **/
+    var rocketLogoGuy: DeviceCoordinate { get }
+    /** Invasion battle screen close **/
+    var closeInvasion: DeviceCoordinate { get }
 
     
     // MARK: - Quest Clearing

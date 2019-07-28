@@ -669,6 +669,31 @@ extension XCTestCase {
         sleep(1 * config.delayMultiplier)
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
+        
+        let screenshotComp = XCUIScreen.main.screenshot()
+        
+        // Rocket invasion detection
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.rocketLogoGirl,
+            min: (red: 0.62, green: 0.24, blue: 0.13),
+            max: (red: 0.87, green: 0.36, blue: 0.20)) ||
+           screenshotComp.rgbAtLocation(
+            pos: deviceConfig.rocketLogoGuy,
+            min: (red: 0.62, green: 0.24, blue: 0.13),
+            max: (red: 0.87, green: 0.36, blue: 0.20))
+        {
+            Log.info("Rocket invasion encountered")
+        
+            // Tap through dialog 4 times and wait 3 seconds between each
+            for _ in 1...4 {
+                deviceConfig.openPokestop.toXCUICoordinate(app: app).tap()
+                sleep(3 * config.delayMultiplier)
+            }
+            
+            // Close battle invasion screen
+            deviceConfig.closeInvasion.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+        }
     }
     
     func clearQuest() {

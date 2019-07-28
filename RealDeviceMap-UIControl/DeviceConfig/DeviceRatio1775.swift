@@ -127,6 +127,15 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var openPokestop: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 500, scaler: scaler)
     }
+    var rocketLogoGirl: DeviceCoordinate {
+        return DeviceCoordinate(x: 390, y: 468, scaler: scaler)
+    }
+    var rocketLogoGuy: DeviceCoordinate {
+        return DeviceCoordinate(x: 302, y: 463, scaler: scaler)
+    }
+    var closeInvasion: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 1000, scaler: scaler)
+    }
     
     
     // MARK: - Quest Clearing
