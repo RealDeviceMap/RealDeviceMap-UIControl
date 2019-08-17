@@ -162,6 +162,7 @@ class CLI {
             Fast IV: \(device.fastIV.toBool())
             Ultra IV: \(device.ultraIV.toBool())
             deployEggs: \(device.deployEggs.toBool())
+            Enabled: \(device.enabled.toBool())
             """
             
             print(row + "\n")
@@ -287,6 +288,11 @@ class CLI {
         let deployEggs = askBool("Deploy Eggs (empy = \(defaultDevice.deployEggs.toBool()))")
         if deployEggs != nil {
             defaultDevice.deployEggs = deployEggs!.toInt()
+        }
+        
+        let enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")
+        if enabled != nil {
+            defaultDevice.enabled = enabled!.toInt()
         }
 
         do {
@@ -419,7 +425,12 @@ class CLI {
         var deployEggs = askBool("Deploy Eggs (empty = \(defaultDevice.deployEggs.toBool()))")?.toInt()
         if deployEggs == nil {
             deployEggs = defaultDevice.deployEggs
-        }       
+        }
+        
+        var enabled = askBool("Enabled (empty = \(defaultDevice.deployEggs.toBool()))")?.toInt()
+        if enabled == nil {
+            enabled = defaultDevice.enabled
+        }
         
         device.uuid = uuid
         device.name = name
@@ -446,6 +457,7 @@ class CLI {
         device.fastIV = fastIV!
         device.ultraIV = ultraIV!
         device.deployEggs = deployEggs!
+        device.enabled = enabled!
 
         do {
             try device.create()
@@ -596,6 +608,11 @@ class CLI {
         let deployEggs = askBool("Deploy Eggs (empty = \(device.deployEggs.toBool()))")
         if deployEggs != nil {
             device.deployEggs = deployEggs!.toInt()
+        }
+        
+        let enabled = askBool("Enabled (empty = \(device.enabled.toBool()))")
+        if enabled != nil {
+            device.enabled = enabled!.toInt()
         }
         
         do {
