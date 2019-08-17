@@ -67,7 +67,7 @@ class Config {
         fastIV = enviroment["fastIV"]?.toBool() ?? false
         ultraIV = enviroment["ultraIV"]?.toBool() ?? false
         deployEggs = enviroment["deployEggs"]?.toBool() ?? false
-        enabled = environment["enabled"]?.toBool() ?? true
+        enabled = enviroment["enabled"]?.toBool() ?? true
     }
     
 }

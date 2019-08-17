@@ -427,7 +427,7 @@ class CLI {
             deployEggs = defaultDevice.deployEggs
         }
         
-        var enabled = askBool("Enabled (empty = \(defaultDevice.deployEggs.toBool()))")?.toInt()
+        var enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")?.toInt()
         if enabled == nil {
             enabled = defaultDevice.enabled
         }

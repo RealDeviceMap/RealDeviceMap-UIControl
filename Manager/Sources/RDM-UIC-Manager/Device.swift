@@ -41,7 +41,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var fastIV: Int
     var ultraIV: Int
     var deployEggs: Int
-    var enabled: Bool
+    var enabled: Int
     
     override init() {
         self.uuid = ""
@@ -69,11 +69,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.fastIV = 0
         self.ultraIV = 0
         self.deployEggs = 0
-        self.enabled = true
+        self.enabled = 1
         super.init()
     }
     
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int, enabled: Bool) {
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int, enabled: Int) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -133,7 +133,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         fastIV = this.data["fastIV"] as? Int ?? 0
         ultraIV = this.data["ultraIV"] as? Int ?? 0
         deployEggs = this.data["deployEggs"] as? Int ?? 0
-        enabled = this.data["enabled"] as? Bool ?? true
+        enabled = this.data["enabled"] as? Int ?? 1
     }
     
     static func getAll() -> [Device] {
@@ -220,7 +220,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN encounterDelay DOUBLE DEFAULT 1.0")
         }
         if !hasEnabled {
-            try sqlExec("ALTER TABLE \(table()) ADD COLUMN enabled TINYINT DEFAULT 1")
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN enabled INTEGER DEFAULT 1")
         }
     }
     
