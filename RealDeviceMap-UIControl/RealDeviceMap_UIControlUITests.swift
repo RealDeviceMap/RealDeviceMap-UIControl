@@ -888,7 +888,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         let server = Server()
-        try! server.start(onPort: UInt16(self.config.port))
+        var started = false
+        while !started {
+            do {
+                try server.start(onPort: UInt16(self.config.port))
+                started = true
+            } catch {
+                Log.error("Failed to start server. Trying again in 5s.")
+                sleep(5)
+            }
+        }
         server.route(.get, "loc", handleLocRequest)
         server.route(.post, "loc", handleLocRequest)
         server.route(.get, "data", handleDataRequest)
