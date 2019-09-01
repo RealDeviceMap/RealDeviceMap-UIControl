@@ -100,6 +100,9 @@ extension XCTestCase {
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         request.httpMethod = "POST"
         request.httpBody = jsonData
+        if let token = config.token{
+            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let task = URLSession.shared.dataTask(with: request) {(data, response, error) in
             if let data = data {
