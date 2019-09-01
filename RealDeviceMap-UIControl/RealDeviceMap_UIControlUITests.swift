@@ -917,6 +917,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         // Stop Heartbeat if we exit the scope
         defer {
             dispatchQueueRunning = false
+            server.stop()
         }
         
         // Time to start the actuall work
