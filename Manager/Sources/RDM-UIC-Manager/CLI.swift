@@ -9,7 +9,7 @@ import Foundation
 import PerfectThread
 
 internal extension Bool {
-    internal func toInt() -> Int {
+    func toInt() -> Int {
         if self {
             return 1
         }
@@ -18,7 +18,7 @@ internal extension Bool {
 }
 
 internal extension Int {
-    internal func toBool() -> Bool {
+    func toBool() -> Bool {
         if self == 1 {
             return true
         }
@@ -162,6 +162,7 @@ class CLI {
             Fast IV: \(device.fastIV.toBool())
             Ultra IV: \(device.ultraIV.toBool())
             deployEggs: \(device.deployEggs.toBool())
+            token: \(device.token)
             """
             
             print(row + "\n")
@@ -287,6 +288,11 @@ class CLI {
         let deployEggs = askBool("Deploy Eggs (empy = \(defaultDevice.deployEggs.toBool()))")
         if deployEggs != nil {
             defaultDevice.deployEggs = deployEggs!.toInt()
+        }
+
+        let token = askInput("Token (empy = \(defaultDevice.token))")
+        if token != "" {
+            defaultDevice.token = token
         }
 
         do {
@@ -419,7 +425,13 @@ class CLI {
         var deployEggs = askBool("Deploy Eggs (empty = \(defaultDevice.deployEggs.toBool()))")?.toInt()
         if deployEggs == nil {
             deployEggs = defaultDevice.deployEggs
-        }       
+        }
+        
+        var token = askInput("Token (empy = \(defaultDevice.token))")
+        if token == "" {
+            token = defaultDevice.token
+        }
+        
         
         device.uuid = uuid
         device.name = name
@@ -446,6 +458,7 @@ class CLI {
         device.fastIV = fastIV!
         device.ultraIV = ultraIV!
         device.deployEggs = deployEggs!
+        device.token = token
 
         do {
             try device.create()
@@ -596,6 +609,11 @@ class CLI {
         let deployEggs = askBool("Deploy Eggs (empty = \(device.deployEggs.toBool()))")
         if deployEggs != nil {
             device.deployEggs = deployEggs!.toInt()
+        }
+        
+        let token = askInput("Token (empy = \(defaultDevice.token))")
+        if token != "" {
+            device.token = token
         }
         
         do {

@@ -12,9 +12,15 @@ import PerfectLib
 
 class Device: SQLiteStORM, Equatable, Hashable {
 
+    #if swift(>=4.2)
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
+    }
+    #else
     public var hashValue: Int {
         return uuid.hashValue
     }
+    #endif
     
     var uuid: String
     var name: String
@@ -41,6 +47,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var fastIV: Int
     var ultraIV: Int
     var deployEggs: Int
+    var token: String
     
     override init() {
         self.uuid = ""
@@ -68,10 +75,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.fastIV = 0
         self.ultraIV = 0
         self.deployEggs = 0
+        self.token = ""
         super.init()
     }
     
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int) {
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int, token: String) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -97,6 +105,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.fastIV = fastIV
         self.ultraIV = ultraIV
         self.deployEggs = deployEggs
+        self.token = token
         super.init()
     }
     
@@ -130,6 +139,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         fastIV = this.data["fastIV"] as? Int ?? 0
         ultraIV = this.data["ultraIV"] as? Int ?? 0
         deployEggs = this.data["deployEggs"] as? Int ?? 0
+        token = this.data["token"] as? String ?? ""
     }
     
     static func getAll() -> [Device] {
@@ -180,6 +190,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         var hasDeployEggs = false
         var hasEncounterMaxWait = false
         var hasEncounterDelay = false
+        var hasToken = false
         
         let rows = try sqlRows("PRAGMA table_info(\(table()))", params: [String]())
         for row in rows {
@@ -194,6 +205,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
                 hasEncounterMaxWait = true
             } else if name == "encounterDelay" {
                 hasEncounterDelay = true
+            } else if name == "token" {
+                hasToken = true
             }
         }
         
@@ -210,7 +223,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN encounterMaxWait INTEGER DEFAULT 7")
         }
         if !hasEncounterDelay {
-            try sqlExec("ALTER TABLE \(table()) ADD COLUMN encounterDelay DOUBLE DEFAULT 1.0") } 
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN encounterDelay DOUBLE DEFAULT 1.0")
+        }
+        if !hasToken {
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN token STRING DEFAULT NULL")
+        }
     }
     
 }
