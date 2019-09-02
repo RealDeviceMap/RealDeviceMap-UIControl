@@ -889,12 +889,17 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         let server = Server()
         var started = false
+        var startTryCount = 1
         while !started {
             do {
                 try server.start(onPort: UInt16(self.config.port))
                 started = true
             } catch {
-                Log.error("Failed to start server. Trying again in 5s.")
+                if startTryCount > 5 {
+                    fatalError("Failed to start server: \(error). Try (\(startTryCount)/5).")
+                }
+                Log.error("Failed to start server: \(error). Try (\(startTryCount)/5). Trying again in 5s.")
+                startTryCount += 1
                 sleep(5)
             }
         }
@@ -912,12 +917,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(15)
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "heartbeat"]) { (cake) in /* The cake is a lie! */ }
             }
+            Log.info("Force-Stopping HTTP Server")
+            server.stop(immediately: true)
         }
         
         // Stop Heartbeat if we exit the scope
         defer {
             dispatchQueueRunning = false
-            server.stop()
         }
         
         // Time to start the actuall work
