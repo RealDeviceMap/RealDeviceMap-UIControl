@@ -163,6 +163,7 @@ class CLI {
             Ultra IV: \(device.ultraIV.toBool())
             deployEggs: \(device.deployEggs.toBool())
             token: \(device.token)
+            Ultra Quests: \(device.ultraQuests.toBool())
             """
             
             print(row + "\n")
@@ -288,6 +289,11 @@ class CLI {
         let deployEggs = askBool("Deploy Eggs (empy = \(defaultDevice.deployEggs.toBool()))")
         if deployEggs != nil {
             defaultDevice.deployEggs = deployEggs!.toInt()
+        }
+
+        let ultraQuests = askBool("Ultra Quests (empty = \(defaultDevice.ultraQuests.toBool()))")
+        if ultraQuests != nil {
+            defaultDevice.ultraQuests = ultraQuests!.toInt()
         }
 
         let token = askInput("Token (empy = \(defaultDevice.token))")
@@ -432,6 +438,10 @@ class CLI {
             token = defaultDevice.token
         }
         
+        var ultraQuests = askBool("Ultra Quests (empty = \(defaultDevice.ultraQuests.toBool()))")?.toInt()
+        if ultraQuests == nil {
+            ultraQuests = defaultDevice.ultraQuests
+        }
         
         device.uuid = uuid
         device.name = name
@@ -459,6 +469,7 @@ class CLI {
         device.ultraIV = ultraIV!
         device.deployEggs = deployEggs!
         device.token = token
+        device.ultraQuests = ultraQuests!
 
         do {
             try device.create()
@@ -614,6 +625,11 @@ class CLI {
         let token = askInput("Token (empy = \(defaultDevice.token))")
         if token != "" {
             device.token = token
+        }
+		
+        let ultraQuests = askBool("Ultra Quests (empty = \(device.ultraQuests.toBool()))")
+        if ultraQuests != nil {
+            device.ultraQuests = ultraQuests!.toInt()
         }
         
         do {
