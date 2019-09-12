@@ -36,6 +36,7 @@ class Config {
     var ultraIV: Bool
     var deployEggs: Bool
     var token: String
+    var ultraQuests: Bool
     
     init() {
         
@@ -68,6 +69,7 @@ class Config {
         ultraIV = enviroment["ultraIV"]?.toBool() ?? false
         deployEggs = enviroment["deployEggs"]?.toBool() ?? false
         token = enviroment["token"] ?? ""
+        ultraQuests = enviroment["ultraQuests"]?.toBool() ?? false
     }
     
 }
