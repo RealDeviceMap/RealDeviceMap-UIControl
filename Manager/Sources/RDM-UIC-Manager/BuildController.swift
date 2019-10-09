@@ -78,7 +78,10 @@ class BuildController {
             
             for line in error.components(separatedBy: "\n") {
                 let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                if trimmed != "" && !trimmed.contains(string: "Using the first of multiple matching destinations") && !trimmed.contains(string: "Generic iOS Device") {
+                if trimmed != "" && 
+                   !trimmed.contains(string: "Using the first of multiple matching destinations") && 
+                   !trimmed.contains(string: "Generic iOS Device") &&
+                   !trimmed.contains(string: "DTDeviceKit: deviceType from") {
                     Log.debug(message: "Abort triggered by line: \"\(trimmed)\"")
                     Log.terminal(message: "Building Project Failed!\n\(output)\n\(error)")
                 }
