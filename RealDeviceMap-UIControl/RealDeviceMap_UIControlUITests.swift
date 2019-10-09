@@ -22,6 +22,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var firstWarningDate: Date?
     var jitterCorner = 0
     var gotQuest = false
+    var gotQuestEarly = false
     var gotIV = false
     var noQuestCount = 0
     var noEncounterCount = 0
@@ -896,6 +897,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
                 if !self.gotQuest && quests != 0 {
                     self.gotQuest = true
+                    self.gotQuestEarly = true
                 }
                 if !self.gotIV && encounters != 0 {
                     self.gotIV = true
@@ -1277,6 +1279,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.pokemonEncounterId = nil
                                 self.targetMaxDistance = self.config.targetMaxDistance
                                 self.waitForData = true
+                                self.gotQuest = false
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 self.freeScreen()
@@ -1287,19 +1290,30 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 var success = false
                                 var locked = true
+                                var found = false
                                 while locked {
                                     usleep(100000 * self.config.delayMultiplier)
                                     if Date().timeIntervalSince(start) <= 5 {
                                         continue
                                     }
-                                    if Date().timeIntervalSince(start) <= delay {
-                                        let left =  delay - Date().timeIntervalSince(start)
+                                    if !found && Date().timeIntervalSince(start) <= delay {
+                                        let left = delay - Date().timeIntervalSince(start)
+                                        let end = Date(timeIntervalSince1970: delay)
                                         Log.debug("Delaying by \(left)s.")
-                                        usleep(UInt32(min(10.0, left) * 1000000.0))
+                                        while !found && Date().timeIntervalSince(start) <= delay {
+                                            self.lock.lock()
+                                            locked = self.gotQuestEarly
+                                            self.lock.unlock()
+                                            if locked {
+                                                usleep(100000)
+                                            } else {
+                                                found = true
+                                            }
+                                        }
                                         continue
                                     }
                                     self.lock.lock()
-                                    if Date().timeIntervalSince(start) >= self.config.raidMaxTime + delay {
+                                    if !found && Date().timeIntervalSince(start) >= self.config.raidMaxTime + delay {
                                         locked = false
                                         self.waitForData = false
                                         failedCount += 1
