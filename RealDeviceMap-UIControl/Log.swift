@@ -27,6 +27,10 @@ class Log {
         print("[Verbose] \(message)")
     }
 	
+    public static func startup(_ message: String){
+        print("[Startup] \(message)")
+    }
+    
 	public static func tutorial(_ message: String){
         print("[Tutorial] \(message)")
     }
