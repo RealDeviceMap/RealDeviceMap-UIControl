@@ -1004,7 +1004,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    deviceConfig.startup.toXCUICoordinate(app: app).tap()
+                    isStartup()
                     sleep(2 * config.delayMultiplier)
                     
                     deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
@@ -1692,10 +1692,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         sleep(7 * config.delayMultiplier)
                         shouldExit = true
                         return
-                } else if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.startup,
-                    min: (0.00, 0.75, 0.55),
-                    max: (1.00, 0.90, 0.70)) {
+                } else if isStartup() {
                     Log.info("App Started")
                     isStarted = true
                     sleep(1 * config.delayMultiplier)
