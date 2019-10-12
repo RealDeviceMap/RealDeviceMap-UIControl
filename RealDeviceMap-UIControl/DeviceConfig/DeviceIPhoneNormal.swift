@@ -14,6 +14,13 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 325, y: 960)
     }
+    override var startup_NewButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 475 , y: 960)
+    }
+    override var startup_NewCautionSign: DeviceCoordinate {
+        return DeviceCoordinate(x: 375 , y: 385)
+    }
+    
     override var loginTerms2Text: DeviceCoordinate {
         return DeviceCoordinate(x: 188, y: 450)
     }
