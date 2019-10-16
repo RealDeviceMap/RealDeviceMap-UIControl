@@ -706,30 +706,61 @@ extension XCTestCase {
         app.swipeRight()
         sleep(1 * config.delayMultiplier)
     
-        let screenshotComp = XCUIScreen.main.screenshot()
+        var screenshotComp = XCUIScreen.main.screenshot()
         
         if screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27))
         {
             Log.test("Clearing stacked quests")
             
-            for _ in 0...2 {
-                deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
-                deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
+            for n in 0...2 {
+                if screenshotComp.rgbAtLocation(pos: deviceConfig.questFilledColorWithStack1, min: (red: 0.98, green: 0.98, blue: 0.98),max: (red: 1.0, green: 1.0, blue: 1.0)) {
+                    //top slot is normal quest. delete it.
+                    deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    if n < 2 {
+                        screenshotComp = XCUIScreen.main.screenshot()
+                    }
+                }
+                else if screenshotComp.rgbAtLocation(pos: deviceConfig.questFilledColorWithStack1, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27)) {
+                    //top slot is a completed quest. Click on the quest to initiate the encounter
+                    deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    self.freeScreen() //run from the encounter
+                }
+                else {
+                    //top slot is empty. No more quests to delete, so exit.
+                    break
+                }
             }
         } else {
-            Log.test("Clearing quests")
-            for _ in 0...2 {
-                deviceConfig.questDelete.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
-                deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
+            Log.test("Clearing unstacked quests")
+            for n in 0...2 {
+                if screenshotComp.rgbAtLocation(pos: deviceConfig.questFilledColor1, min: (red: 0.98, green: 0.98, blue: 0.98),max: (red: 1.0, green: 1.0, blue: 1.0)) {
+                    //top slot is normal quest. delete it.
+                    deviceConfig.questDelete.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    if n < 2 {
+                        screenshotComp = XCUIScreen.main.screenshot()
+                    }
+                }
+                else if screenshotComp.rgbAtLocation(pos: deviceConfig.questFilledColor1, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27)) {
+                    //top slot is a completed quest.  Click on the quest to initiate the encounter
+                    deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    self.freeScreen() //run from the encounter
+                }
+                else {
+                    //top slot is empty. No more quests to delete, so exit.
+                    break
+                }
             }
         }
 
         self.freeScreen()
-        deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         Log.test("Clearing quests Time to Complete: \(String(format: "%.3f", Date().timeIntervalSince(start)))s")
         sleep(1 * config.delayMultiplier)
     }

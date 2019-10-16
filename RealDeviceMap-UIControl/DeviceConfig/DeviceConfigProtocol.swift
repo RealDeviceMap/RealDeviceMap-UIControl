@@ -96,8 +96,12 @@ protocol DeviceConfigProtocol {
     var openQuest: DeviceCoordinate { get }
     /** First delete quests button. */
     var questDelete: DeviceCoordinate { get }
+    /** Color of the top quest rectangle. */
+    var questFilledColor1: DeviceCoordinate { get }
     /** First delete Quest Button if stacked Encounter is present */
     var questDeleteWithStack: DeviceCoordinate { get }
+    /** Color of the top quest rectangle if stacked Encounter is present. */
+    var questFilledColorWithStack1: DeviceCoordinate { get }
     /** Green confirm quest deletion button */
     var questDeleteConfirm: DeviceCoordinate { get }
     
