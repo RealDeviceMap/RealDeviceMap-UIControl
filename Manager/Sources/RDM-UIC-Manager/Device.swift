@@ -244,6 +244,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         }
         if !hasUltraQuests {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN ultraQuests INTEGER DEFAULT 0")
+        }
         if !hasEnabled {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN enabled INTEGER DEFAULT 1")
         }
