@@ -125,7 +125,7 @@ class DeviceRatio1333: DeviceConfigProtocol {
     // MARK: - Pokestop Encounter
     
     var openPokestop: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 950, scaler: scaler)
+        return DeviceCoordinate(x: 768, y: 922, scaler: scaler) //Lowered the pokestop click point to that of a lured pokestop.
     }
     var rocketLogoGirl: DeviceCoordinate {
         return DeviceCoordinate(x: 867, y: 837, scaler: scaler)
@@ -146,8 +146,14 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var questDelete: DeviceCoordinate {
         return DeviceCoordinate(x: 1434, y: 1272, scaler: scaler)
     }
+    var questFilledColor1: DeviceCoordinate {
+        return DeviceCoordinate(x: 108, y: 1258, scaler: scaler)
+    }
     var questDeleteWithStack: DeviceCoordinate {
-        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+        return DeviceCoordinate(x: 1445, y: 1677, scaler: scaler)
+    }
+    var questFilledColorWithStack1: DeviceCoordinate {
+        return DeviceCoordinate(x: 108, y: 1665, scaler: scaler)
     }
     var questDeleteConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1143, scaler: scaler)
