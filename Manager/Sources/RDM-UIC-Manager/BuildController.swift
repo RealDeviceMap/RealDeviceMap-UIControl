@@ -142,6 +142,9 @@ class BuildController {
             }
             
             for device in devicesToAdd {
+                if device.enabled == 0 {
+                    continue
+                }
                 let queue = Threading.getQueue(name: "BuildController-\(device.uuid)", type: .serial)
                 activeDeviceLock.lock()
                 activeDevices.append(device)

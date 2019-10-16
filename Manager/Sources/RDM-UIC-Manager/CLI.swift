@@ -164,6 +164,7 @@ class CLI {
             deployEggs: \(device.deployEggs.toBool())
             token: \(device.token)
             Ultra Quests: \(device.ultraQuests.toBool())
+            Enabled: \(device.enabled.toBool())
             """
             
             print(row + "\n")
@@ -289,6 +290,11 @@ class CLI {
         let deployEggs = askBool("Deploy Eggs (empy = \(defaultDevice.deployEggs.toBool()))")
         if deployEggs != nil {
             defaultDevice.deployEggs = deployEggs!.toInt()
+        }
+        
+        let enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")
+        if enabled != nil {
+            defaultDevice.enabled = enabled!.toInt()
         }
 
         let ultraQuests = askBool("Ultra Quests (empty = \(defaultDevice.ultraQuests.toBool()))")
@@ -441,6 +447,10 @@ class CLI {
         var ultraQuests = askBool("Ultra Quests (empty = \(defaultDevice.ultraQuests.toBool()))")?.toInt()
         if ultraQuests == nil {
             ultraQuests = defaultDevice.ultraQuests
+        
+        var enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")?.toInt()
+        if enabled == nil {
+            enabled = defaultDevice.enabled
         }
         
         device.uuid = uuid
@@ -470,6 +480,7 @@ class CLI {
         device.deployEggs = deployEggs!
         device.token = token
         device.ultraQuests = ultraQuests!
+        device.enabled = enabled!
 
         do {
             try device.create()
@@ -630,6 +641,10 @@ class CLI {
         let ultraQuests = askBool("Ultra Quests (empty = \(device.ultraQuests.toBool()))")
         if ultraQuests != nil {
             device.ultraQuests = ultraQuests!.toInt()
+
+        let enabled = askBool("Enabled (empty = \(device.enabled.toBool()))")
+        if enabled != nil {
+            device.enabled = enabled!.toInt()
         }
         
         do {

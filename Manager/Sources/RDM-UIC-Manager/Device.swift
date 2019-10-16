@@ -49,6 +49,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var deployEggs: Int
     var token: String
     var ultraQuests: Int
+    var enabled: Int
     
     override init() {
         self.uuid = ""
@@ -78,10 +79,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.deployEggs = 0
         self.token = ""
 		self.ultraQuests = 0
+        self.enabled = 1
         super.init()
     }
     
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int, token: String, ultraQuests: Int) {
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int, token: String, ultraQuests: Int, enabled: Int) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -109,6 +111,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.deployEggs = deployEggs
         self.token = token
 		self.ultraQuests = ultraQuests
+        self.enabled = enabled
         super.init()
     }
     
@@ -144,6 +147,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         deployEggs = this.data["deployEggs"] as? Int ?? 0
         token = this.data["token"] as? String ?? ""
 		ultraQuests = this.data["ultraQuests"] as? Int ?? 0
+        enabled = this.data["enabled"] as? Int ?? 1
     }
     
     static func getAll() -> [Device] {
@@ -196,6 +200,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         var hasEncounterDelay = false
         var hasToken = false
 		var hasUltraQuests = false
+        var hasEnabled = false
         
         let rows = try sqlRows("PRAGMA table_info(\(table()))", params: [String]())
         for row in rows {
@@ -214,6 +219,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
                 hasToken = true
             } else if name == "ultraQuests" {
                 hasUltraQuests = true
+            } else if name == "enabled" {
+                hasEnabled = true
             }
         }
         
@@ -237,6 +244,8 @@ class Device: SQLiteStORM, Equatable, Hashable {
         }
         if !hasUltraQuests {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN ultraQuests INTEGER DEFAULT 0")
+        if !hasEnabled {
+            try sqlExec("ALTER TABLE \(table()) ADD COLUMN enabled INTEGER DEFAULT 1")
         }
     }
     

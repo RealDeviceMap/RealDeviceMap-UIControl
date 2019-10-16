@@ -37,6 +37,7 @@ class Config {
     var deployEggs: Bool
     var token: String
     var ultraQuests: Bool
+    var enabled: Bool
     
     init() {
         
@@ -70,6 +71,7 @@ class Config {
         deployEggs = enviroment["deployEggs"]?.toBool() ?? false
         token = enviroment["token"] ?? ""
         ultraQuests = enviroment["ultraQuests"]?.toBool() ?? false
+        enabled = enviroment["enabled"]?.toBool() ?? true
     }
     
 }
