@@ -38,6 +38,7 @@ class Config {
     var token: String
     var ultraQuests: Bool
     var enabled: Bool
+    var attachScreenshots: Bool
     
     init() {
         
@@ -72,6 +73,7 @@ class Config {
         token = enviroment["token"] ?? ""
         ultraQuests = enviroment["ultraQuests"]?.toBool() ?? false
         enabled = enviroment["enabled"]?.toBool() ?? true
+        attachScreenshots = enviroment["attachScreenshots"]?.toBool() ?? false
     }
     
 }

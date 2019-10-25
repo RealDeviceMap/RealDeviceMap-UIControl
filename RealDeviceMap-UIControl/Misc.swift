@@ -91,6 +91,19 @@ extension XCTestCase {
     internal var deviceConfig: DeviceConfigProtocol { return DeviceConfig.global }
     internal var config: Config { return Config.global }
     
+    func getScreenshot(file: String = #file, function: String = #function, line: Int = #line, tag: String = "") -> XCUIScreenshot {
+        let screenshot = XCUIScreen.main.screenshot()
+        if config.attachScreenshots {
+            let attach = XCTAttachment(screenshot: screenshot)
+            let filename = URL(fileURLWithPath: file).deletingPathExtension().lastPathComponent
+            attach.name = "\(filename)-\(function.replacingOccurrences(of: "\\(\\)", with: "", options: .regularExpression))-\(line).png"
+            attach.lifetime = .keepAlways
+            add(attach)
+        }
+        
+        return screenshot
+    }
+    
     func postRequest(url: URL, data: [String: Any], blocking: Bool=false, completion: @escaping ([String: Any]?) -> Swift.Void) {
         
         var done = false
@@ -130,7 +143,7 @@ extension XCTestCase {
 	
     func checkHasWarning(screenshot: XCUIScreenshot?=nil) -> Bool {
         
-        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        let screenshotComp = screenshot ?? getScreenshot()
 
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareWarningL,
@@ -149,7 +162,7 @@ extension XCTestCase {
     
     func isTutorial(screenshot: XCUIScreenshot?=nil) -> Bool {
         
-        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        let screenshotComp = screenshot ?? getScreenshot()
         
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareTutorialL,
@@ -169,7 +182,7 @@ extension XCTestCase {
     // Planned detection for partially completed reloads, but doesn't seem worth it now :shrug:
     func failedTutorialMethod1(screenshot: XCUIScreenshot?=nil) -> Bool {
         
-        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        let screenshotComp = screenshot ?? getScreenshot()
         
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareTutorialL,
@@ -188,7 +201,7 @@ extension XCTestCase {
     
     func failedTutorialMethod2(screenshot: XCUIScreenshot?=nil) -> Bool{
     
-        //let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        //let screenshotComp = screenshot ?? getScreenshot()
         /*
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.tutorialProfessorCheck,
@@ -203,7 +216,7 @@ extension XCTestCase {
     
     func failedTutorialMethod3(screenshot: XCUIScreenshot?=nil) -> Bool{
         
-        //let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        //let screenshotComp = screenshot ?? getScreenshot()
         
         /*if screenshotComp.rgbAtLocation(
             pos: deviceConfig.tutorialProfessorCheck,
@@ -216,7 +229,7 @@ extension XCTestCase {
     
     func failedTutorialMethod4(screenshot: XCUIScreenshot?=nil) -> Bool {
         
-        //let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        //let screenshotComp = screenshot ?? getScreenshot()
         
         /*if screenshotComp.rgbAtLocation(
             pos: deviceConfig.tutorialProfessorCheck,
@@ -433,7 +446,7 @@ extension XCTestCase {
             Log.error("SHITS FUCKED in styleGroup switch Case in StyleSelection")
         }
         
-        let screenshotComp = XCUIScreen.main.screenshot()
+        let screenshotComp = getScreenshot()
         
         while !screenshotComp.rgbAtLocation(
             pos: deviceConfig.tutorialStyleDone,
@@ -459,7 +472,7 @@ extension XCTestCase {
     
     func findAndClickPokemon(screenshot: XCUIScreenshot?=nil) -> Bool {
         
-        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        let screenshotComp = screenshot ?? getScreenshot()
         
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         
@@ -506,7 +519,7 @@ extension XCTestCase {
             sleep(3 * config.delayMultiplier)
             deviceConfig.encounterTmp.toXCUICoordinate(app: app).tap()
             sleep(3 * config.delayMultiplier)
-            screenshot = XCUIScreen.main.screenshot()
+            screenshot = getScreenshot()
             sleep(1 * config.delayMultiplier)
         }
         
@@ -607,7 +620,7 @@ extension XCTestCase {
     
     func clickPassengerWarning(screenshot: XCUIScreenshot?=nil) -> XCUIScreenshot {
 
-        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        let screenshotComp = screenshot ?? getScreenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.passenger,
             min: (red: 0.0, green: 0.75, blue: 0.55),
@@ -615,7 +628,7 @@ extension XCTestCase {
         ) {
             deviceConfig.passenger.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
-            return XCUIScreen.main.screenshot()
+            return getScreenshot()
         }
 
         return screenshotComp
@@ -634,7 +647,7 @@ extension XCTestCase {
         deviceConfig.logoutDragStart.toXCUICoordinate(app: app).press(forDuration: 0.1, thenDragTo: deviceConfig.logoutDragEnd.toXCUICoordinate(app: app))
         sleep(2 * config.delayMultiplier)
         
-        let screenshot = XCUIScreen.main.screenshot()
+        let screenshot = getScreenshot()
         for y in 0...screenshot.image.cgImage!.height / 10 {
             if screenshot.rgbAtLocation(
                 pos: (x: deviceConfig.logoutCompareX, y: y * 10),
@@ -647,7 +660,7 @@ extension XCTestCase {
         sleep(2 * config.delayMultiplier)
         deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
         sleep(10 * config.delayMultiplier)
-        let screenshotComp = XCUIScreen.main.screenshot()
+        let screenshotComp = getScreenshot()
         
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.startupLoggedOut,
@@ -673,7 +686,7 @@ extension XCTestCase {
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
         
-        let screenshotComp = XCUIScreen.main.screenshot()
+        let screenshotComp = getScreenshot()
         
         // Rocket invasion detection
         if screenshotComp.rgbAtLocation(
@@ -706,7 +719,7 @@ extension XCTestCase {
         app.swipeRight()
         sleep(1 * config.delayMultiplier)
     
-        var screenshotComp = XCUIScreen.main.screenshot()
+        var screenshotComp = getScreenshot()
         
         if screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27))
         {
@@ -720,7 +733,7 @@ extension XCTestCase {
                     deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
                     if n < 2 {
-                        screenshotComp = XCUIScreen.main.screenshot()
+                        screenshotComp = getScreenshot()
                     }
                 }
                 else if screenshotComp.rgbAtLocation(pos: deviceConfig.questFilledColorWithStack1, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27)) {
@@ -744,7 +757,7 @@ extension XCTestCase {
                     deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
                     if n < 2 {
-                        screenshotComp = XCUIScreen.main.screenshot()
+                        screenshotComp = getScreenshot()
                     }
                 }
                 else if screenshotComp.rgbAtLocation(pos: deviceConfig.questFilledColor1, min: (red: 0.98, green: 0.60, blue: 0.22),max: (red: 1.0, green: 0.65, blue: 0.27)) {
@@ -778,7 +791,7 @@ extension XCTestCase {
         sleep(1 * config.delayMultiplier)
 
         while !done && deviceConfig.itemDeleteYs.count != 0 {
-            let screenshot = XCUIScreen.main.screenshot()
+            let screenshot = getScreenshot()
 
             if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 hasEgg = true
@@ -856,7 +869,7 @@ extension XCTestCase {
             
             self.freeScreen(run: false)
             
-            let screenshot = XCUIScreen.main.screenshot()
+            let screenshot = getScreenshot()
             if screenshot.rgbAtLocation(
                 pos: deviceConfig.encounterPokemonRun,
                 min: (red: 0.98, green: 0.98, blue: 0.98),
