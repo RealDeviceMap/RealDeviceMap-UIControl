@@ -165,6 +165,7 @@ class CLI {
             token: \(device.token)
             Ultra Quests: \(device.ultraQuests.toBool())
             Enabled: \(device.enabled.toBool())
+            AttachScreenshots: \(device.attachScreenshots.toBool())
             """
             
             print(row + "\n")
@@ -305,6 +306,11 @@ class CLI {
         let enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")
         if enabled != nil {
             defaultDevice.enabled = enabled!.toInt()
+        }
+        
+        let attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")
+        if attachScreenshots != nil {
+            defaultDevice.attachScreenshots = attachScreenshots!.toInt()
         }
 
         do {
@@ -454,6 +460,11 @@ class CLI {
             enabled = defaultDevice.enabled
         }
         
+        var attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")?.toInt()
+        if attachScreenshots == nil {
+            attachScreenshots = defaultDevice.attachScreenshots
+        }
+        
         device.uuid = uuid
         device.name = name
         device.backendURL = backendURL
@@ -482,6 +493,7 @@ class CLI {
         device.token = token
         device.ultraQuests = ultraQuests!
         device.enabled = enabled!
+        device.attachScreenshots = attachScreenshots!
 
         do {
             try device.create()
@@ -647,6 +659,11 @@ class CLI {
         let enabled = askBool("Enabled (empty = \(device.enabled.toBool()))")
         if enabled != nil {
             device.enabled = enabled!.toInt()
+        }
+
+        let attachScreenshots = askBool("Attach Screenshots (empty = \(device.attachScreenshots.toBool()))")
+        if attachScreenshots != nil {
+            device.attachScreenshots = attachScreenshots!.toInt()
         }
         
         do {
