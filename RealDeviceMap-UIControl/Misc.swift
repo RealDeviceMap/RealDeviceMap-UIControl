@@ -250,6 +250,15 @@ extension XCTestCase {
     }
     
     func tutorialPhysicalFeature() {
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {
+            tapMultiplier = 0.5
+        }
+        else
+        {
+            tapMultiplier = 1.0
+        }
         
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx:0,dy:0))
         
@@ -257,7 +266,7 @@ extension XCTestCase {
         
         let i = Int.random(in: 0...2)
         
-        let selectPhysical = normalized.withOffset(CGVector(dx: deviceConfig.tutorialPhysicalXs[i], dy: deviceConfig.tutorialSelectY))
+        let selectPhysical = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialPhysicalXs[i])*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
         selectPhysical.tap()
         usleep(UInt32(1500000 * config.delayMultiplier))
         // Break Off into switch to Handle the fact each features X array
@@ -268,7 +277,7 @@ extension XCTestCase {
             
             let randomInt = Int.random(in: 0...2)
             
-            let newFeature = normalized.withOffset(CGVector(dx: deviceConfig.tutorialHairXs[randomInt], dy: deviceConfig.tutorialSelectY))
+            let newFeature = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialHairXs[randomInt])*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             newFeature.tap()
             usleep(UInt32(1500000 * config.delayMultiplier))
             deviceConfig.tutorialStyleChange.toXCUICoordinate(app: app).tap()
@@ -285,7 +294,7 @@ extension XCTestCase {
             
             let randomInt = Int.random(in: 0...2)
             
-            let newFeature = normalized.withOffset(CGVector(dx:deviceConfig.tutorialEyeXs[randomInt], dy: deviceConfig.tutorialSelectY))
+            let newFeature = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialEyeXs[randomInt])*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             newFeature.tap()
             
             usleep(UInt32(1500000 * config.delayMultiplier))
@@ -303,8 +312,7 @@ extension XCTestCase {
             
             let randomInt = Int.random(in: 0...2)
             
-            let newFeature = normalized.withOffset(CGVector(dx:deviceConfig.tutorialSkinXs[randomInt], dy: deviceConfig.tutorialSelectY))
-            
+            let newFeature = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialSkinXs[randomInt])*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             newFeature.tap()
             
             usleep(UInt32(1500000 * config.delayMultiplier))
@@ -327,6 +335,16 @@ extension XCTestCase {
         Log.info("Passed Modified Gender Bool and its now: \(gender)")
         
         Log.tutorial("Beginning Random Accessory Selection")
+
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {
+            tapMultiplier = 0.5
+        }
+        else
+        {
+            tapMultiplier = 1.0
+        }
         
         var poseX: Int
         var hatX: Int
@@ -356,10 +374,10 @@ extension XCTestCase {
         case 0: //Poses
             
             Log.tutorial("Changing Pose")
-            let select = normalized.withOffset(CGVector(dx: poseX, dy:deviceConfig.tutorialSelectY))
+            let select = normalized.withOffset(CGVector(dx: lround(Double(poseX)*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             select.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
-            let selectPose = normalized.withOffset(CGVector(dx: deviceConfig.tutorialPoseAndBackpackX, dy:deviceConfig.tutorialSelectY))
+            let selectPose = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialPoseAndBackpackX)*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             selectPose.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
             Log.tutorial("Accepting Item Style Change")
@@ -375,10 +393,10 @@ extension XCTestCase {
         case 1: //Hats
             
             Log.tutorial("Randomly Selected Hat")
-            let select = normalized.withOffset(CGVector(dx: hatX, dy:deviceConfig.tutorialSelectY))
+            let select = normalized.withOffset(CGVector(dx: lround(Double(hatX)*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             select.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
-            let selectShirt = normalized.withOffset(CGVector(dx: deviceConfig.tutorialSharedStyleXs[styleType], dy:deviceConfig.tutorialSelectY))
+            let selectShirt = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialSharedStyleXs[styleType])*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             selectShirt.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
             Log.tutorial("Accepting Item Style Change")
@@ -394,10 +412,10 @@ extension XCTestCase {
         case 2: //Shirts
             
             Log.tutorial("Randomly Selected Shirt")
-            let select = normalized.withOffset(CGVector(dx: shirtX, dy:deviceConfig.tutorialSelectY))
+            let select = normalized.withOffset(CGVector(dx: lround(Double(shirtX)*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             select.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
-            let selectShirt = normalized.withOffset(CGVector(dx: deviceConfig.tutorialSharedStyleXs[styleType], dy:deviceConfig.tutorialSelectY))
+            let selectShirt = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialSharedStyleXs[styleType])*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             selectShirt.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
             Log.tutorial("Accepting Item Style Change")
@@ -413,10 +431,10 @@ extension XCTestCase {
         case 3: //Backpack
             
             Log.tutorial("Changing Backpack")
-            let select = normalized.withOffset(CGVector(dx: backpackX, dy:deviceConfig.tutorialSelectY))
+            let select = normalized.withOffset(CGVector(dx: lround(Double(backpackX)*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             select.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
-            let selectBackpack = normalized.withOffset(CGVector(dx: deviceConfig.tutorialPoseAndBackpackX, dy:deviceConfig.tutorialSelectY))
+            let selectBackpack = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.tutorialPoseAndBackpackX)*tapMultiplier), dy: lround(Double(deviceConfig.tutorialSelectY)*tapMultiplier)))
             selectBackpack.tap()
             usleep(UInt32(2000000 * config.delayMultiplier))
             Log.tutorial("Accepting Item Style Change")
@@ -462,7 +480,17 @@ extension XCTestCase {
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
         
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
-        
+
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {
+            tapMultiplier = 0.5
+        }
+        else
+        {
+            tapMultiplier = 1.0
+        }
+
         Log.debug("Searching Pokemon...")
         for x in 0...screenshotComp.image.cgImage!.width / 10  {
             for y in 0...screenshotComp.image.cgImage!.height / 10 {
@@ -481,7 +509,7 @@ extension XCTestCase {
                     ) {
                     Log.debug("Pokemon Found!")
                     usleep(UInt32(1000000 * config.encounterDelay))
-                    normalized.withOffset(CGVector(dx: x * 10, dy: y * 10)).tap()
+                    normalized.withOffset(CGVector(dx: lround(Double(x * 10)*tapMultiplier), dy: lround(Double(y * 10)*tapMultiplier))).tap()
                     return true
                 }
                 
@@ -493,6 +521,16 @@ extension XCTestCase {
     }
     
     func freeScreen(run: Bool=true) {
+        
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {
+            tapMultiplier = 0.5
+        }
+        else
+        {
+            tapMultiplier = 1.0
+        }
         
         var screenshot = clickPassengerWarning()
         
@@ -562,7 +600,7 @@ extension XCTestCase {
             }
             
             let x = Int(arc4random_uniform(UInt32(app.frame.width)))
-            let button = DeviceCoordinate(x: x, y: deviceConfig.teamSelectY).toXCUICoordinate(app: app)
+            let button = DeviceCoordinate(x: x, y: deviceConfig.teamSelectY, tapScaler: tapMultiplier).toXCUICoordinate(app: app)
             button.tap()
             sleep(3 * config.delayMultiplier)
             deviceConfig.teamSelectNext.toXCUICoordinate(app: app).tap()
@@ -624,45 +662,136 @@ extension XCTestCase {
     func logOut() -> Bool {
         
         print("[STATUS] Logout")
+
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {
+            tapMultiplier = 0.5
+        }
+        else
+        {
+            tapMultiplier = 1.0
+        }
         
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         
-        deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.settingsButton.toXCUICoordinate(app: app).tap()
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.logoutDragStart.toXCUICoordinate(app: app).press(forDuration: 0.1, thenDragTo: deviceConfig.logoutDragEnd.toXCUICoordinate(app: app))
-        sleep(2 * config.delayMultiplier)
-        
-        let screenshot = XCUIScreen.main.screenshot()
-        for y in 0...screenshot.image.cgImage!.height / 10 {
-            if screenshot.rgbAtLocation(
-                pos: (x: deviceConfig.logoutCompareX, y: y * 10),
-                min: (red: 0.60, green: 0.9, blue: 0.6),
-                max: (red: 0.75, green: 1.0, blue: 0.7)) {
-                normalized.withOffset(CGVector(dx: deviceConfig.logoutCompareX, dy: y * 10)).tap()
-                break
-            }
+        var main_counter = 0
+        while !isMainScreen() && main_counter < 5
+        {
+            freeScreen()
+            sleep(1 * config.delayMultiplier)
+            main_counter = main_counter + 1
         }
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
-        sleep(10 * config.delayMultiplier)
-        let screenshotComp = XCUIScreen.main.screenshot()
         
-        if screenshotComp.rgbAtLocation(
-            pos: deviceConfig.startupLoggedOut,
-            min: (0.95, 0.75, 0.0),
-            max: (1.00, 0.85, 0.1)
-        ) {
-            Log.debug("Logged out sucesfully")
-            return true
-        } else {
+        if main_counter == 5
+        {
+            Log.error("Failed to get Main Play Screen. Logging out failed. Restarting...")
+            app.terminate()
+            sleep(1 * config.delayMultiplier)
+            return false
+        }
+        
+        var settingpage_counter = 0
+        while !isSettingPage() && settingpage_counter < 5
+        {
+            deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+            settingpage_counter = settingpage_counter + 1
+        }
+        if settingpage_counter == 5
+        {
+            Log.error("Failed to open setting page. Logging out failed. Restarting...")
+            app.terminate()
+            sleep(1 * config.delayMultiplier)
+            return false
+        }
+        
+        var scrollpage_counter = 0
+        while !isLogoutScrollPage() && scrollpage_counter < 5 {
+            deviceConfig.settingsButton.toXCUICoordinate(app: app).tap()
+            scrollpage_counter = scrollpage_counter + 1
+            sleep(1)
+        }
+
+        if scrollpage_counter == 5
+        {
             Log.error("Logging out failed. Restarting...")
             app.terminate()
             sleep(1 * config.delayMultiplier)
             return false
         }
         
+        deviceConfig.logoutDragStart.toXCUICoordinate(app: app).press(forDuration: 0.1, thenDragTo: deviceConfig.logoutDragEnd.toXCUICoordinate(app: app))
+        sleep(2 * config.delayMultiplier)
+
+        var signoutFound = false
+        let screenshot = XCUIScreen.main.screenshot()
+        // Not to scan 10% from bottom
+        let heightmax = screenshot.image.cgImage!.height - lround(Double(screenshot.image.cgImage!.height)*0.15)
+        let heightmax_x01 = lround(Double(heightmax)*0.1)
+        for y in 0...heightmax_x01 {
+            if screenshot.rgbAtLocation(
+                pos: (x: deviceConfig.logoutCompareX, y: y * 10),
+                min: (red: 0.60, green: 0.9, blue: 0.6),
+                max: (red: 0.75, green: 1.0, blue: 0.7)) {
+                Log.debug("Signed out button found at \(y * 10)")
+                normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.logoutCompareX)*tapMultiplier), dy: lround(Double(y * 10)*tapMultiplier))).tap()
+                sleep(1)
+                signoutFound = true
+                break
+            }
+        }
+        
+        var scroll_counter = 2
+        while signoutFound == false && scroll_counter < 7 {
+            Log.debug("Failed to find signed out button. Scroll again. \(scroll_counter)")
+            deviceConfig.logoutDragStart2.toXCUICoordinate(app: app).press(forDuration: 1.0, thenDragTo: deviceConfig.logoutDragEnd2.toXCUICoordinate(app: app))            
+            sleep(2 * config.delayMultiplier)
+            let screenshot = XCUIScreen.main.screenshot()
+            for y in 0...heightmax_x01 {
+                if screenshot.rgbAtLocation(
+                    pos: (x: deviceConfig.logoutCompareX, y: y * 10),
+                    min: (red: 0.60, green: 0.9, blue: 0.6),
+                    max: (red: 0.75, green: 1.0, blue: 0.7)) {
+                    Log.debug("Signed out button found at \(y * 10)")
+                    normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.logoutCompareX)*tapMultiplier), dy: lround(Double(y * 10)*tapMultiplier))).tap()
+                    sleep(1)
+                    signoutFound = true
+                    break
+                }
+            }
+            scroll_counter = scroll_counter + 1
+        }
+
+        if signoutFound == false
+        {
+            Log.error("Can't find sign out button. Logging out failed. Restarting...")
+            app.terminate()
+            sleep(1 * config.delayMultiplier)
+            return false
+        }
+
+        sleep(2 * config.delayMultiplier)
+        deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
+
+        for index in 1...20 {
+            let screenshotComp = XCUIScreen.main.screenshot()
+
+            if screenshotComp.rgbAtLocation(
+                pos: deviceConfig.startupLoggedOut,
+                min: (0.95, 0.75, 0.0),
+                max: (1.00, 0.85, 0.1)
+            ) {
+                Log.debug("Logged out sucesfully")
+                return true
+            }
+            sleep(1 * config.delayMultiplier)
+        }
+
+        Log.error("Logging out is taking too long. Restarting...")
+        app.terminate()
+        sleep(1 * config.delayMultiplier)
+        return false
     }
     
     func spin() {
@@ -767,6 +896,17 @@ extension XCTestCase {
     
     func clearItems() {
         Log.test("Starting ClearItems()")
+
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {
+            tapMultiplier = 0.5
+        }
+        else
+        {
+            tapMultiplier = 1.0
+        }
+
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var done = false
@@ -786,7 +926,7 @@ extension XCTestCase {
             
             if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX, y: deviceConfig.itemDeleteYs[index]) && !itemIsGift(screenshot, x: deviceConfig.itemGiftX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) && !itemIsEggActive(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
                 
-                let delete = normalized.withOffset(CGVector(dx: deviceConfig.itemDeleteX, dy: deviceConfig.itemDeleteYs[index]))
+                let delete = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.itemDeleteX)*tapMultiplier), dy: lround(Double(deviceConfig.itemDeleteYs[index])*tapMultiplier)))
                 delete.tap()
                 sleep(1 * config.delayMultiplier)
                 deviceConfig.itemDeleteIncrease.toXCUICoordinate(app: app).press(forDuration: 3)
@@ -875,6 +1015,55 @@ extension XCTestCase {
         
     }
     
+    func isMainScreen(screenshot: XCUIScreenshot?=nil) -> Bool {
+        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        Log.debug("MainScreen")
+        Log.debug("\(screenshotComp.rgbAtLocation(pos: deviceConfig.closeMenu))")
+        Log.debug("\(screenshotComp.rgbAtLocation(pos: deviceConfig.mainScreenPokeballRed))")
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.closeMenu,
+            min: (red: 0.98, green: 0.98, blue: 0.98),
+            max: (red: 1.00, green: 1.00, blue: 1.00)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.mainScreenPokeballRed,
+                min: (red: 0.80, green: 0.10, blue: 0.17),
+                max: (red: 1.00, green: 0.34, blue: 0.37)) {
+            return true
+        }
+        return false
+    }
+
+    func isSettingPage(screenshot: XCUIScreenshot?=nil) -> Bool {
+        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        Log.debug("SettingPageCheck")
+        Log.debug("\(screenshotComp.rgbAtLocation(pos: deviceConfig.settingPageCloseButton))")
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.settingPageCloseButton,
+            min: (red: 0.90, green: 0.90, blue: 0.90),
+            max: (red: 1.00, green: 1.00, blue: 1.00)){
+            return true
+        }
+        return false
+    }
+
+    func isLogoutScrollPage(screenshot: XCUIScreenshot?=nil) -> Bool {
+        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        Log.debug("ScrollPage Check")
+        Log.debug("\(screenshotComp.rgbAtLocation(pos: deviceConfig.logoutDarkBluePageBottomLeft))")
+        Log.debug("\(screenshotComp.rgbAtLocation(pos: deviceConfig.logoutDarkBluePageTopRight))")
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.logoutDarkBluePageBottomLeft,
+            min: (red: 0.00, green: 0.17, blue: 0.25),
+            max: (red: 0.10, green: 0.37, blue: 0.47)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.logoutDarkBluePageTopRight,
+                min: (red: 0.00, green: 0.17, blue: 0.25),
+                max: (red: 0.10, green: 0.37, blue: 0.47)) {
+            return true
+        }
+        return false
+    }
+
 }
 
 extension String {
