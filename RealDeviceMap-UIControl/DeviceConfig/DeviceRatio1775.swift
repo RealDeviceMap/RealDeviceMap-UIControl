@@ -11,11 +11,13 @@ import XCTest
 class DeviceRatio1775: DeviceConfigProtocol {
     
     private var scaler: DeviceCoordinateScaler
+    var tapScaler: Double
     
-    required init(width: Int, height: Int, multiplier: Double=1.0) {
-        self.scaler = DeviceCoordinateScaler(widthNow: width, heightNow: height, widthTarget: 320, heightTarget: 568, multiplier: multiplier)
+    required init(width: Int, height: Int, multiplier: Double=1.0, tapMultiplier: Double=1.0) {
+        self.scaler = DeviceCoordinateScaler(widthNow: width, heightNow: height, widthTarget: 320, heightTarget: 568, multiplier: multiplier, tapMultiplier: tapMultiplier)
+        self.tapScaler = tapMultiplier
     }
-    
+
     // MARK: - Startup
     
     var startup: DeviceCoordinate {
@@ -71,7 +73,13 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var closeMenu: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 1060, scaler: scaler)
     }
-    
+    var mainScreenPokeballRed: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 1020, scaler: scaler)
+    }
+    var settingPageCloseButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 1020, scaler: scaler)
+    }
+
     
     // MARK: - Logout
     
@@ -88,7 +96,21 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 320, y: 610, scaler: scaler)
     }
     var logoutCompareX: Int {
-        return scaler.scaleY(y: 523)
+        return scaler.scaleY(y: 477)
+    }
+
+    var logoutDragStart2: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 700, scaler: scaler)
+    }
+    var logoutDragEnd2: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 500, scaler: scaler)
+    }
+
+    var logoutDarkBluePageBottomLeft: DeviceCoordinate {
+        return DeviceCoordinate(x: 50, y: 1100, scaler: scaler)
+    }
+    var logoutDarkBluePageTopRight: DeviceCoordinate {
+        return DeviceCoordinate(x: 620, y: 60, scaler: scaler)
     }
 
     

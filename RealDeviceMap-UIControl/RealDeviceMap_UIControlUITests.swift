@@ -283,6 +283,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if alwaysButton.exists {
                 alwaysButton.tap()
             }
+
+            let laterButton = alert.buttons["Later"]
+            if laterButton.exists {
+                laterButton.tap()
+            }
+            
+            let remindmelaterButton = alert.buttons["Remind Me Later"]
+            if remindmelaterButton.exists {
+                remindmelaterButton.tap()
+            }
+
+            let closeButton = alert.buttons["Close"]
+            if closeButton.exists {
+                closeButton.tap()
+            }
+            
+            let allowWhileUsingButton = alert.buttons["Allow While Using App"]
+            if allowWhileUsingButton.exists {
+                allowWhileUsingButton.tap()
+            }
             
             return true
         }
@@ -1052,6 +1072,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     isStartupCompleted = true
                     
                     if self.needsLogout {
+                        self.lock.lock()
+                        self.currentLocation = self.config.startupLocation
+                        self.lock.unlock()
                         let success = self.logOut()
                         if !success {
                             return
@@ -1086,6 +1109,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             self.maxLevel = maxLevel
                             if self.level != 0 && (self.level < minLevel || self.level > maxLevel) {
                                 Log.info("Account is outside min/max Level. Current: \(self.level) Min/Max: \(minLevel)/\(maxLevel). Logging out!")
+                                self.lock.lock()
+                                self.currentLocation = self.config.startupLocation
+                                self.lock.unlock()
                                 let success = self.logOut()
                                 if !success {
                                     self.needsLogout = true
@@ -1109,6 +1135,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[STATUS] Pokemon")
                                 if hasWarning && self.config.enableAccountManager {
                                     Log.info("Account has a warning and tried to scan for Pokemon. Logging out!")
+                                    self.lock.lock()
+                                    self.currentLocation = self.config.startupLocation
+                                    self.lock.unlock()
                                     let success = self.logOut()
                                     if !success {
                                         self.needsLogout = true
@@ -1162,6 +1191,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[STATUS] Raid")
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
+                                    self.lock.lock()
+                                    self.currentLocation = self.config.startupLocation
+                                    self.lock.unlock()
                                     let success = self.logOut()
                                     if !success {
                                         self.needsLogout = true
@@ -1222,6 +1254,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
+                                    self.lock.lock()
+                                    self.currentLocation = self.config.startupLocation
+                                    self.lock.unlock()
                                     let success = self.logOut()
                                     if !success {
                                         self.needsLogout = true
@@ -1238,6 +1273,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 
                                 if delay >= self.config.minDelayLogout && self.config.enableAccountManager {
                                     Log.debug("Switching account. Delay too large.")
+                                    self.lock.lock()
+                                    self.currentLocation = self.config.startupLocation
+                                    self.lock.unlock()
                                     let success = self.logOut()
                                     if !success {
                                         self.needsLogout = true
@@ -1389,6 +1427,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                                 
                             } else if action == "switch_account" {
+                                self.lock.lock()
+                                self.currentLocation = self.config.startupLocation
+                                self.lock.unlock()
                                 let success = self.logOut()
                                 if !success {
                                     self.needsLogout = true
@@ -1405,6 +1446,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 print("[STATUS] IV")
                                 if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
+                                    self.lock.lock()
+                                    self.currentLocation = self.config.startupLocation
+                                    self.lock.unlock()
                                     let success = self.logOut()
                                     if !success {
                                         self.needsLogout = true

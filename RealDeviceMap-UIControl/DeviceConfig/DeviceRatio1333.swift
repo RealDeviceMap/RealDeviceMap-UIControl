@@ -12,10 +12,9 @@ class DeviceRatio1333: DeviceConfigProtocol {
     
     private var scaler: DeviceCoordinateScaler
     
-    required init(width: Int, height: Int, multiplier: Double=1.0) {
-        self.scaler = DeviceCoordinateScaler(widthNow: width, heightNow: height, widthTarget: 768, heightTarget: 1024, multiplier: multiplier)
+    required init(width: Int, height: Int, multiplier: Double=1.0, tapMultiplier: Double=1.0) {
+        self.scaler = DeviceCoordinateScaler(widthNow: width, heightNow: height, widthTarget: 768, heightTarget: 1024, multiplier: multiplier, tapMultiplier: tapMultiplier)
     }
-    
     // MARK: - Startup
     
     var startup: DeviceCoordinate {
@@ -70,7 +69,14 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var closeMenu: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1890, scaler: scaler)
     }
-    
+    // Untested. Need to be adjusted!!!
+    var mainScreenPokeballRed: DeviceCoordinate {
+        return DeviceCoordinate(x: 768, y: 1790, scaler: scaler)
+    }
+    // Untested. Need to be adjusted!!!
+    var settingPageCloseButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 768, y: 1850, scaler: scaler)
+    }
     
     // MARK: - Logout
     
@@ -78,10 +84,10 @@ class DeviceRatio1333: DeviceConfigProtocol {
         return DeviceCoordinate(x: 1445, y: 270, scaler: scaler)
     }
     var logoutDragStart: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 1980, scaler: scaler)
+        return DeviceCoordinate(x: 300, y: 1980, scaler: scaler)
     }
     var logoutDragEnd: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 0, scaler: scaler)
+        return DeviceCoordinate(x: 300, y: 0, scaler: scaler)
     }
     var logoutConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1025, scaler: scaler)
@@ -89,7 +95,21 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var logoutCompareX: Int {
         return scaler.scaleY(y: 948)
     }
-
+    
+    // following 4 variables are not tested. Need to be adjusted.
+    var logoutDragStart2: DeviceCoordinate {
+        return DeviceCoordinate(x: 300, y: 1500, scaler: scaler)
+    }
+    var logoutDragEnd2: DeviceCoordinate {
+        return DeviceCoordinate(x: 300, y: 500, scaler: scaler)
+    }
+    var logoutDarkBluePageBottomLeft: DeviceCoordinate {
+        return DeviceCoordinate(x: 100, y: 1948, scaler: scaler)
+    }
+    var logoutDarkBluePageTopRight: DeviceCoordinate {
+        return DeviceCoordinate(x: 1436, y: 100, scaler: scaler)
+    }
+    
     
     // MARK: - Pokemon Encounter
     

@@ -42,7 +42,15 @@ protocol DeviceConfigProtocol {
     // MARK: - Misc
     /** Button to opten nenu. Also white pixel in Pokeball on main screen. */
     var closeMenu: DeviceCoordinate { get }
-    
+    /** Red pixel in Pokeball on main screen. */
+    var mainScreenPokeballRed: DeviceCoordinate { get }
+    /** White pixel in close button on setting page(when pokeball first tapped). */
+    var settingPageCloseButton: DeviceCoordinate { get }
+    /** Dark blue color of bottom Left corner of logout scroll page . */
+    var logoutDarkBluePageBottomLeft: DeviceCoordinate {get}
+    /** Dark blue color of top right corner of logout scroll page . */
+    var logoutDarkBluePageTopRight: DeviceCoordinate {get}
+
     
     // MARK: - Logout
     
@@ -56,7 +64,10 @@ protocol DeviceConfigProtocol {
     var logoutConfirm: DeviceCoordinate { get }
     /** X value to search green boarder of logout button at from top to bottom */
     var logoutCompareX: Int { get }
-
+    /** Coord to start drag at for clicking logout for second time. */
+    var logoutDragStart2: DeviceCoordinate { get }
+    /** Coord to end drag at for clicking logout for second time. */
+    var logoutDragEnd2: DeviceCoordinate { get }
     
     // MARK: - Pokemon Encounter
     
