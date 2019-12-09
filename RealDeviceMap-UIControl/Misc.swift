@@ -662,18 +662,6 @@ extension XCTestCase {
     func logOut() -> Bool {
         
         print("[STATUS] Logout")
-
-        let tapMultiplier: Double
-        if #available(iOS 13.0, *)
-        {
-            tapMultiplier = 0.5
-        }
-        else
-        {
-            tapMultiplier = 1.0
-        }
-        
-        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         
         var main_counter = 0
         while !isMainScreen() && main_counter < 5
@@ -712,7 +700,7 @@ extension XCTestCase {
             scrollpage_counter = scrollpage_counter + 1
             sleep(1)
         }
-
+        
         if scrollpage_counter == 5
         {
             Log.error("Logging out failed. Restarting...")
@@ -721,77 +709,95 @@ extension XCTestCase {
             return false
         }
         
-        deviceConfig.logoutDragStart.toXCUICoordinate(app: app).press(forDuration: 0.1, thenDragTo: deviceConfig.logoutDragEnd.toXCUICoordinate(app: app))
-        sleep(2 * config.delayMultiplier)
-
         var signoutFound = false
-        let screenshot = XCUIScreen.main.screenshot()
-        // Not to scan 10% from bottom
-        let heightmax = screenshot.image.cgImage!.height - lround(Double(screenshot.image.cgImage!.height)*0.15)
-        let heightmax_x01 = lround(Double(heightmax)*0.1)
-        for y in 0...heightmax_x01 {
-            if screenshot.rgbAtLocation(
-                pos: (x: deviceConfig.logoutCompareX, y: y * 10),
-                min: (red: 0.60, green: 0.9, blue: 0.6),
-                max: (red: 0.75, green: 1.0, blue: 0.7)) {
-                Log.debug("Signed out button found at \(y * 10)")
-                normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.logoutCompareX)*tapMultiplier), dy: lround(Double(y * 10)*tapMultiplier))).tap()
-                sleep(1)
-                signoutFound = true
-                break
-            }
-        }
+        var scroll_counter = 1
+        let temp = logOutScroll(signoutFound: signoutFound, scroll_counter: scroll_counter, signoutRetry: false)
+        signoutFound = temp.0
+        scroll_counter = temp.1
         
-        var scroll_counter = 2
-        while signoutFound == false && scroll_counter < 7 {
-            Log.debug("Failed to find signed out button. Scroll again. \(scroll_counter)")
-            deviceConfig.logoutDragStart2.toXCUICoordinate(app: app).press(forDuration: 1.0, thenDragTo: deviceConfig.logoutDragEnd2.toXCUICoordinate(app: app))            
-            sleep(2 * config.delayMultiplier)
-            let screenshot = XCUIScreen.main.screenshot()
-            for y in 0...heightmax_x01 {
-                if screenshot.rgbAtLocation(
-                    pos: (x: deviceConfig.logoutCompareX, y: y * 10),
-                    min: (red: 0.60, green: 0.9, blue: 0.6),
-                    max: (red: 0.75, green: 1.0, blue: 0.7)) {
-                    Log.debug("Signed out button found at \(y * 10)")
-                    normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.logoutCompareX)*tapMultiplier), dy: lround(Double(y * 10)*tapMultiplier))).tap()
-                    sleep(1)
-                    signoutFound = true
-                    break
-                }
-            }
-            scroll_counter = scroll_counter + 1
-        }
-
-        if signoutFound == false
-        {
+        if signoutFound == false {
             Log.error("Can't find sign out button. Logging out failed. Restarting...")
             app.terminate()
             sleep(1 * config.delayMultiplier)
             return false
-        }
-
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
-
-        for index in 1...20 {
-            let screenshotComp = XCUIScreen.main.screenshot()
-
-            if screenshotComp.rgbAtLocation(
-                pos: deviceConfig.startupLoggedOut,
-                min: (0.95, 0.75, 0.0),
-                max: (1.00, 0.85, 0.1)
-            ) {
-                Log.debug("Logged out sucesfully")
-                return true
+        } else {
+            while signoutFound == true && scroll_counter < 7 {
+                sleep(2 * config.delayMultiplier)
+                let screenshot = XCUIScreen.main.screenshot()
+                if screenshot.rgbAtLocation(pos: deviceConfig.logoutConfirm,
+                                            min: (red: 0.42, green: 0.80, blue: 0.58),
+                                            max: (red: 0.48, green: 0.87, blue: 0.65)) {
+                    Log.debug("Log out confirmation button found")
+                    deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
+                    
+                    for index in 1...20 {
+                        let screenshotComp = XCUIScreen.main.screenshot()
+                        
+                        if screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.startupLoggedOut,
+                            min: (0.95, 0.75, 0.0),
+                            max: (1.00, 0.85, 0.1)
+                            ) {
+                            Log.debug("Logged out sucesfully")
+                            return true
+                        }
+                        sleep(1 * config.delayMultiplier)
+                    }
+                    
+                    Log.error("Logging out is taking too long. Restarting...")
+                    app.terminate()
+                    sleep(1 * config.delayMultiplier)
+                    return false
+                } else {
+                    Log.error("Can't find log out confirmation button. Retrying.")
+                    signoutFound = false
+                    let temp = logOutScroll(signoutFound: signoutFound, scroll_counter: scroll_counter, signoutRetry: true)
+                    signoutFound = temp.0
+                    scroll_counter = temp.1
+                }
             }
+            Log.error("Can't find log out confirmation button. Logging out failed. Restarting...")
+            app.terminate()
             sleep(1 * config.delayMultiplier)
+            return false
         }
-
-        Log.error("Logging out is taking too long. Restarting...")
-        app.terminate()
-        sleep(1 * config.delayMultiplier)
-        return false
+    }
+    
+    func logOutScroll(signoutFound:Bool, scroll_counter:Int, signoutRetry:Bool) -> (Bool, Int) {
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *) { tapMultiplier = 0.5 }
+        else { tapMultiplier = 1.0 }
+        
+        var signoutFound = signoutFound
+        var scroll_counter = scroll_counter
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        while signoutFound == false && scroll_counter < 7 {
+            if !signoutRetry {
+                deviceConfig.logoutDragStart2.toXCUICoordinate(app: app).press(forDuration: 1.0, thenDragTo: deviceConfig.logoutDragEnd2.toXCUICoordinate(app: app))
+            } else {
+                deviceConfig.logoutDragStart2.toXCUICoordinate(app: app).press(forDuration: 1.0, thenDragTo: normalized.withOffset(CGVector(dx: 320.0*tapMultiplier, dy: 650.0*tapMultiplier)))
+            }
+            scroll_counter = scroll_counter + 1
+            sleep(2 * config.delayMultiplier)
+            let screenshot = XCUIScreen.main.screenshot()
+            // Not to scan 15% from bottom to avoid the close button
+            let heightmax = screenshot.image.cgImage!.height - lround(Double(screenshot.image.cgImage!.height)*0.15)
+            let heightmax_x01 = lround(Double(heightmax)*0.1)
+            for y in 0...heightmax_x01 {
+                if screenshot.rgbAtLocation(
+                    pos: (x: deviceConfig.logoutCompareX, y: y * 10),
+                    min: (red: 0.55, green: 0.84, blue: 0.58),
+                    max: (red: 0.75, green: 1.00, blue: 0.70)) {
+                    Log.debug("Signed out button found at \(y * 10)")
+                    normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.logoutCompareX)*tapMultiplier), dy: lround(Double(y * 10)*tapMultiplier))).tap()
+                    sleep(1 * config.delayMultiplier)
+                    signoutFound = true
+                    return (signoutFound, scroll_counter)
+                }
+            }
+            Log.debug("Failed to find signed out button. Scroll again. \(scroll_counter)")
+        }
+        return (signoutFound, scroll_counter)
     }
     
     func spin() {
