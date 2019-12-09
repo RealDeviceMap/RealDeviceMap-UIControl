@@ -35,6 +35,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var scatterPokemon = [[String: Any]]()
     var encounterDistance = 0.0
     var encounterDelay = 1.0
+    var server = Server()
     
     var level: Int = 0
     var systemAlertMonitorToken: NSObjectProtocol? = nil
@@ -158,6 +159,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         backendRawURL = URL(string: config.backendURLBaseString + "/raw")!
         continueAfterFailure = true
         needsLogout = false
+        
+        addTeardownBlock {
+            Log.info("Force-Stopping HTTP self.server")
+            self.server.stop(immediately: true)
+        }
         
     }
     
@@ -417,6 +423,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         if shouldExit || !config.enableAccountManager {
             return
         }
+        
+        self.lock.lock()
+        self.currentLocation = self.config.startupLocation
+        self.lock.unlock()
         
         if username != nil && !isLoggedIn {
             
@@ -958,30 +968,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         if shouldExit || ((username == nil || isLoggedIn == false) && config.enableAccountManager) {
             return
         }
-        
-        let server = Server()
-        var started = false
-        var startTryCount = 1
-        while !started {
-            do {
-                try server.start(onPort: UInt16(self.config.port))
-                started = true
-            } catch {
-                if startTryCount > 5 {
-                    fatalError("Failed to start server: \(error). Try (\(startTryCount)/5).")
-                }
-                Log.error("Failed to start server: \(error). Try (\(startTryCount)/5). Trying again in 5s.")
-                startTryCount += 1
-                sleep(5)
-            }
-        }
-        server.route(.get, "loc", handleLocRequest)
-        server.route(.post, "loc", handleLocRequest)
-        server.route(.get, "data", handleDataRequest)
-        server.route(.post, "data", handleDataRequest)
-    
-        Log.info("Server running at localhost:\(config.port)")
-        
+
         // Start Heartbeat
         var dispatchQueueRunning = true
         DispatchQueue(label: "heartbeat_sender").async {
@@ -989,8 +976,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(15)
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "heartbeat"]) { (cake) in /* The cake is a lie! */ }
             }
-            Log.info("Force-Stopping HTTP Server")
-            server.stop(immediately: true)
+            Log.info("Force-Stopping HTTP self.server")
+            self.server.stop(immediately: true)
         }
         
         // Stop Heartbeat if we exit the scope
@@ -1840,7 +1827,31 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 Log.info("Unregistered UI Interruption Monitor")
                 removeUIInterruptionMonitor(systemAlertMonitorToken)
             }
+            Log.info("Force-Stopping HTTP self.server")
+            self.server.stop(immediately: true)
         }
+        
+        var started = false
+        var startTryCount = 1
+        while !started {
+            do {
+                try self.server.start(onPort: UInt16(self.config.port))
+                started = true
+            } catch {
+                if startTryCount > 5 {
+                    fatalError("Failed to start server: \(error). Try (\(startTryCount)/5).")
+                }
+                Log.error("Failed to start server: \(error). Try (\(startTryCount)/5). Trying again in 5s.")
+                startTryCount += 1
+                sleep(5)
+            }
+        }
+        self.server.route(.get, "loc", self.handleLocRequest)
+        self.server.route(.post, "loc", self.handleLocRequest)
+        self.server.route(.get, "data", self.handleDataRequest)
+        self.server.route(.post, "data", self.handleDataRequest)
+
+        Log.info("server running at localhost:\(config.port)")
         
         while true {
             switch lastTestIndex {
@@ -1880,6 +1891,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     
     func test0() {
         lastTestIndex = -1
+        
     }
     
     // Yes this is stupid but it works
