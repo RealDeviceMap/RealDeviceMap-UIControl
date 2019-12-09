@@ -457,6 +457,28 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     Log.debug("Accepting Terms")
                     deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
                     sleep(2 * config.delayMultiplier)
+                    var updatedScreenshot = XCUIScreen.main.screenshot()
+                    var count = 0
+                    while (updatedScreenshot.rgbAtLocation(
+                        pos: deviceConfig.loginTerms,
+                        min: (red: 0.0, green: 0.75, blue: 0.55),
+                        max: (red: 1.0, green: 0.90, blue: 0.70)) &&
+                        screenshotComp.rgbAtLocation(
+                            pos: deviceConfig.loginTermsText,
+                            min: (red: 0.0, green: 0.0, blue: 0.0),
+                            max: (red: 0.3, green: 0.5, blue: 0.5))
+                        ){
+                            if count > 5 {
+                                Log.error("Failed to accept terms. Restarting...")
+                                shouldExit = true
+                                return
+                            }
+                            Log.debug("Still found terms screen, tapping again")
+                            deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
+                            sleep(2 * config.delayMultiplier)
+                            updatedScreenshot = XCUIScreen.main.screenshot()
+                            count += 1
+                    }
                 } else if (
                     screenshotComp.rgbAtLocation(
                         pos: deviceConfig.loginTerms2,
@@ -583,6 +605,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             usleep(UInt32(1500000 * config.delayMultiplier))
             deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
             sleep(3 * config.delayMultiplier)
+            deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
             Log.tutorial("Willow Encounter Speech Ended, Beginning search for Encounter")
 
             while !findAndClickPokemon() {
