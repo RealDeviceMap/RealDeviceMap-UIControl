@@ -150,10 +150,10 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 320, y: 585, scaler: scaler) //Lowered the pokestop click point to that of a lured pokestop.
     }
     var rocketLogoGirl: DeviceCoordinate {
-        return DeviceCoordinate(x: 390, y: 468, scaler: scaler)
+        return DeviceCoordinate(x: 350, y: 500, scaler: scaler)
     }
     var rocketLogoGuy: DeviceCoordinate {
-        return DeviceCoordinate(x: 302, y: 463, scaler: scaler)
+        return DeviceCoordinate(x: 254, y: 484, scaler: scaler)
     }
     var closeInvasion: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 1000, scaler: scaler)
@@ -168,14 +168,8 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var questDelete: DeviceCoordinate {
         return DeviceCoordinate(x: 598, y: 530, scaler: scaler)
     }
-    var questFilledColor1: DeviceCoordinate {
-        return DeviceCoordinate(x: 46, y: 527, scaler: scaler)
-    }
     var questDeleteWithStack: DeviceCoordinate {
         return DeviceCoordinate(x: 600, y: 700, scaler: scaler)
-    }
-    var questFilledColorWithStack1: DeviceCoordinate {
-        return DeviceCoordinate(x: 46, y: 693, scaler: scaler)
     }
     var questDeleteConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
@@ -183,7 +177,13 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var openItems: DeviceCoordinate {
         return DeviceCoordinate(x: 500, y: 950, scaler: scaler)
     }
-    
+    var questWillow: DeviceCoordinate {
+        return DeviceCoordinate(x: 50, y: 1125, scaler: scaler)
+    }
+    var questDeleteThirdSlot: DeviceCoordinate {
+        return DeviceCoordinate(x: 600, y: 860, scaler: scaler)
+    }
+
     
     // MARK: - Item Clearing
     
@@ -217,7 +217,22 @@ class DeviceRatio1775: DeviceConfigProtocol {
             scaler.scaleY(y: 1124)
         ]
     }
-    
+    var itemIncenseYs: [Int] {
+        return [
+            scaler.scaleY(y: 232),
+            scaler.scaleY(y: 460),
+            scaler.scaleY(y: 687),
+            scaler.scaleY(y: 914),
+            scaler.scaleY(y: 1141)
+        ]
+    }
+    var itemFreePass: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 930, scaler: scaler)
+    }
+    var itemGiftInfo: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 850, scaler: scaler)
+    }
+
     
     // MARK: - Login
     

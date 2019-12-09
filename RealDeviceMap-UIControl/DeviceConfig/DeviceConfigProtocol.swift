@@ -107,15 +107,15 @@ protocol DeviceConfigProtocol {
     var openQuest: DeviceCoordinate { get }
     /** First delete quests button. */
     var questDelete: DeviceCoordinate { get }
-    /** Color of the top quest rectangle. */
-    var questFilledColor1: DeviceCoordinate { get }
     /** First delete Quest Button if stacked Encounter is present */
     var questDeleteWithStack: DeviceCoordinate { get }
-    /** Color of the top quest rectangle if stacked Encounter is present. */
-    var questFilledColorWithStack1: DeviceCoordinate { get }
     /** Green confirm quest deletion button */
     var questDeleteConfirm: DeviceCoordinate { get }
-    
+    /** Check for the pokeball on Willow's desk. */
+    var questWillow: DeviceCoordinate { get }
+    /** Third delete Quest Button if stacked Encounter is present */
+    var questDeleteThirdSlot: DeviceCoordinate { get }
+
     
     // MARK: - Item Clearing
     
@@ -137,6 +137,13 @@ protocol DeviceConfigProtocol {
     var itemEggMenuItem: DeviceCoordinate { get }
     /** Tap Location for Egg Deployment */ 
     var itemEggDeploy: DeviceCoordinate { get }
+    /** The Y values for all item delete buttons. */
+    var itemIncenseYs: [Int] { get }
+    /** Free Pass OK button. */
+    var itemFreePass: DeviceCoordinate { get }
+    /** Gift info OK button. */
+    var itemGiftInfo: DeviceCoordinate { get }
+
     
     // MARK: - Login
     

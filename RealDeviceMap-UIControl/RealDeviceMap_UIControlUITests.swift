@@ -1005,6 +1005,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         var currentQuests = self.config.questFullCount
         var currentItems = self.config.itemFullCount
+        var UQClear = true
+        var eggStart = Date(timeInterval: -1860, since: Date())
+
         
         var failedToGetJobCount = 0
         var failedCount = 0
@@ -1254,16 +1257,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             } else if action == "scan_quest" {
                                 print("[STATUS] Quest")
                                 
-                                let lat = data["lat"] as? Double ?? 0
-                                let lon = data["lon"] as? Double ?? 0
-                                let delay = data["delay"] as? Double ?? 0
-                                Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
-                                if (!self.config.ultraQuests) {
-                                    self.zoom(out: false, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
-                                }
-                                
-                                if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
-                                    Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
+                                if hasWarning && self.config.enableAccountManager {
+                                    Log.info("Account has a warning and tried to scan for Quests. Logging out!")
                                     self.lock.lock()
                                     self.currentLocation = self.config.startupLocation
                                     self.lock.unlock()
@@ -1279,6 +1274,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     UserDefaults.standard.synchronize()
                                     self.shouldExit = true
                                     return
+                                }
+                                
+                                if self.config.ultraQuests && UQClear {
+                                    self.freeScreen()
+                                    Log.debug("Clearing Items")
+                                    self.clearItems()
+                                    
+                                    self.freeScreen()
+                                    Log.debug("Clearing Quests")
+                                    self.clearQuest()
+                                    UQClear = false
+                                }
+                                
+                                let lat = data["lat"] as? Double ?? 0
+                                let lon = data["lon"] as? Double ?? 0
+                                let delay = data["delay"] as? Double ?? 0
+                                Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
+                                
+                                if (!self.config.ultraQuests) {
+                                    self.zoom(out: false, app: self.app, coordStartup: self.deviceConfig.startup.toXCUICoordinate(app: self.app))
                                 }
                                 
                                 if delay >= self.config.minDelayLogout && self.config.enableAccountManager {
@@ -1300,6 +1315,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.shouldExit = true
                                     return
                                 }
+                                
                                 if (!self.config.ultraQuests) {
                                     if currentItems >= self.config.itemFullCount && !self.newCreated {
                                         self.freeScreen()
@@ -1319,6 +1335,22 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         sleep(1)
                                     }
                                 }
+                                
+                                if self.config.deployEggs && eggStart < Date() {
+                                    self.freeScreen()
+                                    Log.debug("Deploying an egg")
+                                    let i = Double.random(in: 0...60)
+                                    if self.eggDeploy() {
+                                        // if an egg was used, set the timer to 31 minutes
+                                        eggStart = Date(timeInterval: 1860+i, since: Date())
+                                    } else {
+                                        // if no egg was used, set the timer to 16 minutes so it rechecks
+                                        // useful if you get more eggs from leveling up
+                                        eggStart = Date(timeInterval: 960+i, since: Date())
+                                    }
+                                    Log.debug("Egg timer set to \(eggStart) UTC for a recheck")
+                                }
+                                
                                 self.newCreated = false
                                 
                                 self.lock.lock()
@@ -1327,7 +1359,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.pokemonEncounterId = nil
                                 self.targetMaxDistance = self.config.targetMaxDistance
                                 self.waitForData = true
-                                self.gotQuest = false
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
                                 self.freeScreen()
@@ -1395,6 +1426,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     return
                                 }
                                 self.lock.unlock()
+                                
                                 if (!self.config.ultraQuests) {
                                     if success {
                                         self.freeScreen()
@@ -1404,7 +1436,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         while (attempts < 5){
                                             attempts += 1
                                             self.lock.lock()
+                                            Log.test("Got quest data: " + self.gotQuest.description)
                                             if !self.gotQuest {
+                                                Log.test("Respinning stop attempt: " + attempts.description)
                                                 self.lock.unlock()
                                                 usleep(100000 * self.config.delayMultiplier)
                                                 self.freeScreen()
@@ -1425,7 +1459,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         while (attempts < 5){
                                             attempts += 1
                                             self.lock.lock()
+                                            Log.test("Got quest data: " + self.gotQuest.description)
                                             if !self.gotQuest {
+                                                Log.test("UQ stop re-attempt: " + attempts.description)
                                                 self.lock.unlock()
                                                 sleep(1 * self.config.delayMultiplier)
                                             } else {
