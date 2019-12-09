@@ -143,6 +143,7 @@ class BuildController {
             
             for device in devicesToAdd {
                 if device.enabled == 0 {
+                    self.setStatus(uuid: device.uuid, status: "Disabled")
                     continue
                 }
                 let queue = Threading.getQueue(name: "BuildController-\(device.uuid)", type: .serial)
