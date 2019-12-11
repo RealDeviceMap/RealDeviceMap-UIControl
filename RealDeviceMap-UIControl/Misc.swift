@@ -854,7 +854,7 @@ extension XCTestCase {
             
             Log.test("Clearing stacked quests")
             
-            for n in 0...2 {
+            for n in 0...3 {
                 if screenshotComp.rgbAtLocation(pos: deviceConfig.questDeleteWithStack, min: (red: 0.80, green: 0.80, blue: 0.80),max: (red: 1.0, green: 1.0, blue: 1.0)) {
                     //second slot is normal quest. delete it.
                     Log.test("Clearing stacked quests: clearing a normal quest (slot 2).")
@@ -862,7 +862,7 @@ extension XCTestCase {
                     sleep(1 * config.delayMultiplier)
                     deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
-                    if n < 2 {
+                    if n < 3 {
                         screenshotComp = XCUIScreen.main.screenshot()
                     }
                 }
@@ -1003,7 +1003,13 @@ extension XCTestCase {
     
     func eggDeploy() -> Bool {
         Log.test("Starting eggDeploy()")
+        let tapMultiplier: Double
+        if #available(iOS 13.0, *)
+        {tapMultiplier = 0.5}
+        else
+        {tapMultiplier = 1.0}
         
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var hasEgg = false
         
@@ -1023,7 +1029,8 @@ extension XCTestCase {
         
         if hasEgg {
             Log.test("New egg found. Deploying it.")
-            deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()
+            let itemEggMenuItem = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.itemEggX)*tapMultiplier), dy: lround(Double(deviceConfig.itemDeleteYs[index])*tapMultiplier)))
+            itemEggMenuItem.tap()
             sleep(1 * config.delayMultiplier)
             deviceConfig.itemEggDeploy.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
