@@ -1257,7 +1257,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                             } else if action == "scan_quest" {
                                 print("[STATUS] Quest")
                                 
-                                if hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
+                                if self.hasWarning && self.firstWarningDate != nil && Int(Date().timeIntervalSince(self.firstWarningDate!)) >= self.config.maxWarningTimeRaid && self.config.enableAccountManager {
                                     Log.info("Account has a warning and is over maxWarningTimeRaid. Logging out!")
                                     self.lock.lock()
                                     self.currentLocation = self.config.startupLocation
