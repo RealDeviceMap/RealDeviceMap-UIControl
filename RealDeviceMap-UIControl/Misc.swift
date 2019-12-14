@@ -1003,14 +1003,6 @@ extension XCTestCase {
     
     func eggDeploy() -> Bool {
         Log.test("Starting eggDeploy()")
-        let tapMultiplier: Double
-        if #available(iOS 13.0, *)
-        {tapMultiplier = 0.5}
-        else
-        {tapMultiplier = 1.0}
-        
-        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
-        var index = 0
         var hasEgg = false
         
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
@@ -1018,19 +1010,24 @@ extension XCTestCase {
         deviceConfig.openItems.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
         
-        while index < deviceConfig.itemDeleteYs.count {
+        let screenshot = XCUIScreen.main.screenshot()
+        if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[0]) {
+            hasEgg = true
+        } else {
+            //If the top line is not an egg, clear items again just in case and recheck the top line
+            Log.test("No egg found. Checking for items to clear before a recheck.")
+            deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+            clearItems()
             let screenshot = XCUIScreen.main.screenshot()
-            if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
+            if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[0]) {
                 hasEgg = true
-                break
             }
-            index += 1
         }
         
         if hasEgg {
             Log.test("New egg found. Deploying it.")
-            let itemEggMenuItem = normalized.withOffset(CGVector(dx: lround(Double(deviceConfig.itemEggX)*tapMultiplier), dy: lround(Double(deviceConfig.itemDeleteYs[index])*tapMultiplier)))
-            itemEggMenuItem.tap()
+            deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
             deviceConfig.itemEggDeploy.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
