@@ -246,7 +246,7 @@ class DeviceRatio1775: DeviceConfigProtocol {
     }
     
     var loginBannedText: DeviceCoordinate {
-        return DeviceCoordinate(x: 228, y: 473, scaler: scaler)
+        return DeviceCoordinate(x: 230, y: 473, scaler: scaler)
     }
     
     var loginBanned: DeviceCoordinate {
@@ -274,21 +274,37 @@ class DeviceRatio1775: DeviceConfigProtocol {
     }
     
     var loginFailedText: DeviceCoordinate {
-        return DeviceCoordinate(x: 140, y: 446, scaler: scaler)
+        return DeviceCoordinate(x: 297, y: 526, scaler: scaler)
     }
     
     var loginFailed: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 700, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 670, scaler: scaler)
     }
     
     var loginPrivacyText: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 720, scaler: scaler)
+        return DeviceCoordinate(x: 328, y: 748, scaler: scaler)
     }
     
     var loginPrivacy: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 600, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 625, scaler: scaler)
     }
     
+    var loginPrivacyUpdateText: DeviceCoordinate {
+        return DeviceCoordinate(x: 110, y: 389, scaler: scaler)
+    }
+    
+    var loginPrivacyUpdate: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 625, scaler: scaler)
+    }
+    
+    var unableAuthText: DeviceCoordinate {
+        return DeviceCoordinate(x: 330, y: 530, scaler: scaler)
+    }
+    
+    var unableAuthButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 585, scaler: scaler)
+    }
+
     
     // MARK: - Tutorial
  

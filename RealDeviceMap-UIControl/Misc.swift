@@ -129,9 +129,8 @@ extension XCTestCase {
     }
 	
     func checkHasWarning(screenshot: XCUIScreenshot?=nil) -> Bool {
-        
+        Log.debug("Checking for the warning pop-up")
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
-
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareWarningL,
             min: (red: 0.03, green: 0.07, blue: 0.10),
@@ -147,6 +146,109 @@ extension XCTestCase {
         
     }
     
+    func acceptTOS() -> Bool {
+        Log.debug("Checking for the first TOS pop-up")
+        let screenshotComp = XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.loginTerms,
+            min: (red: 0.00, green: 0.75, blue: 0.55),
+            max: (red: 1.00, green: 0.90, blue: 0.70)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.loginTermsText,
+                min: (red: 0.00, green: 0.00, blue: 0.00),
+                max: (red: 0.30, green: 0.50, blue: 0.50)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func acceptTOSUpdate() -> Bool {
+        Log.debug("Checking for the updated TOS pop-up")
+        let screenshotComp = XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.loginTerms2,
+            min: (red: 0.40, green: 0.80, blue: 0.57),
+            max: (red: 0.48, green: 0.87, blue: 0.65)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.loginTerms2Text,
+                min: (red: 0.11, green: 0.35, blue: 0.44),
+                max: (red: 0.18, green: 0.42, blue: 0.51)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func acceptPrivacy() -> Bool {
+        Log.debug("Checking for the privacy pop-up")
+        let screenshotComp = XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.loginPrivacy,
+            min: (red: 0.40, green: 0.80, blue: 0.60),
+            max: (red: 0.50, green: 0.85, blue: 0.65)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.loginPrivacyText,
+                min: (red: 0.40, green: 0.80, blue: 0.60),
+                max: (red: 0.50, green: 0.85, blue: 0.65)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func acceptPrivacyUpdate() -> Bool {
+        Log.debug("Checking for the privacy update pop-up")
+        let screenshotComp = XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.loginPrivacyUpdate,
+            min: (red: 0.40, green: 0.80, blue: 0.60),
+            max: (red: 0.50, green: 0.85, blue: 0.65)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.loginPrivacyUpdateText,
+                min: (red: 0.22, green: 0.36, blue: 0.37),
+                max: (red: 0.32, green: 0.46, blue: 0.47)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func unableAuth() -> Bool {
+        Log.debug("Checking for the unable to authenticate pop-up")
+        let screenshotComp = XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.unableAuthButton,
+            min: (red: 0.40, green: 0.78, blue: 0.56),
+            max: (red: 0.50, green: 0.88, blue: 0.66)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.unableAuthText,
+                min: (red: 0.29, green: 0.42, blue: 0.43),
+                max: (red: 0.39, green: 0.52, blue: 0.53)) {
+
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func failedLogin() -> Bool {
+        Log.debug("Checking for the failed to login pop-up")
+        let screenshotComp = XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.loginBanned,
+            min: (red: 0.39, green: 0.75, blue: 0.55),
+            max: (red: 0.49, green: 0.90, blue: 0.70)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.loginBannedText,
+                min: (red: 0.26, green: 0.39, blue: 0.40),
+                max: (red: 0.36, green: 0.49, blue: 0.50)) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     func isTutorial(screenshot: XCUIScreenshot?=nil) -> Bool {
         
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
