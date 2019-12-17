@@ -174,7 +174,15 @@ protocol DeviceConfigProtocol {
     var loginPrivacyText: DeviceCoordinate { get }
     /** Green pixel in button of privacy popup (OK button)*/
     var loginPrivacy: DeviceCoordinate { get }
-    
+    /** Black pixel in text of privacy update popup */
+    var loginPrivacyUpdateText: DeviceCoordinate { get }
+    /** Green pixel in button of privacy update popup (OK button)*/
+    var loginPrivacyUpdate: DeviceCoordinate { get }
+    /** Black pixel in bottom row of text in the unable to authenticate popup */
+    var unableAuthText: DeviceCoordinate { get }
+    /** Green pixel in the OK button */
+    var unableAuthButton: DeviceCoordinate { get }
+
     
     // MARK: - Tutorial
     
