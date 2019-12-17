@@ -162,8 +162,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         needsLogout = false
         
         addTeardownBlock {
-            Log.info("Force-Stopping HTTP self.server")
             self.server.stop(immediately: true)
+            Log.info("[HTTP-Server] Tearing down after test and force-stopped HTTP Server. Server is running: \(self.server.isRunning)")
         }
         
     }
@@ -453,10 +453,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         if shouldExit || !config.enableAccountManager {
             return
         }
-        
-        self.lock.lock()
-        self.currentLocation = self.config.startupLocation
-        self.lock.unlock()
         
         if username != nil && !isLoggedIn {
             
@@ -981,8 +977,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(15)
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "heartbeat"]) { (cake) in /* The cake is a lie! */ }
             }
-            Log.info("Force-Stopping HTTP self.server")
-            self.server.stop(immediately: true)
         }
         
         // Stop Heartbeat if we exit the scope
@@ -1833,8 +1827,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 Log.info("Unregistered UI Interruption Monitor")
                 removeUIInterruptionMonitor(systemAlertMonitorToken)
             }
-            Log.info("Force-Stopping HTTP self.server")
             self.server.stop(immediately: true)
+            Log.info("[HTTP-Server] Deferring out of runAll: Force-Stopping HTTP Server: \(self.server.isRunning)")
         }
         
         var started = false
@@ -1845,9 +1839,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 started = true
             } catch {
                 if startTryCount > 5 {
-                    fatalError("Failed to start server: \(error). Try (\(startTryCount)/5).")
+                    fatalError("[HTTP-Server] Failed to start server: \(error). Try (\(startTryCount)/5).")
                 }
-                Log.error("Failed to start server: \(error). Try (\(startTryCount)/5). Trying again in 5s.")
+                Log.error("[HTTP-Server] Failed to start server: \(error). Try (\(startTryCount)/5). Trying again in 5s.")
                 startTryCount += 1
                 sleep(5)
             }
@@ -1856,8 +1850,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         self.server.route(.post, "loc", self.handleLocRequest)
         self.server.route(.get, "data", self.handleDataRequest)
         self.server.route(.post, "data", self.handleDataRequest)
+        
+        self.lock.lock()
+        self.currentLocation = self.config.startupLocation
+        self.lock.unlock()
 
-        Log.info("server running at localhost:\(config.port)")
+        Log.info("[HTTP-Server] Server is now running: \(self.server.isRunning) at localhost:\(config.port)")
         
         while true {
             switch lastTestIndex {
