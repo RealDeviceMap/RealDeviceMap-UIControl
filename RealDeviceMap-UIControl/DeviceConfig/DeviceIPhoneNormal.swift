@@ -13,12 +13,6 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 325, y: 960, tapScaler: tapScaler)
     }
-    override var loginTerms2Text: DeviceCoordinate {
-        return DeviceCoordinate(x: 188, y: 450, tapScaler: tapScaler)
-    }
-    override var loginTerms2: DeviceCoordinate {
-        return DeviceCoordinate(x: 375, y: 725, tapScaler: tapScaler)
-    }
     override var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 400, y: 115, tapScaler: tapScaler)
     }
@@ -33,6 +27,12 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     }
     override var loginNewPlayer: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 925, tapScaler: tapScaler)
+    }
+    override var loginPrivacyUpdateText: DeviceCoordinate {
+        return DeviceCoordinate(x: 133, y: 459, tapScaler: tapScaler)
+    }
+    override var loginPrivacyUpdate: DeviceCoordinate {
+        return DeviceCoordinate(x: 375, y: 745, tapScaler: tapScaler)
     }
     
     

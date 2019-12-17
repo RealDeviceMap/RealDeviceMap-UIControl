@@ -23,18 +23,18 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 807, y: 177, scaler: scaler)
     }
-    //Find coords by scaling to 640x1136
+
     var ageVerification : DeviceCoordinate {
-        return DeviceCoordinate(x: 222, y: 815, scaler: scaler)
+        return DeviceCoordinate(x: 775, y: 1520, scaler: scaler)
     }
     var ageVerificationYear : DeviceCoordinate {
-        return DeviceCoordinate(x: 475, y: 690, scaler: scaler)
+        return DeviceCoordinate(x: 1040, y: 1230, scaler: scaler)
     }
     var ageVerificationDragStart : DeviceCoordinate {
-        return DeviceCoordinate(x: 475, y: 1025, scaler: scaler)
+        return DeviceCoordinate(x: 1030, y: 1780, scaler: scaler)
     }
     var ageVerificationDragEnd : DeviceCoordinate {
-        return DeviceCoordinate(x: 475, y: 380, scaler: scaler)
+        return DeviceCoordinate(x: 1030, y: 0, scaler: scaler)
     }
     var passenger: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1567, scaler: scaler)
@@ -61,13 +61,13 @@ class DeviceRatio1333: DeviceConfigProtocol {
         return DeviceCoordinate(x: 1400, y: 1800, scaler: scaler)
     }
 	var closeFailedLogin: DeviceCoordinate {
-	    return DeviceCoordinate(x: 768, y: 1360, scaler: scaler)
+	    return DeviceCoordinate(x: 765, y: 1250, scaler: scaler)
 	}
 
     // MARK: - Misc
     
     var closeMenu: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 1890, scaler: scaler)
+        return DeviceCoordinate(x: 770, y: 1874, scaler: scaler)
     }
     // Untested. Need to be adjusted!!!
     var mainScreenPokeballRed: DeviceCoordinate {
@@ -258,11 +258,11 @@ class DeviceRatio1333: DeviceConfigProtocol {
     }
     
     var loginBannedText: DeviceCoordinate {
-        return DeviceCoordinate(x: 551, y: 1170, scaler: scaler)
+        return DeviceCoordinate(x: 551, y: 796, scaler: scaler)
     }
     
     var loginBanned: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 1030, scaler: scaler)
+        return DeviceCoordinate(x: 780, y: 1030, scaler: scaler)
     }
     
     var loginBannedSwitchAccount: DeviceCoordinate {
@@ -294,13 +294,29 @@ class DeviceRatio1333: DeviceConfigProtocol {
     }
     
     var loginPrivacyText: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 1365, scaler: scaler)
+        return DeviceCoordinate(x: 759, y: 1454, scaler: scaler)
     }
     
     var loginPrivacy: DeviceCoordinate {
-        return DeviceCoordinate(x: 768, y: 1100, scaler: scaler)
+        return DeviceCoordinate(x: 768, y: 1280, scaler: scaler)
     }
     
+    var loginPrivacyUpdateText: DeviceCoordinate {
+        return DeviceCoordinate(x: 270, y: 596, scaler: scaler)
+    }
+    
+    var loginPrivacyUpdate: DeviceCoordinate {
+        return DeviceCoordinate(x: 770, y: 1190, scaler: scaler)
+    }
+    
+    var unableAuthText: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+    
+    var unableAuthButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+
     
     // MARK: - Tutorial
  
