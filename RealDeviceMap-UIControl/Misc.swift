@@ -800,22 +800,18 @@ extension XCTestCase {
         print("[STATUS] Logout")
         
         var main_counter = 0
-        while !isMainScreen() && main_counter < 5
-        {
+        while !isMainScreen() && main_counter < 5 {
             freeScreen()
             sleep(1 * config.delayMultiplier)
             main_counter = main_counter + 1
         }
         
-<<<<<<< HEAD
-        if main_counter == 5
-        {
+        if main_counter == 5 {
             Log.error("Failed to get Main Play Screen. Logging out failed. Restarting...")
             app.terminate()
             sleep(1 * config.delayMultiplier)
             return false
         }
-=======
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         sleep(2 * config.delayMultiplier)
         deviceConfig.settingsButton.toXCUICoordinate(app: app).tap()
@@ -837,8 +833,7 @@ extension XCTestCase {
         deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
         sleep(10 * config.delayMultiplier)
         let screenshotComp = getScreenshot()
->>>>>>> mr89
-        
+
         var settingpage_counter = 0
         while !isSettingPage() && settingpage_counter < 5
         {
