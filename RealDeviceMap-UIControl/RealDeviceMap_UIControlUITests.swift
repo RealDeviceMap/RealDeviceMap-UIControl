@@ -331,7 +331,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             var loaded = false
             var count = 0
             while !loaded {
-                let screenshotComp = XCUIScreen.main.screenshot()
+                let screenshotComp = getScreenshot()
                 if screenshotComp.rgbAtLocation(
                     pos: self.deviceConfig.startup,
                     min: (red: 0.0, green: 0.75, blue: 0.55),
@@ -386,7 +386,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(1 * config.delayMultiplier)
             }
             
-            let screenshotComp = XCUIScreen.main.screenshot()
+            let screenshotComp = getScreenshot()
             if screenshotComp.rgbAtLocation(
                 pos: self.deviceConfig.ageVerification,
                 min: (0.15, 0.33, 0.17),
@@ -470,7 +470,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(10 * config.delayMultiplier)
                 }
                 
-                let screenshotComp = XCUIScreen.main.screenshot()
+                let screenshotComp = getScreenshot()
                 
                 if (screenshotComp.rgbAtLocation(
                     pos: deviceConfig.loginBannedBackground,
@@ -620,7 +620,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             
             sleep(6 * config.delayMultiplier)
             
-            let ConfirmARScreenshot = XCUIScreen.main.screenshot()
+            let ConfirmARScreenshot = getScreenshot()
             Log.tutorial("Checking for AR+ Mode")
             if !ConfirmARScreenshot.rgbAtLocation(
                 pos: deviceConfig.checkARPersistence,
@@ -649,7 +649,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
                 sleep(10 * config.delayMultiplier)
                 
-                let screenshotComp = XCUIScreen.main.screenshot()
+                let screenshotComp = getScreenshot()
                 
                 if screenshotComp.rgbAtLocation(
                     pos: deviceConfig.tutorialStyleDone,
@@ -717,7 +717,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             
             while !Completed {
                 
-                let screenshotComp = XCUIScreen.main.screenshot()
+                let screenshotComp = getScreenshot()
                 
                 if screenshotComp.rgbAtLocation(
                 pos: deviceConfig.tutorialProfessorCheck,
@@ -1734,7 +1734,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     
                 }
             } else {
-                let screenshotComp = XCUIScreen.main.screenshot()
+                let screenshotComp = getScreenshot()
                 
                 if config.enableAccountManager && screenshotComp.rgbAtLocation(
                     pos: deviceConfig.startupLoggedOut,

@@ -203,6 +203,11 @@
             value = "$(ultraQuests)"
             isEnabled = "YES">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "attachScreenshots"
+            value = "$(attachScreenshots)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
