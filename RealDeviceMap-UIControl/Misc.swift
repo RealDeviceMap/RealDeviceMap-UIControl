@@ -812,27 +812,6 @@ extension XCTestCase {
             sleep(1 * config.delayMultiplier)
             return false
         }
-        deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.settingsButton.toXCUICoordinate(app: app).tap()
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.logoutDragStart.toXCUICoordinate(app: app).press(forDuration: 0.1, thenDragTo: deviceConfig.logoutDragEnd.toXCUICoordinate(app: app))
-        sleep(2 * config.delayMultiplier)
-        
-        let screenshot = getScreenshot()
-        for y in 0...screenshot.image.cgImage!.height / 10 {
-            if screenshot.rgbAtLocation(
-                pos: (x: deviceConfig.logoutCompareX, y: y * 10),
-                min: (red: 0.60, green: 0.9, blue: 0.6),
-                max: (red: 0.75, green: 1.0, blue: 0.7)) {
-                normalized.withOffset(CGVector(dx: deviceConfig.logoutCompareX, dy: y * 10)).tap()
-                break
-            }
-        }
-        sleep(2 * config.delayMultiplier)
-        deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
-        sleep(10 * config.delayMultiplier)
-        let screenshotComp = getScreenshot()
 
         var settingpage_counter = 0
         while !isSettingPage() && settingpage_counter < 5
