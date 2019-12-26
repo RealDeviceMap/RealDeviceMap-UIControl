@@ -267,6 +267,27 @@ extension XCTestCase {
         }
     
     }
+    
+    func isStartup(screenshot: XCUIScreenshot?=nil) -> Bool {
+        
+        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        
+        if screenshotComp.rgbAtLocation(pos: deviceConfig.startupNewCautionSign, min: (red: 1.00, green: 0.97, blue: 0.60), max: (red: 1.00, green: 1.00, blue: 0.65)) && screenshotComp.rgbAtLocation(pos: deviceConfig.startupNewButton, min: (red: 0.28, green: 0.79, blue: 0.62), max: (red: 0.33, green: 0.85, blue: 0.68)) {
+            Log.startup("Should be clearing Caution Sign new startup prompt")
+            deviceConfig.startupNewButton.toXCUICoordinate(app: app).tap()
+            return true
+        } else if screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldOkButton, min: (red: 0.42, green: 0.82, blue: 0.60), max: (red: 0.47, green: 0.86, blue: 0.63)) && screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldCornerTest, min: (red: 0.15, green: 0.41, blue: 0.45), max: (red: 0.19, green: 0.46, blue: 0.49)) {
+            Log.startup("Should be Clearing the 2 line long, old style startup prompt")
+            deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
+            return true
+        } else if screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldOkButton, min: (red: 0.42, green: 0.82, blue: 0.60), max: (red: 0.47, green: 0.86, blue: 0.63)) && screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldCornerTest, min: (red: 0.99, green: 0.99, blue: 0.99), max: (red: 1.01, green: 1.01, blue: 1.01)) {
+            Log.startup("Should be clearing the 3 line long, old school style prompt")
+            deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
+            return true
+        }
+        
+        return false
+    }
     /*
     // Planned detection for partially completed reloads, but doesn't seem worth it now :shrug:
     func failedTutorialMethod1(screenshot: XCUIScreenshot?=nil) -> Bool {

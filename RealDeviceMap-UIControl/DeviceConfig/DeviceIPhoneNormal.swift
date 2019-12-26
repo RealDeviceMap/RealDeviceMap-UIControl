@@ -13,6 +13,18 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 325, y: 960, tapScaler: tapScaler)
     }
+    override var startupNewButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 475 , y: 960, tapScaler: tapScaler)
+    }
+    override var startupNewCautionSign: DeviceCoordinate {
+        return DeviceCoordinate(x: 375 , y: 385, tapScaler: tapScaler)
+    }
+    override var loginTerms2Text: DeviceCoordinate {
+        return DeviceCoordinate(x: 188, y: 450, tapScaler: tapScaler)
+    }
+    override var loginTerms2: DeviceCoordinate {
+        return DeviceCoordinate(x: 375, y: 725, tapScaler: tapScaler)
+    }
     override var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 400, y: 115, tapScaler: tapScaler)
     }

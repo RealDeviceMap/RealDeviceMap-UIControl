@@ -26,6 +26,19 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 175, scaler: scaler)
     }
+    // Handling Multiple startup prompts
+    var startupOldCornerTest: DeviceCoordinate {
+        return DeviceCoordinate(x: 610, y: 715, scaler: scaler)
+    }
+    var startupOldOkButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 320 , y: 650, scaler: scaler)
+    }
+    var startupNewButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 400 , y: 820, scaler: scaler)
+    }
+    var startupNewCautionSign: DeviceCoordinate {
+        return DeviceCoordinate(x: 320 , y: 320, scaler: scaler)
+    }
     //Find coords by scaling to 640x1136
     var ageVerification : DeviceCoordinate {
         return DeviceCoordinate(x: 222, y: 815, scaler: scaler)

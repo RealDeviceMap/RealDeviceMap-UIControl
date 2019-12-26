@@ -13,11 +13,23 @@ protocol DeviceConfigProtocol {
     
     /** Green pixel in green button of startup popup. */
     var startup: DeviceCoordinate { get }
+    
+    // Handling Multiple startup prompts
+    /* White Pixel (on 3 line prompt) or Greenish-Blue Pixel (on 2 line prompt) bottom right corner of 2line popup */
+    var startupOldCornerTest: DeviceCoordinate { get }
+    /* light Green Pixel, Inside the OK button, centered between OK, kept same pixels despite height change */
+    var startupOldOkButton: DeviceCoordinate { get }
+    /* light green pixel, Cenetered inside OK button again, just lower */
+    var startupNewButton: DeviceCoordinate { get }
+    /* Yellow pixel, in upper section of traingle, below the black outline border*/
+    var startupNewCautionSign: DeviceCoordinate { get }
     /** Green pixel in green button of log in button if not logged in. */
     var startupLoggedOut: DeviceCoordinate { get }
     /** Green pixel in green button of submit if not age verified. */
     var ageVerification: DeviceCoordinate { get }
+    /** Inside Year Drop dwon box on startup screen */
     var ageVerificationYear: DeviceCoordinate { get }
+    /** Startup and end location from scroll in Age Verification */
     var ageVerificationDragStart: DeviceCoordinate { get }
     var ageVerificationDragEnd: DeviceCoordinate { get }
     /** ? pixel in ? of logged out. */ //TODO: - Where?

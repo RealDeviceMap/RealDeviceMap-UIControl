@@ -548,13 +548,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
                     shouldExit = true
                     return
-                } else if (
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.startup,
-                        min: (red: 0.0, green: 0.75, blue: 0.55),
-                        max: (red: 1.0, green: 0.90, blue: 0.70))
-                        || isTutorial()
-                    ) {
+                } else if ( isStartup() || isTutorial() ) {
                     loggedIn = true
                     isLoggedIn = true
                     Log.info("Logged in as \(username!)")
@@ -1038,7 +1032,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    deviceConfig.startup.toXCUICoordinate(app: app).tap()
+                    isStartup()
                     sleep(2 * config.delayMultiplier)
                     
                     deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
@@ -1364,7 +1358,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     if !found && Date().timeIntervalSince(start) <= delay {
                                         let left = delay - Date().timeIntervalSince(start)
-                                        let end = Date(timeIntervalSince1970: delay)
+                                        let _ = Date(timeIntervalSince1970: delay)
                                         Log.debug("Delaying by \(left)s.")
                                         while !found && Date().timeIntervalSince(start) <= delay {
                                             self.lock.lock()
@@ -1761,14 +1755,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(2 * config.delayMultiplier)
                     shouldExit = true
                     return
-                } else if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.startup,
-                    min: (0.00, 0.75, 0.55),
-                    max: (1.00, 0.90, 0.70)) {
+                } else if isStartup() {
                     Log.info("App Started")
                     isStarted = true
                     sleep(1 * config.delayMultiplier)
-	            }else {
+	            } else {
                     Log.debug("App still in Startup")
                     if startupCount == 30 {
                         Log.info("App stuck in Startup. Restarting...")
