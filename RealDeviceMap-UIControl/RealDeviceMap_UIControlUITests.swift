@@ -347,22 +347,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     max: (1.00, 0.85, 0.1)) {
                     Log.debug("App Started in login screen.")
                     loaded = true
-                } else if acceptTOS() {
-                    Log.debug("Accepting Terms")
-                    deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                } else if acceptTOSUpdate() {
-                    Log.debug("Accepting Updated Terms.")
-                    deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                } else if acceptPrivacy() {
-                    Log.debug("Accepting Privacy.")
-                    deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                } else if acceptPrivacyUpdate() {
-                    Log.debug("Accepting Privacy Update.")
-                    deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
                 } else if unableAuth() {
                     Log.debug("Unable to authenticate.")
                     deviceConfig.unableAuthButton.toXCUICoordinate(app: app).tap()
@@ -481,44 +465,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
                     app.launch()
                     sleep(10 * config.delayMultiplier)
-                } else if acceptTOS() {
-                    Log.debug("Accepting Terms")
-                    deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                    var updatedScreenshot = XCUIScreen.main.screenshot()
-                    var count = 0
-                    while (updatedScreenshot.rgbAtLocation(
-                        pos: deviceConfig.loginTerms,
-                        min: (red: 0.0, green: 0.75, blue: 0.55),
-                        max: (red: 1.0, green: 0.90, blue: 0.70)) &&
-                        updatedScreenshot.rgbAtLocation(
-                            pos: deviceConfig.loginTermsText,
-                            min: (red: 0.00, green: 0.00, blue: 0.00),
-                            max: (red: 0.30, green: 0.50, blue: 0.50))
-                        ){
-                            if count > 5 {
-                                Log.error("Failed to accept terms. Restarting...")
-                                shouldExit = true
-                                return
-                            }
-                            Log.debug("Still found terms screen, tapping again")
-                            deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
-                            sleep(2 * config.delayMultiplier)
-                            updatedScreenshot = XCUIScreen.main.screenshot()
-                            count += 1
-                    }
-                } else if acceptTOSUpdate() {
-                    Log.debug("Accepting Updated Terms.")
-                    deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                } else if acceptPrivacy() {
-                    Log.debug("Accepting Privacy.")
-                    deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                } else if acceptPrivacyUpdate() {
-                    Log.debug("Accepting Privacy Update.")
-                    deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
                 } else if unableAuth() {
                     Log.debug("Unable to authenticate.")
                     deviceConfig.unableAuthButton.toXCUICoordinate(app: app).tap()
@@ -529,23 +475,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     Log.error("Account \(username!) failed to log in. Getting a new account")
                     deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
                     sleep(2 * config.delayMultiplier)
-                    username = nil
-                    shouldExit = true
-                    return
-                } else if (
-                    screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginFailed,
-                        min: (red: 0.40, green: 0.78, blue: 0.56),
-                        max: (red: 0.50, green: 0.88, blue: 0.66)) &&
-                        screenshotComp.rgbAtLocation(
-                        pos: deviceConfig.loginFailedText,
-                        min: (red: 0.23, green: 0.37, blue: 0.38),
-                        max: (red: 0.33, green: 0.47, blue: 0.48))
-                    ) {
-                    Log.error("Invalid credentials for \(username!)")
+                    
+                    postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
                     username = nil
                     isLoggedIn = false
-                    postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
                     shouldExit = true
                     return
                 } else if ( isStartup() || isTutorial() ) {
@@ -930,7 +863,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 toPrint = "[DEBUG] Got Data without Pokemon"
                             }
                         } else {
-                            toPrint = "[DEBUG] Got Data"
+                            toPrint = "[DEBUG] Got Data ."
                             self.waitForData = false
                         }
                     } else if onlyEmptyGmos {
@@ -1032,6 +965,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
+                    Log.debug("Running first ToS check.")
+                    tosCheck()
+                    
                     isStartup()
                     sleep(2 * config.delayMultiplier)
                     
@@ -1046,27 +982,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         Log.info("Account has a warning!")
                         deviceConfig.closeWarning.toXCUICoordinate(app: app).tap()
                         sleep(1 * config.delayMultiplier)
-                    }
-                    
-                    if self.acceptTOS() {
-                        Log.debug("Accepting Terms")
-                        deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-                    if self.acceptTOSUpdate() {
-                        Log.debug("Accepting Updated Terms.")
-                        deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-                    if self.acceptPrivacy() {
-                        Log.debug("Accepting Privacy.")
-                        deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-                    if self.acceptPrivacyUpdate() {
-                        Log.debug("Accepting Privacy Update.")
-                        deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
                     }
 
                     self.freeScreen()

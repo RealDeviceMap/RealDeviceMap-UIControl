@@ -159,9 +159,9 @@ extension XCTestCase {
         
     }
     
-    func acceptTOS() -> Bool {
-        Log.debug("Checking for the first TOS pop-up")
+    func tosCheck() -> Bool {
         let screenshotComp = XCUIScreen.main.screenshot()
+        Log.debug("Checking for the first TOS pop-up")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms,
             min: (red: 0.00, green: 0.75, blue: 0.55),
@@ -170,15 +170,12 @@ extension XCTestCase {
                 pos: deviceConfig.loginTermsText,
                 min: (red: 0.00, green: 0.00, blue: 0.00),
                 max: (red: 0.30, green: 0.50, blue: 0.50)) {
+            Log.debug("Accepting Terms")
+            deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
             return true
-        } else {
-            return false
         }
-    }
-    
-    func acceptTOSUpdate() -> Bool {
         Log.debug("Checking for the updated TOS pop-up")
-        let screenshotComp = XCUIScreen.main.screenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms2,
             min: (red: 0.40, green: 0.80, blue: 0.57),
@@ -187,15 +184,12 @@ extension XCTestCase {
                 pos: deviceConfig.loginTerms2Text,
                 min: (red: 0.11, green: 0.35, blue: 0.44),
                 max: (red: 0.18, green: 0.42, blue: 0.51)) {
+            Log.debug("Accepting Updated Terms.")
+            deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
             return true
-        } else {
-            return false
         }
-    }
-    
-    func acceptPrivacy() -> Bool {
         Log.debug("Checking for the privacy pop-up")
-        let screenshotComp = XCUIScreen.main.screenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacy,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -204,15 +198,12 @@ extension XCTestCase {
                 pos: deviceConfig.loginPrivacyText,
                 min: (red: 0.40, green: 0.80, blue: 0.60),
                 max: (red: 0.50, green: 0.85, blue: 0.65)) {
+            Log.debug("Accepting Privacy.")
+            deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
             return true
-        } else {
-            return false
         }
-    }
-    
-    func acceptPrivacyUpdate() -> Bool {
         Log.debug("Checking for the privacy update pop-up")
-        let screenshotComp = XCUIScreen.main.screenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacyUpdate,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -221,10 +212,12 @@ extension XCTestCase {
                 pos: deviceConfig.loginPrivacyUpdateText,
                 min: (red: 0.22, green: 0.36, blue: 0.37),
                 max: (red: 0.32, green: 0.46, blue: 0.47)) {
+            Log.debug("Accepting Privacy Update.")
+            deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
             return true
-        } else {
-            return false
         }
+        return false
     }
     
     func unableAuth() -> Bool {
