@@ -161,7 +161,7 @@ extension XCTestCase {
     
     func tosCheck() -> Bool {
         let screenshotComp = XCUIScreen.main.screenshot()
-        Log.debug("Checking for the first TOS pop-up")
+        Log.debug("Checking for the first TOS popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms,
             min: (red: 0.00, green: 0.75, blue: 0.55),
@@ -175,7 +175,7 @@ extension XCTestCase {
             sleep(2 * config.delayMultiplier)
             return true
         }
-        Log.debug("Checking for the updated TOS pop-up")
+        Log.debug("Checking for updated TOS popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms2,
             min: (red: 0.40, green: 0.80, blue: 0.57),
@@ -189,7 +189,7 @@ extension XCTestCase {
             sleep(2 * config.delayMultiplier)
             return true
         }
-        Log.debug("Checking for the privacy pop-up")
+        Log.debug("Checking for privacy popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacy,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -203,7 +203,7 @@ extension XCTestCase {
             sleep(2 * config.delayMultiplier)
             return true
         }
-        Log.debug("Checking for the privacy update pop-up")
+        Log.debug("Checking for updated privacy popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacyUpdate,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -220,8 +220,10 @@ extension XCTestCase {
         return false
     }
     
-    func unableAuth() -> Bool {
-        Log.debug("Checking for the unable to authenticate pop-up")
+    func loginError() -> (authError: Int, error: Bool) {
+        Log.debug("Checking for unable to authenticate...")
+        let authError = 0
+        let error = false
         let screenshotComp = XCUIScreen.main.screenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.unableAuthButton,
@@ -231,16 +233,14 @@ extension XCTestCase {
                 pos: deviceConfig.unableAuthText,
                 min: (red: 0.29, green: 0.42, blue: 0.43),
                 max: (red: 0.39, green: 0.52, blue: 0.53)) {
-
-            return true
-        } else {
-            return false
+            Log.debug("Unable to authenticate...")
+            deviceConfig.unableAuthButton.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
+            let authError = 1
+            let error = true
+            return (authError, error)
         }
-    }
-    
-    func failedLogin() -> Bool {
-        Log.debug("Checking for the failed to login pop-up")
-        let screenshotComp = XCUIScreen.main.screenshot()
+        Log.debug("Checking for failed login...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginBanned,
             min: (red: 0.39, green: 0.75, blue: 0.55),
@@ -249,10 +249,13 @@ extension XCTestCase {
                 pos: deviceConfig.loginBannedText,
                 min: (red: 0.26, green: 0.39, blue: 0.40),
                 max: (red: 0.36, green: 0.49, blue: 0.50)) {
-            return true
-        } else {
-            return false
+            deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
+            sleep(2 * config.delayMultiplier)
+            let authError = 2
+            let error = true
+            return (authError, error)
         }
+        return (authError, error)
     }
 
     func isTutorial(screenshot: XCUIScreenshot?=nil) -> Bool {
