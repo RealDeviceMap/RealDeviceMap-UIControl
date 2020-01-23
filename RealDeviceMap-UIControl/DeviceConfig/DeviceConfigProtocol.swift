@@ -13,7 +13,8 @@ protocol DeviceConfigProtocol {
     
     /** Green pixel in green button of startup popup. */
     var startup: DeviceCoordinate { get }
-    
+    /* pixel 2,2 on every device. Color is irrelevant - used to check startup condition */
+    var cornerCheck: DeviceCoordinate { get }
     // Handling Multiple startup prompts
     /* White Pixel (on 3 line prompt) or Greenish-Blue Pixel (on 2 line prompt) bottom right corner of 2line popup */
     var startupOldCornerTest: DeviceCoordinate { get }

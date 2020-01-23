@@ -182,7 +182,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         }
         
         app.terminate()
-
+        
         // Wake up device if screen is off (recently rebooted), then press home to get to home screen.
         Log.info("Waking up the device")
         XCUIDevice.shared.press(.home)
@@ -290,7 +290,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if alwaysButton.exists {
                 alwaysButton.tap()
             }
-
+            
             let laterButton = alert.buttons["Later"]
             if laterButton.exists {
                 laterButton.tap()
@@ -300,7 +300,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if remindmelaterButton.exists {
                 remindmelaterButton.tap()
             }
-
+            
             let closeButton = alert.buttons["Close"]
             if closeButton.exists {
                 closeButton.tap()
@@ -313,14 +313,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             
             return true
         }
-
-        app.tap()        
-
+        
+        app.tap()
+        
     }
     
     func part1LoginSetup() {
         
-        if shouldExit || !config.enableAccountManager {
+        if shouldExit || !config.enableAccountManager { //< pretty sure this also cant happen. Coming from 0, setup is always false here
             return
         }
         
@@ -333,18 +333,46 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             while !loaded {
                 guard count < 60 else {
                     count = 0
-                    app.launch()
+                    app.terminate()
                     sleep(1 * config.delayMultiplier)
                     return
                 }
                 // unable to authenticate or failed login
-                let validLogin = loginError()
-                guard !validLogin.error else {
-                    if validLogin.authError == 1 {
+                let playerLogin = loginError()
+                Log.debug("Login error check 1")
+                //Log.debug("\(playerLogin.error), \(playerLogin.authError)")
+                guard !playerLogin.error else {
+                    if playerLogin.authError == 1 {
                         username = nil
                     }
                     shouldExit = true
                     return
+                }
+                // first find out if we are logged in, banned, or need to login
+                
+                let gameState = screenCheck()
+                Log.debug("screenCheck part1LoginSetup-->")
+                if gameState.status {
+                   
+                    switch gameState.startupScreen {
+                        case "willow_part1":
+                            loaded = true
+                            isLoggedIn = true
+                            lastTestIndex = 4
+                            return
+                        case "willow_part2":
+                            loaded = true
+                            isLoggedIn = true
+                            lastTestIndex = 4
+                            return
+                        case "tos_loggedIn":
+                            loaded = true
+                            isLoggedIn = true
+                            lastTestIndex = 4
+                            return
+                    default:
+                        loaded = false
+                    }
                 }
                 let screenshotComp = getScreenshot()
                 if screenshotComp.rgbAtLocation(
@@ -353,16 +381,18 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     max: (1.00, 0.85, 0.1)) {
                     Log.debug("App Started in login screen...")
                     loaded = true
-                    return
                 }
+              /*  if tosCheck() {
+                    loaded = true
+                    isLoggedIn = true
+                    lastTestIndex = 4
+                    return
+                } */
                 sleep(1)
- //               let loaded = tosCheck()
- //               Log.debug("ToS check complete.")
                 count += 1
-                
                 sleep(1 * config.delayMultiplier)
             }
-            // only hits with fresh install of app.
+            /* Age verification only hits with fresh install of app. */
             let screenshotComp = getScreenshot()
             if screenshotComp.rgbAtLocation(
                 pos: self.deviceConfig.ageVerification,
@@ -452,9 +482,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     return
                 }
                 let screenshotComp = getScreenshot()
-                let validLogin = loginError()
-                guard !validLogin.error else {
-                    if validLogin.authError == 2 {
+                let playerLogin = loginError()
+                Log.debug("loginError Check 2")
+                guard !playerLogin.error else {
+                    if playerLogin.authError == 2 {
                         Log.error("Account \(username!) failed to log in. Getting a new account")
                         postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
                         username = nil
@@ -472,10 +503,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_banned"], blocking: true) { (result) in }
                     app.launch()
                     sleep(10 * config.delayMultiplier)
-                } else if ( isStartup() || isTutorial() ) {
+                } else if ( isStartup() || isTutorial().tutorial) {
                     loggedIn = true
                     isLoggedIn = true
-                    Log.info("Logged in as \(username!)")
+                    Log.info("Logged in as \(username!) --on part4LoginEnd")
                 } else {
                     count += 1
                     
@@ -489,7 +520,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     
     func part5TutorialStart() {
         
-        tosCheck()
+        
         if shouldExit || username == nil || !isLoggedIn || !config.enableAccountManager {
             return
         }
@@ -499,19 +530,33 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             print("[STATUS] Tutorial")
             
             sleep(4 * config.delayMultiplier)
-            
-            if !isTutorial() {
-                Log.info("Tutorial already done..")
+            // these only do anything on new tutorial. not returning/incomplete tutroial
+            if checkWeather() {
+                Log.info("Cleared Extreme Weather...")
+            }
+            Log.info("screenCheck part5TutorialStart-->")
+            screenCheck()
+            let tutCheck = isTutorial()
+            if !tutCheck.tutorial {
+                Log.info("Account  \(username!) already completed tutorial...")
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "tutorial_done"], blocking: true) { (result) in }
+                //isStartupCompleted = true
+                let startScan = true
+                isLoggedIn = true
                 newCreated = true
                 newLogIn = false
-                lastTestIndex = 6
+                lastTestIndex = 7
                 return
             }
-			
+			if tutCheck.step == 2 {
+                Log.tutorial("Solving incomplete Tutorial for \(username!)")
+                lastTestIndex = 6
+                newLogIn = true
+                return
+            }
             let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
             
-            Log.tutorial("Solving Tutorial for \(username!)")
+            Log.tutorial("Solving New Tutorial for \(username!)")
             
             /* Start Reworked Changes Here */
             /* 9 clicks to get through initial Willow Speech */
@@ -584,7 +629,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 } else {
                     CaptureAttempts += 1
                     if CaptureAttempts > 3 {
-                        Log.tutorial("ERROR 26 is the devil")
+                        Log.tutorial("It appears you did not catch that pokemon (formerly known as error 26). Restarting...")
                         postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_warning"], blocking: true) { (result) in }
                         app.terminate()
                         
@@ -800,7 +845,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let onlyEmptyGmos = data?["only_empty_gmos"] as? Bool ?? true
                 let onlyInvalidGmos = data?["only_invalid_gmos"] as? Bool ?? false
                 let containsGmos = data?["contains_gmos"] as? Bool ?? true
-                
+              //  Log.debug("|POSTREQUEST>>>>>>>>|")
+              //  Log.debug("\(data)")
+//                Log.debug("------------------------------------------------|")
+
                 if level != 0 {
                     self.level = level
                 }
@@ -896,7 +944,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             dispatchQueueRunning = false
         }
         
-        // Time to start the actuall work
+        // Time to start the actual work
         runLoop()
         
     }
@@ -939,7 +987,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 noQuestCount = 0
                 failedCount = 0
                 isStarted = false
-                isStartupCompleted = false
                 app.launch()
                 while app.state != .runningForeground {
                     sleep(1)
@@ -954,12 +1001,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    Log.debug("Running 2nd ToS check.")
-                    let clearToS = tosCheck()
-                    if !clearToS {
-                        Log.debug("No ToS screens detected.")
+                    Log.debug("screenCheck part8main.runloop-->")
+                    let clearToS = screenCheck()
+                    if !clearToS.status {
+                        Log.debug("No ToS/Privacy screens detected.")
                     }
-                    isStartup()
+                    Log.debug("Running startup check 1-->")
+                    if isStartup() {
+                        isStartupCompleted = true
+                    }
                     sleep(2 * config.delayMultiplier)
                     
                     deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
@@ -1640,13 +1690,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     
                 }
             } else {
-                let validLogin = loginError()
-                guard !validLogin.error else {
+                // Startup Check 3 - already logged in and app restarting.
+                let playerLogin = loginError()
+                Log.debug("loginCheck check 3...")
+               // Log.debug("\(playerLogin.error), \(playerLogin.authError)")
+                guard !playerLogin.error else {
                     Log.error("Account \(username!) failed to log in. Getting a new account")
                     username = nil
                     isLoggedIn = false
                     sleep(2 * config.delayMultiplier)
                     shouldExit = true
+                    return
+                }
+                // only happens when tutorial failed and restarted
+                let tutCheck = isTutorial()
+                if tutCheck.tutorial {
+                    Log.debug("Account has incomplete tutorial. Let's catch that pokemon!")
+                    isStarted = true
+                    newLogIn = true
+                    lastTestIndex = 4
+                    sleep(1 * config.delayMultiplier)
                     return
                 }
                 let screenshotComp = getScreenshot()
@@ -1661,7 +1724,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     UserDefaults.standard.synchronize()
                     self.shouldExit = true
                     return
-                } else if isStartup() {
+                } else if isStartup() || screenCheck().status {
                     Log.info("App Started")
                     isStarted = true
                     sleep(1 * config.delayMultiplier)

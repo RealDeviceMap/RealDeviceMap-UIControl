@@ -158,10 +158,33 @@ extension XCTestCase {
         }
         
     }
-    
-    func tosCheck() -> Bool {
+    func screenCheck(status:Bool = false, startupScreen:String = "unknown") -> (status: Bool, startupScreen: String) {
         let screenshotComp = XCUIScreen.main.screenshot()
-        Log.debug("Checking for the first TOS popup...")
+        let status = false
+        let startupScreen = "unknown"
+        Log.debug("Checking Startup Screen...")
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.cornerCheck,
+            min: (red: 0.0, green: 0.15, blue: 0.2),
+            max: (red: 0.1, green: 0.24, blue: 0.26))
+             {
+            Log.debug("Returning Tutorial Stage 1...")
+            let status = true
+            let startupScreen = "willow_part1"
+            return (status, startupScreen)
+        }
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.cornerCheck,
+            min: (red: 0.28, green: 0.65, blue: 0.9),
+            max: (red: 0.33, green: 0.72, blue: 1.0))
+        {
+            Log.debug("Returning Tutorial Stage 2...")
+            let status = true
+            let startupScreen = "willow_part2"
+            return (status, startupScreen)
+        }
+        return (status, startupScreen)
+       // Log.debug("Checking for the first TOS popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms,
             min: (red: 0.00, green: 0.75, blue: 0.55),
@@ -173,9 +196,11 @@ extension XCTestCase {
             Log.debug("Accepting Terms")
             deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            return true
+            let status = true
+            let startupScreen = "tos_loggedIn"
+            return (status, startupScreen)
         }
-        Log.debug("Checking for updated TOS popup...")
+        Log.debug("Checking for ToS/Privacy screens...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms2,
             min: (red: 0.40, green: 0.80, blue: 0.57),
@@ -187,9 +212,11 @@ extension XCTestCase {
             Log.debug("Accepting Updated Terms.")
             deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            return true
+            let status = true
+            let startupScreen = "tos_loggedIn"
+            return (status, startupScreen)
         }
-        Log.debug("Checking for privacy popup...")
+       // Log.debug("Checking for privacy popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacy,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -201,9 +228,11 @@ extension XCTestCase {
             Log.debug("Accepting Privacy.")
             deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            return true
+            let status = true
+            let startupScreen = "tos_loggedIn"
+            return (status, startupScreen)
         }
-        Log.debug("Checking for updated privacy popup...")
+       // Log.debug("Checking for updated privacy popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacyUpdate,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -215,15 +244,15 @@ extension XCTestCase {
             Log.debug("Accepting Privacy Update.")
             deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            return true
+            let status = true
+            let startupScreen = "tos_loggedIn"
+            return (status, startupScreen)
         }
-        return false
+        return (status, startupScreen)
     }
-    
-    func loginError() -> (authError: Int, error: Bool) {
+   // typealias authError = (Bool, Int)
+    func loginError(error:Bool = false, authError:Int = 0) -> (error: Bool, authError: Int) {
         Log.debug("Checking for unable to authenticate...")
-        let authError = 0
-        let error = false
         let screenshotComp = XCUIScreen.main.screenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.unableAuthButton,
@@ -236,9 +265,9 @@ extension XCTestCase {
             Log.debug("Unable to authenticate...")
             deviceConfig.unableAuthButton.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            let authError = 1
             let error = true
-            return (authError, error)
+            let authError = 1
+            return (error, authError)
         }
         Log.debug("Checking for failed login...")
         if screenshotComp.rgbAtLocation(
@@ -251,17 +280,36 @@ extension XCTestCase {
                 max: (red: 0.36, green: 0.49, blue: 0.50)) {
             deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
-            let authError = 2
             let error = true
-            return (authError, error)
+            let authError = 2
+            return (error, authError)
         }
-        return (authError, error)
+        return (error, authError)
     }
-
-    func isTutorial(screenshot: XCUIScreenshot?=nil) -> Bool {
-        
+    
+    func checkWeather(screenshot: XCUIScreenshot?=nil) -> Bool {
+       
+        Log.debug("Checking Weather condition...")
         let screenshotComp = screenshot ?? getScreenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.weather,
+            min: (red: 0.23, green: 0.35, blue: 0.50),
+            max: (red: 0.36, green: 0.47, blue: 0.65) ) {
+            Log.debug("Looks like extreme weather, be safe outside...")
+            deviceConfig.closeWeather1.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+            deviceConfig.closeWeather2.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+            return true
+        }
+        return false
+    }
+    
+    func isTutorial(tutorial:Bool = false, step:Int = 0) -> (tutorial: Bool, step: Int) {
         
+        let screenshotComp = XCUIScreen.main.screenshot()
+        let tutorial = false
+        let step = 0
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareTutorialL,
             min: (red: 0.3, green: 0.5, blue: 0.6),
@@ -270,95 +318,45 @@ extension XCTestCase {
             pos: deviceConfig.compareWarningR,
             min: (red: 0.3, green: 0.5, blue: 0.6),
             max: (red: 0.4, green: 0.6, blue: 0.7)) {
-            return true
-        } else {
-            return false
+            let tutorial = true
+            let step = 1
+            return (tutorial, step)
         }
-    
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.tutorialProfessorCheck,
+            min: (red: 0.85, green: 0.95, blue: 0.00),
+            max: (red: 0.92, green: 1.00, blue: 0.05)) {
+            Log.tutorial("Detected partial complete tutorial...")
+            let tutorial = true
+            let step = 2
+            return (tutorial, step)
+            
+        }
+
+        return (tutorial, step)
     }
     
     func isStartup(screenshot: XCUIScreenshot?=nil) -> Bool {
         
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
-        
+        Log.debug("Checking Startup warning prompt...")
         if screenshotComp.rgbAtLocation(pos: deviceConfig.startupNewCautionSign, min: (red: 1.00, green: 0.97, blue: 0.60), max: (red: 1.00, green: 1.00, blue: 0.65)) && screenshotComp.rgbAtLocation(pos: deviceConfig.startupNewButton, min: (red: 0.28, green: 0.79, blue: 0.62), max: (red: 0.33, green: 0.85, blue: 0.68)) {
-            Log.startup("Should be clearing Caution Sign new startup prompt")
+            Log.startup("Closing Caution Sign startup prompt.")
             deviceConfig.startupNewButton.toXCUICoordinate(app: app).tap()
             return true
         } else if screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldOkButton, min: (red: 0.42, green: 0.82, blue: 0.60), max: (red: 0.47, green: 0.86, blue: 0.63)) && screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldCornerTest, min: (red: 0.15, green: 0.41, blue: 0.45), max: (red: 0.19, green: 0.46, blue: 0.49)) {
-            Log.startup("Should be Clearing the 2 line long, old style startup prompt")
+            Log.startup("Closing 2 line startup prompt.")
             deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
             return true
         } else if screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldOkButton, min: (red: 0.42, green: 0.82, blue: 0.60), max: (red: 0.47, green: 0.86, blue: 0.63)) && screenshotComp.rgbAtLocation(pos: deviceConfig.startupOldCornerTest, min: (red: 0.99, green: 0.99, blue: 0.99), max: (red: 1.01, green: 1.01, blue: 1.01)) {
-            Log.startup("Should be clearing the 3 line long, old school style prompt")
+            Log.startup("Closing 3 line startup prompt≥")
             deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
             return true
         }
         
         return false
     }
-    /*
-    // Planned detection for partially completed reloads, but doesn't seem worth it now :shrug:
-    func failedTutorialMethod1(screenshot: XCUIScreenshot?=nil) -> Bool {
-        
-        let screenshotComp = screenshot ?? getScreenshot()
-        
-        if screenshotComp.rgbAtLocation(
-            pos: deviceConfig.compareTutorialL,
-            min: (red: 0.3, green: 0.5, blue: 0.6),
-            max: (red: 0.4, green: 0.6, blue: 0.7)) &&
-            screenshotComp.rgbAtLocation(
-                pos: deviceConfig.compareWarningR,
-                min: (red: 0.3, green: 0.5, blue: 0.6),
-                max: (red: 0.4, green: 0.6, blue: 0.7)) {
-            return true
-        } else {
-            return false
-        }
-        
-    }
-    
-    func failedTutorialMethod2(screenshot: XCUIScreenshot?=nil) -> Bool{
-    
-        //let screenshotComp = screenshot ?? getScreenshot()
-        /*
-        if screenshotComp.rgbAtLocation(
-            pos: deviceConfig.tutorialProfessorCheck,
-            min: (red: 0.85, green: 0.9, blue: 0.00),
-            max: (red: 0.92, green: 1.0, blue: 0.03)) {
-            return
-        }
-        */
-        return true
-        
-    }
-    
-    func failedTutorialMethod3(screenshot: XCUIScreenshot?=nil) -> Bool{
-        
-        //let screenshotComp = screenshot ?? getScreenshot()
-        
-        /*if screenshotComp.rgbAtLocation(
-            pos: deviceConfig.tutorialProfessorCheck,
-            min: (red: 0.85, green: 0.9, blue: 0.00),
-            max: (red: 0.92, green: 1.0, blue: 0.03)) {
-            return
-        }*/
-        return true
-    }
-    
-    func failedTutorialMethod4(screenshot: XCUIScreenshot?=nil) -> Bool {
-        
-        //let screenshotComp = screenshot ?? getScreenshot()
-        
-        /*if screenshotComp.rgbAtLocation(
-            pos: deviceConfig.tutorialProfessorCheck,
-            min: (red: 0.85, green: 0.9, blue: 0.00),
-            max: (red: 0.92, green: 1.0, blue: 0.03)) {
-            return
-        }*/
-        return true
-    }
-    */
+   
     func tutorialGenderSelection() -> Bool {
         Log.tutorial("Calling tutorialGenderSelection()")
         
