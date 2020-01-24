@@ -369,8 +369,12 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var tutorialUsernameConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
     }
-    var tutorialProfessorCheck: DeviceCoordinate {
+    var tutorialProfessorCheeck: DeviceCoordinate {
         return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+    
+    var willowPokestop: DeviceCoordinate {
+        return DeviceCoordinate(x: 170, y: 842, scaler: scaler)
     }
        var tutorialSelectY: Int {
         return scaler.scaleY(y: 0)

@@ -37,7 +37,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var encounterDelay = 1.0
     var server = Server()
     var hasWarning = false
-    
+    var startScan = false
+    var screen: String?
     var level: Int = 0
     var systemAlertMonitorToken: NSObjectProtocol? = nil
     
@@ -174,7 +175,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         
         shouldExit = false
         newCreated = false
-        
+        startScan = false
         if let systemAlertMonitorToken = self.systemAlertMonitorToken {
             Log.info("Unregistered UI Interruption Monitor")
             removeUIInterruptionMonitor(systemAlertMonitorToken)
@@ -357,25 +358,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let gameState = screenCheck()
                 Log.debug("screenCheck part1LoginSetup-->")
                 if gameState.status {
-                   
-                    switch gameState.startupScreen {
-                        case "willow_part1":
-                            loaded = true
-                            isLoggedIn = true
-                            lastTestIndex = 4
-                            return
-                        case "willow_part2":
-                            loaded = true
-                            isLoggedIn = true
-                            lastTestIndex = 4
-                            return
-                        case "tos_loggedIn":
-                            loaded = true
-                            isLoggedIn = true
-                            lastTestIndex = 4
-                            return
-                    default:
-                        loaded = false
+                    self.screen = gameState.startupScreen
+                    let stage = setState(screen: gameState.startupScreen)
+                    if stage != 0 {
+                        loaded = true
+                        isLoggedIn = true
+                        lastTestIndex = stage
+                        return
                     }
                 }
                 let screenshotComp = getScreenshot()
@@ -386,12 +375,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     Log.debug("App Started in login screen...")
                     loaded = true
                 }
-              /*  if tosCheck() {
-                    loaded = true
-                    isLoggedIn = true
-                    lastTestIndex = 4
-                    return
-                } */
+                
                 sleep(1)
                 count += 1
                 sleep(1 * config.delayMultiplier)
@@ -499,6 +483,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     shouldExit = true
                     return
                 }
+                self.screenCheck()
                 if (screenshotComp.rgbAtLocation(
                     pos: deviceConfig.loginBannedBackground,
                     min: (red: 0.0, green: 0.2, blue: 0.3),
@@ -546,7 +531,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 Log.info("Account  \(username!) already completed tutorial...")
                 self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "username": self.username as Any, "type": "tutorial_done"], blocking: true) { (result) in }
                 //isStartupCompleted = true
-                let startScan = true
+                self.startScan = true
                 isLoggedIn = true
                 newCreated = true
                 newLogIn = false
@@ -680,7 +665,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             sleep(5 * config.delayMultiplier)
             deviceConfig.tutorialUsernameConfirm.toXCUICoordinate(app: app).tap()
             sleep(5 * config.delayMultiplier)
-            
+        }
+        if newLogIn || self.screen == "willow_pokestop" {
             var Completed = false
             
             while !Completed {
@@ -688,9 +674,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let screenshotComp = getScreenshot()
                 
                 if screenshotComp.rgbAtLocation(
-                pos: deviceConfig.tutorialProfessorCheck,
-                min: (red: 0.85, green: 0.95, blue: 0.00),
-                max: (red: 0.92, green: 1.00, blue: 0.05)) {
+                pos: deviceConfig.tutorialProfessorCheeck,
+                min: (red: 0.9, green: 0.75, blue: 0.65),
+                max: (red: 1.0, green: 0.85, blue: 0.75)) {
                     Log.tutorial("Tapping Willow on Pokestop Introduction")
                     deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
                     sleep(2 * config.delayMultiplier)
@@ -959,9 +945,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         if shouldExit {
             return
         }
-        
-        isStarted = false
-        
+        if !self.startScan {
+            isStarted = false
+        }
         // State vars
         var startupCount = 0
         var isStartupCompleted = false
@@ -1700,7 +1686,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             } else {
                 // Startup Check 3 - already logged in and app restarting.
                 let playerLogin = loginError()
-                Log.debug("loginCheck check 3...")
+                Log.debug("login check 3...")
                // Log.debug("\(playerLogin.error), \(playerLogin.authError)")
                 guard !playerLogin.error else {
                     if playerLogin.authError == 2 {

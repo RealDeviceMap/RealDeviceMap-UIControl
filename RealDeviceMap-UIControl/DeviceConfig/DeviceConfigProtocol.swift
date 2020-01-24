@@ -223,8 +223,9 @@ protocol DeviceConfigProtocol {
     /** Confirm username button. */
     var tutorialUsernameConfirm: DeviceCoordinate { get }
     /** Green On Willow */
-    var tutorialProfessorCheck: DeviceCoordinate { get }
-    /** Name Says It All **/
+    var tutorialProfessorCheeck: DeviceCoordinate { get }
+    /** bright blue in pokestop icon on willow tutorial end screen */
+    var willowPokestop: DeviceCoordinate { get }
     
     /** Back Button in Bottom Left of Avatar Setup **/
     var tutorialBack: DeviceCoordinate { get }

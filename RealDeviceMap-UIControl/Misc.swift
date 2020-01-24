@@ -163,11 +163,26 @@ extension XCTestCase {
         let status = false
         let startupScreen = "unknown"
         Log.debug("Checking Startup Screen...")
+         Log.debug("Checking for Tutorial...")
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.tutorialProfessorCheeck,
+            min: (red: 0.9, green: 0.75, blue: 0.65),
+            max: (red: 1.0, green: 0.85, blue: 0.75)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.willowPokestop,
+                min: (red: 0.0, green: 0.74, blue: 1.0),
+                max: (red: 0.0, green: 0.83, blue: 1.0)) {
+            
+            Log.debug("Returning Tutorial Willow at Pokestop...")
+            let status = true
+            let startupScreen = "willow_pokestop"
+            return (status, startupScreen)
+        }
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.cornerCheck,
             min: (red: 0.0, green: 0.15, blue: 0.2),
-            max: (red: 0.1, green: 0.24, blue: 0.26))
-             {
+            max: (red: 0.1, green: 0.24, blue: 0.26)) {
+            
             Log.debug("Returning Tutorial Stage 1...")
             let status = true
             let startupScreen = "willow_part1"
@@ -176,15 +191,14 @@ extension XCTestCase {
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.cornerCheck,
             min: (red: 0.28, green: 0.65, blue: 0.9),
-            max: (red: 0.33, green: 0.72, blue: 1.0))
-        {
+            max: (red: 0.33, green: 0.72, blue: 1.0)) {
+          
             Log.debug("Returning Tutorial Stage 2...")
             let status = true
             let startupScreen = "willow_part2"
             return (status, startupScreen)
         }
-        return (status, startupScreen)
-       // Log.debug("Checking for the first TOS popup...")
+        Log.debug("Checking for the ToS/Privacy...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms,
             min: (red: 0.00, green: 0.75, blue: 0.55),
@@ -200,7 +214,6 @@ extension XCTestCase {
             let startupScreen = "tos_loggedIn"
             return (status, startupScreen)
         }
-        Log.debug("Checking for ToS/Privacy screens...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginTerms2,
             min: (red: 0.40, green: 0.80, blue: 0.57),
@@ -216,7 +229,6 @@ extension XCTestCase {
             let startupScreen = "tos_loggedIn"
             return (status, startupScreen)
         }
-       // Log.debug("Checking for privacy popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacy,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -232,7 +244,6 @@ extension XCTestCase {
             let startupScreen = "tos_loggedIn"
             return (status, startupScreen)
         }
-       // Log.debug("Checking for updated privacy popup...")
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.loginPrivacyUpdate,
             min: (red: 0.40, green: 0.80, blue: 0.60),
@@ -250,7 +261,25 @@ extension XCTestCase {
         }
         return (status, startupScreen)
     }
-   // typealias authError = (Bool, Int)
+    
+    func setState(screen: String) -> Int {
+        var stage = 0
+        switch screen {
+        case "willow_part1":
+            stage = 4
+        case "willow_part2":
+            stage = 4
+        case "willow_pokestop":
+            stage = 7
+        case "tos_loggedIn":
+            stage = 4
+        default:
+            stage = 0
+        }
+        return stage
+        
+    }
+    
     func loginError(error:Bool = false, authError:Int = 0) -> (error: Bool, authError: Int) {
         Log.debug("Checking for unable to authenticate...")
         let screenshotComp = XCUIScreen.main.screenshot()
@@ -339,9 +368,9 @@ extension XCTestCase {
             return (tutorial, step)
         }
         if screenshotComp.rgbAtLocation(
-            pos: deviceConfig.tutorialProfessorCheck,
-            min: (red: 0.85, green: 0.95, blue: 0.00),
-            max: (red: 0.92, green: 1.00, blue: 0.05)) {
+            pos: deviceConfig.tutorialProfessorCheeck,
+            min: (red: 0.9, green: 0.75, blue: 0.65),
+            max: (red: 1.0, green: 0.85, blue: 0.75)) {
             Log.tutorial("Detected partial complete tutorial...")
             let tutorial = true
             let step = 2
@@ -604,9 +633,11 @@ extension XCTestCase {
             min: (red: 0.40, green: 0.78, blue: 0.57),
             max: (red: 0.50 , green: 0.88 , blue: 0.67)
             ) {
-                Log.tutorial("Missed a Click Somewhere, Try Upping ConfigDelay\nCorrecting by completing avatar selection")
+                Log.tutorial("Missed a Click Somewhere, Tring again...")
                 deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
                 usleep(UInt32(2000000 * config.delayMultiplier))
+                deviceConfig.tutorialStyleDone.toXCUICoordinate(app: app).tap()
+                sleep(3 * config.delayMultiplier)
                 
         }
         Log.tutorial("Accepting Avatar Customization")
