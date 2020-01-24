@@ -913,7 +913,7 @@ extension XCTestCase {
                             min: (0.95, 0.75, 0.0),
                             max: (1.00, 0.85, 0.1)
                             ) {
-                            Log.debug("Logged out sucesfully")
+                            Log.debug("Logged out successfully")
                             return true
                         }
                         sleep(1 * config.delayMultiplier)

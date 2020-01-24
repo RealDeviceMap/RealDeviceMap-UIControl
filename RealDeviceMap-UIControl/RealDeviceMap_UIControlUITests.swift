@@ -219,7 +219,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             if let firstWarningTimestamp = data!["first_warning_timestamp"] as? Int {
                 self.firstWarningDate = Date(timeIntervalSince1970: Double(firstWarningTimestamp))
             }
-            Log.info("Connected to Backend sucesfully")
+            Log.info("Connected to Backend successfully")
             
         }
         
@@ -341,7 +341,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 // unable to authenticate or failed login
                 let playerLogin = loginError()
                 Log.debug("Login error check 1")
-                //Log.debug("\(playerLogin.error), \(playerLogin.authError)")
                 guard !playerLogin.error else {
                     if playerLogin.authError == 2 {
                         Log.error("Account \(username!) failed to log in. Getting a new account")
@@ -472,7 +471,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let screenshotComp = getScreenshot()
                 let playerLogin = loginError()
                 Log.debug("loginError Check 2")
-                Log.debug("\(playerLogin.authError), \(playerLogin.error)")
                 guard !playerLogin.error else {
                     if playerLogin.authError == 2 {
                         Log.error("Account \(username!) failed to log in. Getting a new account")
@@ -555,7 +553,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 usleep(UInt32(1500000 * config.delayMultiplier))
             }
             sleep(2 * config.delayMultiplier)
-            var gender:Bool = tutorialGenderSelection()
+            let gender = tutorialGenderSelection()
             tutorialPhysicalFeature()
             tutorialStyleSelection(gender)
             Log.tutorial("Begin Willow Encounter Speech")
@@ -1289,11 +1287,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.gotQuest = false
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
-                                self.freeScreen()
-                                
+                                if !self.config.ultraQuests {
+                                    self.freeScreen()
+                                    self.app.swipeLeft()
+                                }
                                 let start = Date()
                                 
-                                self.app.swipeLeft()
                                 
                                 var success = false
                                 var locked = true
@@ -1687,7 +1686,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 // Startup Check 3 - already logged in and app restarting.
                 let playerLogin = loginError()
                 Log.debug("login check 3...")
-               // Log.debug("\(playerLogin.error), \(playerLogin.authError)")
                 guard !playerLogin.error else {
                     if playerLogin.authError == 2 {
                         Log.error("Account \(username!) failed to log in. Getting a new account")
@@ -1788,7 +1786,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         var startTryCount = 1
         while !started {
             do {
-                try self.server.start(onPort: UInt16(self.config.port))
+                try self.server.start(port: Int(self.config.port))
                 started = true
             } catch {
                 if startTryCount > 5 {
@@ -1799,10 +1797,10 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(5)
             }
         }
-        self.server.route(.get, "loc", self.handleLocRequest)
-        self.server.route(.post, "loc", self.handleLocRequest)
-        self.server.route(.get, "data", self.handleDataRequest)
-        self.server.route(.post, "data", self.handleDataRequest)
+        self.server.route(HTTPMethod.GET, "loc", self.handleLocRequest)
+        self.server.route(HTTPMethod.POST, "loc", self.handleLocRequest)
+        self.server.route(HTTPMethod.GET, "data", self.handleDataRequest)
+        self.server.route(HTTPMethod.POST, "data", self.handleDataRequest)
         
         self.lock.lock()
         self.currentLocation = self.config.startupLocation
