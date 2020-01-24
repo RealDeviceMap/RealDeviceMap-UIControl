@@ -163,6 +163,10 @@ protocol DeviceConfigProtocol {
     var loginPasswordTextfield: DeviceCoordinate { get }
     /** Login button */
     var loginConfirm: DeviceCoordinate { get }
+    /** Top center white inside box "Account locked for 15 minutes" */
+    var loginAccountTimeout: DeviceCoordinate { get }
+    /** Green pixel left side of button towards edge*/
+    var loginAccountTimeoutButton: DeviceCoordinate { get }
     /** ? pixel in background of suspension notice */ //TODO: - Where?
     var loginBannedBackground: DeviceCoordinate { get }
     /** Green pixel in "TRY A DIFFERENT ACCOUNT" button of "Failed to login" popup*/

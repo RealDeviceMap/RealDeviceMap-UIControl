@@ -279,6 +279,22 @@ extension XCTestCase {
                 min: (red: 0.26, green: 0.39, blue: 0.40),
                 max: (red: 0.36, green: 0.49, blue: 0.50)) {
             deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
+             Log.debug("failed login...")
+            sleep(2 * config.delayMultiplier)
+            let error = true
+            let authError = 2
+            return (error, authError)
+        }
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.loginAccountTimeout,
+            min: (red: 1.0, green: 1.0, blue: 1.0),
+            max: (red: 1.0, green: 1.0, blue: 1.0)) &&
+            screenshotComp.rgbAtLocation(
+                pos: deviceConfig.loginAccountTimeoutButton,
+                min: (red: 0.6, green: 0.82, blue: 0.54),
+                max: (red: 0.65, green: 0.87, blue: 0.62)) {
+            deviceConfig.loginAccountTimeoutButton.toXCUICoordinate(app: app).tap()
+            Log.debug("Bad credentials...")
             sleep(2 * config.delayMultiplier)
             let error = true
             let authError = 2

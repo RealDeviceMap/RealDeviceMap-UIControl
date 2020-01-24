@@ -342,9 +342,13 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 Log.debug("Login error check 1")
                 //Log.debug("\(playerLogin.error), \(playerLogin.authError)")
                 guard !playerLogin.error else {
-                    if playerLogin.authError == 1 {
+                    if playerLogin.authError == 2 {
+                        Log.error("Account \(username!) failed to log in. Getting a new account")
+                        postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
+                    
                         username = nil
                     }
+                    isLoggedIn = false
                     shouldExit = true
                     return
                 }
@@ -484,13 +488,14 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let screenshotComp = getScreenshot()
                 let playerLogin = loginError()
                 Log.debug("loginError Check 2")
+                Log.debug("\(playerLogin.authError), \(playerLogin.error)")
                 guard !playerLogin.error else {
                     if playerLogin.authError == 2 {
                         Log.error("Account \(username!) failed to log in. Getting a new account")
                         postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
                         username = nil
-                        isLoggedIn = false
                     }
+                    isLoggedIn = false
                     shouldExit = true
                     return
                 }
@@ -508,7 +513,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     isLoggedIn = true
                     Log.info("Logged in as \(username!) --on part4LoginEnd")
                 } else {
-                    count += 1
+                   
                     
                     sleep(2 * config.delayMultiplier)
                 }
@@ -1405,20 +1410,23 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 }
                                 
                             } else if action == "switch_account" {
-                                self.lock.lock()
-                                self.currentLocation = self.config.startupLocation
-                                self.lock.unlock()
-                                let success = self.logOut()
-                                if !success {
-                                    self.needsLogout = true
-                                    return
-                                }
+                                // need to do something here about GPR and account manager = false!!!
+                                if self.config.enableAccountManager {
+                                    self.lock.lock()
+                                    self.currentLocation = self.config.startupLocation
+                                    self.lock.unlock()
+                                    let success = self.logOut()
+                                    if !success {
+                                        self.needsLogout = true
+                                        return
+                                    }
                                 
-                                self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "type": "logged_out"], blocking: true) { (result) in }
-                                self.username = nil
-                                self.isLoggedIn = false
-                                UserDefaults.standard.synchronize()
-                                self.shouldExit = true
+                                    self.postRequest(url: self.backendControlerURL, data: ["uuid": self.config.uuid, "type": "logged_out"], blocking: true) { (result) in }
+                                    self.username = nil
+                                    self.isLoggedIn = false
+                                    UserDefaults.standard.synchronize()
+                                    self.shouldExit = true
+                                }
                                 return
                             } else if action == "scan_iv" {
                                 print("[STATUS] IV")
@@ -1695,8 +1703,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 Log.debug("loginCheck check 3...")
                // Log.debug("\(playerLogin.error), \(playerLogin.authError)")
                 guard !playerLogin.error else {
-                    Log.error("Account \(username!) failed to log in. Getting a new account")
-                    username = nil
+                    if playerLogin.authError == 2 {
+                        Log.error("Account \(username!) failed to log in. Getting a new account")
+                        postRequest(url: backendControlerURL, data: ["uuid": config.uuid, "username": self.username as Any, "type": "account_invalid_credentials"], blocking: true) { (result) in }
+                        username = nil
+                    }
                     isLoggedIn = false
                     sleep(2 * config.delayMultiplier)
                     shouldExit = true

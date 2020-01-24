@@ -254,6 +254,14 @@ class DeviceRatio1333: DeviceConfigProtocol {
         return DeviceCoordinate(x: 768, y: 1296, scaler: scaler)
     }
     
+    var loginAccountTimeout: DeviceCoordinate {
+        return DeviceCoordinate(x: 320, y: 393, scaler: scaler)
+    }
+    
+    var loginAccountTimeoutButton: DeviceCoordinate {
+        return DeviceCoordinate(x: 178, y: 663, scaler: scaler)
+    }
+    
     var loginBannedBackground: DeviceCoordinate {
         return DeviceCoordinate(x: 189, y: 1551, scaler: scaler)
     }
