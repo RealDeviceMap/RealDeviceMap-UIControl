@@ -4,22 +4,31 @@
 //
 //  Created by Florian Kostenzer on 18.11.18.
 //
+//  swiftlint:disable type_body_length file_length
+//
 
 import Foundation
 import XCTest
 
 class DeviceRatio1775: DeviceConfigProtocol {
-    
+
     private var scaler: DeviceCoordinateScaler
     var tapScaler: Double
-    
+
     required init(width: Int, height: Int, multiplier: Double=1.0, tapMultiplier: Double=1.0) {
-        self.scaler = DeviceCoordinateScaler(widthNow: width, heightNow: height, widthTarget: 320, heightTarget: 568, multiplier: multiplier, tapMultiplier: tapMultiplier)
+        self.scaler = DeviceCoordinateScaler(
+            widthNow: width,
+            heightNow: height,
+            widthTarget: 320,
+            heightTarget: 568,
+            multiplier: multiplier,
+            tapMultiplier: tapMultiplier
+        )
         self.tapScaler = tapMultiplier
     }
 
     // MARK: - Startup
-    
+
     var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 280, y: 800, scaler: scaler)
     }
@@ -31,25 +40,25 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 610, y: 715, scaler: scaler)
     }
     var startupOldOkButton: DeviceCoordinate {
-        return DeviceCoordinate(x: 320 , y: 650, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 650, scaler: scaler)
     }
     var startupNewButton: DeviceCoordinate {
-        return DeviceCoordinate(x: 400 , y: 820, scaler: scaler)
+        return DeviceCoordinate(x: 400, y: 820, scaler: scaler)
     }
     var startupNewCautionSign: DeviceCoordinate {
-        return DeviceCoordinate(x: 320 , y: 320, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 320, scaler: scaler)
     }
     //Find coords by scaling to 640x1136
-    var ageVerification : DeviceCoordinate {
+    var ageVerification: DeviceCoordinate {
         return DeviceCoordinate(x: 222, y: 815, scaler: scaler)
     }
-    var ageVerificationYear : DeviceCoordinate {
+    var ageVerificationYear: DeviceCoordinate {
         return DeviceCoordinate(x: 475, y: 690, scaler: scaler)
     }
-    var ageVerificationDragStart : DeviceCoordinate {
+    var ageVerificationDragStart: DeviceCoordinate {
         return DeviceCoordinate(x: 475, y: 1025, scaler: scaler)
     }
-    var ageVerificationDragEnd : DeviceCoordinate {
+    var ageVerificationDragEnd: DeviceCoordinate {
         return DeviceCoordinate(x: 475, y: 380, scaler: scaler)
     }
     var passenger: DeviceCoordinate {
@@ -80,9 +89,8 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 315, y: 665, scaler: scaler)
     }
 
-
     // MARK: - Misc
-    
+
     var closeMenu: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 1060, scaler: scaler)
     }
@@ -93,9 +101,8 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 320, y: 1020, scaler: scaler)
     }
 
-    
     // MARK: - Logout
-    
+
     var settingsButton: DeviceCoordinate {
         return DeviceCoordinate(x: 600, y: 125, scaler: scaler)
     }
@@ -126,9 +133,8 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 620, y: 60, scaler: scaler)
     }
 
-    
     // MARK: - Pokemon Encounter
-    
+
 	var encounterPokemonUpperHigher: DeviceCoordinate {
 	    return DeviceCoordinate(x: 320, y: 690, scaler: scaler)
 	}
@@ -156,11 +162,11 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var checkARPersistence: DeviceCoordinate {
         return DeviceCoordinate(x: 557, y: 101, scaler: scaler)
     }
-    
+
     // MARK: - Pokestop Encounter
-    
+
     var openPokestop: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 585, scaler: scaler) //Lowered the pokestop click point to that of a lured pokestop.
+        return DeviceCoordinate(x: 320, y: 585, scaler: scaler)
     }
     var rocketLogoGirl: DeviceCoordinate {
         return DeviceCoordinate(x: 390, y: 468, scaler: scaler)
@@ -171,10 +177,9 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var closeInvasion: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 1000, scaler: scaler)
     }
-    
-    
+
     // MARK: - Quest Clearing
-    
+
     var openQuest: DeviceCoordinate {
         return DeviceCoordinate(x: 590, y: 970, scaler: scaler)
     }
@@ -196,10 +201,9 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var openItems: DeviceCoordinate {
         return DeviceCoordinate(x: 500, y: 950, scaler: scaler)
     }
-    
-    
+
     // MARK: - Item Clearing
-    
+
     var itemDeleteIncrease: DeviceCoordinate {
         return DeviceCoordinate(x: 470, y: 510, scaler: scaler)
     }
@@ -230,130 +234,127 @@ class DeviceRatio1775: DeviceConfigProtocol {
             scaler.scaleY(y: 1124)
         ]
     }
-    
-    
+
     // MARK: - Login
-    
+
     var loginNewPlayer: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 785, scaler: scaler)
     }
-    
+
     var loginPTC: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 800, scaler: scaler)
     }
-    
+
     var loginUsernameTextfield: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 500, scaler: scaler)
     }
-    
+
     var loginPasswordTextfield: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 600, scaler: scaler)
     }
-    
+
     var loginConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 375, y: 680, scaler: scaler)
     }
-    
+
     var loginBannedBackground: DeviceCoordinate {
         return DeviceCoordinate(x: 100, y: 900, scaler: scaler)
     }
-    
+
     var loginBannedText: DeviceCoordinate {
         return DeviceCoordinate(x: 230, y: 473, scaler: scaler)
     }
-    
+
     var loginBanned: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 585, scaler: scaler)
     }
-    
+
     var loginBannedSwitchAccount: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 660, scaler: scaler)
     }
-    
+
     var loginTermsText: DeviceCoordinate {
         return DeviceCoordinate(x: 109, y: 351, scaler: scaler)
     }
-    
+
     var loginTerms: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 615, scaler: scaler)
     }
-    
+
     var loginTerms2Text: DeviceCoordinate {
         return DeviceCoordinate(x: 109, y: 374, scaler: scaler)
     }
-    
+
     var loginTerms2: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
     }
-    
+
     var loginFailedText: DeviceCoordinate {
         return DeviceCoordinate(x: 297, y: 526, scaler: scaler)
     }
-    
+
     var loginFailed: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 670, scaler: scaler)
     }
-    
+
     var loginPrivacyText: DeviceCoordinate {
         return DeviceCoordinate(x: 328, y: 748, scaler: scaler)
     }
-    
+
     var loginPrivacy: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 625, scaler: scaler)
     }
-    
+
     var loginPrivacyUpdateText: DeviceCoordinate {
         return DeviceCoordinate(x: 110, y: 389, scaler: scaler)
     }
-    
+
     var loginPrivacyUpdate: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 625, scaler: scaler)
     }
-    
+
     var unableAuthText: DeviceCoordinate {
         return DeviceCoordinate(x: 330, y: 530, scaler: scaler)
     }
-    
+
     var unableAuthButton: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 585, scaler: scaler)
     }
 
-    
     // MARK: - Tutorial
- 
-    
+
     var compareTutorialL: DeviceCoordinate {
         return DeviceCoordinate(x: 100, y: 900, scaler: scaler)
     }
-    
+
     var compareTutorialR: DeviceCoordinate {
         return DeviceCoordinate(x: 550, y: 900, scaler: scaler)
     }
-    
+
     var tutorialNext: DeviceCoordinate {
         return DeviceCoordinate(x: 565, y: 1085, scaler: scaler)
     }
-    
+
     var tutorialStyleDone: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 610, scaler: scaler)
     }
-    
+
     var tutorialCatchOk: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 750, scaler: scaler)
     }
-    
+
     var tutorialCatchClose: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 1050, scaler: scaler)
     }
-    
+
     var tutorialKeybordDone: DeviceCoordinate {
         return DeviceCoordinate(x: 550, y: 1075, scaler: scaler)
     }
-    
+
     var tutorialUsernameOk: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 770, scaler: scaler)
     }
-    
+
     var tutorialUsernameConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
     }
@@ -368,7 +369,7 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var tutorialBack: DeviceCoordinate {
         return DeviceCoordinate(x: 75, y: 1085, scaler: scaler)
     }
-    
+
     var tutorialPhysicalXs: [Int] {
         return [
             scaler.scaleX(x: 150),
@@ -376,7 +377,7 @@ class DeviceRatio1775: DeviceConfigProtocol {
             scaler.scaleX(x: 490)
         ]
     }
-    
+
     var tutorialHairXs: [Int] {
         return [
             scaler.scaleX(x: 35),
@@ -384,16 +385,16 @@ class DeviceRatio1775: DeviceConfigProtocol {
             scaler.scaleX(x: 530)
         ]
     }
-    
+
     var tutorialEyeXs: [Int] {
         return [
             scaler.scaleX(x: 265),
             scaler.scaleX(x: 440),
             scaler.scaleX(x: 615)
-            
+
         ]
     }
-    
+
     var tutorialSkinXs: [Int] {
         return [
             scaler.scaleX(x: 40),
@@ -401,21 +402,21 @@ class DeviceRatio1775: DeviceConfigProtocol {
             scaler.scaleX(x: 570)
         ]
     }
-    
+
     var tutorialStyleBack: DeviceCoordinate {
-        return DeviceCoordinate(x:320, y:1085, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 1085, scaler: scaler)
     }
-    
+
     var tutorialStyleChange: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 760, scaler: scaler)
     }
-    
+
     var tutorialMaleStyleXs: [Int] {
         return [
             scaler.scaleX(x: 95),
             scaler.scaleX(x: 230),
             scaler.scaleX(x: 365),
-            scaler.scaleX(x: 500),
+            scaler.scaleX(x: 500)
         ]
     }
 
@@ -427,10 +428,10 @@ class DeviceRatio1775: DeviceConfigProtocol {
             scaler.scaleX(x: 620)
         ]
     }
-    
+
     var tutorialFemaleStyleXs: [Int] {
         return [
-            scaler.scaleX(x: 95), 
+            scaler.scaleX(x: 95),
             scaler.scaleX(x: 230),
             scaler.scaleX(x: 500),
             scaler.scaleX(x: 625)
@@ -440,8 +441,7 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var tutorialPoseAndBackpackX: Int {
         return scaler.scaleX(x: 320)
     }
-    
-    
+
     // MARK: - Adevture Sync
     var adventureSyncRewards: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 300, scaler: scaler)
@@ -449,28 +449,27 @@ class DeviceRatio1775: DeviceConfigProtocol {
     var adventureSyncButton: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 978, scaler: scaler)
     }
-    
-    
+
     // MARK: - Team Select
 
     var teamSelectBackgorundL: DeviceCoordinate {
         return DeviceCoordinate(x: 100, y: 800, scaler: scaler)
     }
-    
+
     var teamSelectBackgorundR: DeviceCoordinate {
         return DeviceCoordinate(x: 550, y: 800, scaler: scaler)
     }
-    
+
     var teamSelectNext: DeviceCoordinate {
         return DeviceCoordinate(x: 550, y: 1055, scaler: scaler)
     }
-    
+
     var teamSelectY: Int {
         return scaler.scaleY(y: 700)
     }
-    
+
     var teamSelectWelcomeOk: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 610, scaler: scaler)
     }
-    
+
 }

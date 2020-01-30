@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -162,6 +162,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2EEB5E4F215E61DF0039B79B /* Build configuration list for PBXNativeTarget "RealDeviceMap-UIControl" */;
 			buildPhases = (
+				E1A3245A23E1F28600811993 /* ShellScript */,
 				2EEB5E2E215E61DD0039B79B /* Sources */,
 				2EEB5E2F215E61DD0039B79B /* Frameworks */,
 				2EEB5E30215E61DD0039B79B /* Resources */,
@@ -251,21 +252,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
-				"${BUILT_PRODUCTS_DIR}/HTTPParserC/HTTPParserC.framework",
-				"${BUILT_PRODUCTS_DIR}/Telegraph/Telegraph.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HTTPParserC.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Telegraph.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RealDeviceMap-UIControlUITests/Pods-RealDeviceMap-UIControlUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8F7CBC5DD5DF383735CB4CA1 /* [CP] Check Pods Manifest.lock */ = {
@@ -285,6 +281,23 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		E1A3245A23E1F28600811993 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

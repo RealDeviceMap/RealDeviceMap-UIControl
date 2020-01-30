@@ -10,7 +10,9 @@ import PerfectLib
 import PerfectThread
 import SQLiteStORM
 
-if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-help") || CommandLine.arguments.contains("-h") {
+if CommandLine.arguments.contains("--help") ||
+   CommandLine.arguments.contains("-help") ||
+   CommandLine.arguments.contains("-h") {
     print("""
     The following flags are available:
       `-path path` (default = "..") [The Path to the Folder where UIC is at.]
@@ -54,20 +56,22 @@ if let index = CommandLine.arguments.index(of: "-derivedDataPath"), CommandLine.
     derivedDataPath = "./DerivedData"
 }
 let timeout: Int
-if let index = CommandLine.arguments.index(of: "-timeout"), CommandLine.arguments.count > index + 1, let number = Int(CommandLine.arguments[index + 1]) {
+if let index = CommandLine.arguments.index(of: "-timeout"), CommandLine.arguments.count > index + 1,
+   let number = Int(CommandLine.arguments[index + 1]) {
     timeout = number
 } else {
     timeout = 300
 }
 let builds: Int
-if let index = CommandLine.arguments.index(of: "-builds"), CommandLine.arguments.count > index + 1, let number = Int(CommandLine.arguments[index + 1]) {
+if let index = CommandLine.arguments.index(of: "-builds"), CommandLine.arguments.count > index + 1,
+   let number = Int(CommandLine.arguments[index + 1]) {
     builds = number
 } else {
     builds = 2
 }
 // Start BuildController
-BuildController.global.start(path: path, derivedDataPath: derivedDataPath, timeout: timeout, maxSimultaneousBuilds: builds)
+BuildController.global.start(path: path, derivedDataPath: derivedDataPath, timeout: timeout,
+                             maxSimultaneousBuilds: builds)
 
 // Start CLI
 CLI.global.start()
-

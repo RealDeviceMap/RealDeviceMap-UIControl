@@ -8,9 +8,9 @@
 import Foundation
 
 class Config {
-    
+
     public static let global = Config()
-    
+
     var uuid: String
     var backendURLBaseString: String
     var enableAccountManager: Bool
@@ -39,9 +39,9 @@ class Config {
     var ultraQuests: Bool
     var enabled: Bool
     var attachScreenshots: Bool
-    
+
     init() {
-        
+
         let enviroment = ProcessInfo.processInfo.environment
 
         uuid = enviroment["name"] ?? ""
@@ -75,5 +75,5 @@ class Config {
         enabled = enviroment["enabled"]?.toBool() ?? true
         attachScreenshots = enviroment["attachScreenshots"]?.toBool() ?? false
     }
-    
+
 }

@@ -1,0 +1,12 @@
+included:
+ - RealDeviceMap-UIControl
+disabled_rules:
+- nesting
+- legacy_hashing
+identifier_name:
+  excluded:
+    - i
+    - x
+    - y
+    - id
+    - cp

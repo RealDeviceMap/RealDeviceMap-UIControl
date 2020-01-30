@@ -4,6 +4,8 @@
 //
 //  Created by Florian Kostenzer on 27.11.18.
 //
+//  swiftlint:disable type_body_length function_body_length cyclomatic_complexity
+//
 
 import Foundation
 import StORM
@@ -21,7 +23,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         return uuid.hashValue
     }
     #endif
-    
+
     var uuid: String
     var name: String
     var backendURL: String
@@ -51,7 +53,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var ultraQuests: Int
     var enabled: Int
     var attachScreenshots: Int
-    
+
     override init() {
         self.uuid = ""
         self.name = ""
@@ -84,8 +86,13 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.attachScreenshots = 0
         super.init()
     }
-    
-    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double, raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double, targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double, maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double, startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int, deployEggs: Int, token: String, ultraQuests: Int, enabled: Int, attachScreenshots: Int) {
+
+    init(uuid: String, name: String, backendURL: String, enableAccountManager: Int, port: Int, pokemonMaxTime: Double,
+         raidMaxTime: Double, maxWarningTimeRaid: Int, delayMultiplier: Int, jitterValue: Double,
+         targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double,
+         maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double,
+         startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int,
+         deployEggs: Int, token: String, ultraQuests: Int, enabled: Int, attachScreenshots: Int) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -117,11 +124,11 @@ class Device: SQLiteStORM, Equatable, Hashable {
         self.attachScreenshots = attachScreenshots
         super.init()
     }
-    
+
     override open func table() -> String {
         return "device"
     }
-    
+
     override func to(_ this: StORMRow) {
         uuid = this.data["uuid"] as? String ?? ""
         name = this.data["name"] as? String ?? ""
@@ -153,7 +160,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         enabled = this.data["enabled"] as? Int ?? 1
         attachScreenshots = this.data["attachScreenshots"] as? Int ?? 0
     }
-    
+
     static func getAll() -> [Device] {
         let work = Device()
         do {
@@ -174,7 +181,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
         }
         return rows
     }
-    
+
     static func get(uuid: String) -> Device? {
         let work = Device()
         do {
@@ -189,14 +196,14 @@ class Device: SQLiteStORM, Equatable, Hashable {
         row.to(work.results.rows[0])
         return row
     }
-    
+
     static func == (lhs: Device, rhs: Device) -> Bool {
         return lhs.uuid == rhs.uuid
     }
-        
+
     override func setup() throws {
         try super.setup()
-        
+
         var hasFastIV = false
         var hasUltraIV = false
         var hasDeployEggs = false
@@ -206,10 +213,10 @@ class Device: SQLiteStORM, Equatable, Hashable {
 		var hasUltraQuests = false
         var hasEnabled = false
         var hasAttachScreenshots = false
-        
+
         let rows = try sqlRows("PRAGMA table_info(\(table()))", params: [String]())
         for row in rows {
-            let name = row.data["name"] as! String
+            let name = row.data["name"] as? String ?? "?"
             if name == "fastIV" {
                 hasFastIV = true
             } else if name == "ultraIV" {
@@ -230,7 +237,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
                 hasAttachScreenshots = true
             }
         }
-        
+
         if !hasFastIV {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN fastIV INTEGER DEFAULT 0")
         }
@@ -259,5 +266,5 @@ class Device: SQLiteStORM, Equatable, Hashable {
             try sqlExec("ALTER TABLE \(table()) ADD COLUMN attachScreenshots INTEGER DEFAULT 0")
         }
     }
-    
+
 }

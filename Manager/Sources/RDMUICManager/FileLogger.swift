@@ -17,7 +17,7 @@ import PerfectLib
 import Foundation
 
 class FileLogger: Logger {
-    
+
     private var file: String
     private let fmt = DateFormatter()
 
@@ -25,45 +25,45 @@ class FileLogger: Logger {
         self.file = file
         fmt.dateFormat = format
     }
-    
+
     private func filelog(priority: String?, _ args: String) {
-        let m = fmt.string(from: Date())
-        let ff = File(file)
-        defer { ff.close() }
+        let dateString = fmt.string(from: Date())
+        let logFile = File(file)
+        defer { logFile.close() }
         do {
-            try ff.open(.append)
+            try logFile.open(.append)
             if priority != nil {
-                try ff.write(string: "\(priority!) [\(m)] \(args)\n")
+                try logFile.write(string: "\(priority!) [\(dateString)] \(args)\n")
             } else {
-                try ff.write(string: "[\(m)] \(args)\n")
+                try logFile.write(string: "[\(dateString)] \(args)\n")
             }
         } catch { }
     }
-    
+
     func debug(message: String, _ even: Bool) {
         filelog(priority: even ? "[DEBUG]" : "[DEBUG]", message)
     }
-    
+
     func info(message: String, _ even: Bool) {
         filelog(priority: even ? "[INFO] " : "[INFO]", message)
     }
-    
+
     func warning(message: String, _ even: Bool) {
         filelog(priority: even ? "[WARN] " : "[WARNING]", message)
     }
-    
+
     func error(message: String, _ even: Bool) {
         filelog(priority: even ? "[ERROR]" : "[ERROR]", message)
     }
-    
+
     func critical(message: String, _ even: Bool) {
         filelog(priority: even ? "[CRIT] " : "[CRITICAL]", message)
     }
-    
+
     func terminal(message: String, _ even: Bool) {
         filelog(priority: even ? "[EMERG]" : "[EMERG]", message)
     }
-    
+
     func uic(message: String, all: Bool) {
         let lines = message.components(separatedBy: "\n")
         for line in lines {

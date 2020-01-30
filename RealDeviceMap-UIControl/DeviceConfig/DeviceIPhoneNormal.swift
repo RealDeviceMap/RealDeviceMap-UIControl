@@ -8,16 +8,16 @@
 import Foundation
 
 class DeviceIPhoneNormal: DeviceRatio1775 {
-    
+
     // All values not overriden here default to DeviceRatio1775s values
     override var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 325, y: 960, tapScaler: tapScaler)
     }
     override var startupNewButton: DeviceCoordinate {
-        return DeviceCoordinate(x: 475 , y: 960, tapScaler: tapScaler)
+        return DeviceCoordinate(x: 475, y: 960, tapScaler: tapScaler)
     }
     override var startupNewCautionSign: DeviceCoordinate {
-        return DeviceCoordinate(x: 375 , y: 385, tapScaler: tapScaler)
+        return DeviceCoordinate(x: 375, y: 385, tapScaler: tapScaler)
     }
     override var loginTerms2Text: DeviceCoordinate {
         return DeviceCoordinate(x: 188, y: 450, tapScaler: tapScaler)
@@ -46,11 +46,9 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var loginPrivacyUpdate: DeviceCoordinate {
         return DeviceCoordinate(x: 375, y: 745, tapScaler: tapScaler)
     }
-    
-    
-    
+
     // MARK: - Item Clearing
-    
+
     override var itemDeleteIncrease: DeviceCoordinate {
         return DeviceCoordinate(x: 540, y: 573, tapScaler: tapScaler)
     }
@@ -75,5 +73,5 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
             1315
         ]
     }
-    
+
 }
