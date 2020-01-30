@@ -824,14 +824,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     "lat": currentLocation!.lat,
                     "lng": currentLocation!.lon
                 ]
-                if self.config.ultraQuests == true && self.action == "scan_quest" {
+                if self.config.ultraQuests == true &&
+                   (self.action == "scan_quest" || self.action == "spin_pokestop") {
                     //autospinning should happen only when ultraQuests is set and the instance is scan_quest type
                     if self.level >= 30 {
                         responseData["actions"] = ["pokemon", "pokestop"]
                     } else {
                         responseData["actions"] = ["pokestop"]
                     }
-                } else if self.config.ultraQuests == false && self.action == "scan_quest" {
+                } else if self.config.ultraQuests == false &&
+                    (self.action == "scan_quest" || self.action == "spin_pokestop") {
                     //autospinning should happen only when ultraQuests is set and the instance is scan_quest type
                     if self.level >= 30 {
                         responseData["actions"] = ["pokemon"]
@@ -881,7 +883,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             jsonData!["lat_target"] = currentLocation!.lat
             jsonData!["lon_target"] = currentLocation!.lon
             jsonData!["target_max_distnace"] = targetMaxDistance
-            jsonData!["username"] = self.username
+            if self.username != nil {
+                jsonData!["username"] = self.username
+            }
             jsonData!["pokemon_encounter_id"] = pokemonEncounterId
             jsonData!["pokemon_encounter_id_for_encounter"] = pokemonEncounterIdForEncounter
             jsonData!["list_scatter_pokemon"] = listScatterPokemon
@@ -1329,13 +1333,19 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.unlock()
                                 }
-                            } else if action == "scan_quest" {
-                                print("[STATUS] Quest")
-
+                            } else if action == "scan_quest" || action == "spin_pokestop" {
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
                                 let delay = data["delay"] as? Double ?? 0
-                                Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
+
+                                if action = "scan_quest" {
+                                    print("[STATUS] Quest")
+                                    Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
+                                } else {
+                                    print("[STATUS] Spin Pokestop")
+                                    Log.debug("Spinning Pokestop at \(lat) \(lon) in \(Int(delay))s")
+                                }
+
                                 if !self.config.ultraQuests {
                                     self.zoom(
                                         out: false,
@@ -1404,7 +1414,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         sleep(1)
                                     }
 
-                                    if currentQuests >= self.config.questFullCount && !self.newCreated {
+                                    if action = "scan_quest" && currentQuests >= self.config.questFullCount && !self.newCreated {
                                         self.freeScreen()
                                         Log.debug("Clearing Quests")
                                         self.clearQuest()
@@ -1476,23 +1486,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
 
-                                // Check if previus spin had quest data
-                                self.lock.lock()
-                                if self.gotQuest {
-                                    self.noQuestCount = 0
-                                } else {
-                                    self.noQuestCount += 1
-                                }
-                                self.gotQuest = false
+                                if action = "scan_quest" {
+                                    // Check if previus spin had quest data
+                                    self.lock.lock()
+                                    if self.gotQuest {
+                                        self.noQuestCount = 0
+                                    } else {
+                                        self.noQuestCount += 1
+                                    }
+                                    self.gotQuest = false
 
-                                if self.noQuestCount >= self.config.maxNoQuestCount {
+                                    if self.noQuestCount >= self.config.maxNoQuestCount {
+                                        self.lock.unlock()
+                                        Log.debug("Stuck somewhere. Restarting")
+                                        self.app.terminate()
+                                        self.shouldExit = true
+                                        return
+                                    }
                                     self.lock.unlock()
-                                    Log.debug("Stuck somewhere. Restarting")
-                                    self.app.terminate()
-                                    self.shouldExit = true
-                                    return
                                 }
-                                self.lock.unlock()
+
                                 if !self.config.ultraQuests {
                                     if success {
                                         self.freeScreen()
