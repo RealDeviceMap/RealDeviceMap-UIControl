@@ -911,7 +911,7 @@ extension XCTestCase {
 
         var signoutFound = false
         var scrollCounter = 1
-        let temp = logOutScroll(signoutFound: signoutFound, scroll_counter: scrollCounter, signoutRetry: false)
+        let temp = logOutScroll(signoutFound: signoutFound, scrollCounter: scrollCounter, signoutRetry: false)
         signoutFound = temp.0
         scrollCounter = temp.1
 
@@ -980,7 +980,7 @@ extension XCTestCase {
                 )
             } else {
                 deviceConfig.logoutDragStart2.toXCUICoordinate(app: app).press(
-                    orDuration: 1.0,
+                    forDuration: 1.0,
                     thenDragTo: normalized.withOffset(
                         CGVector(dx: 320.0*tapMultiplier, dy: 650.0*tapMultiplier)
                     )
