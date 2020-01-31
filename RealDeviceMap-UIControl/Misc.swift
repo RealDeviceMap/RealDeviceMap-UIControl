@@ -412,12 +412,12 @@ extension XCTestCase {
         Log.tutorial("Gender Boolean is: \(gender)")
         if gender {
             Log.tutorial("Selecting Male Avatar")
-            /** Gender Bool is true, chooses Male **/
+            // Gender Bool is true, chooses Male
             deviceConfig.tutorialBack.toXCUICoordinate(app: app).tap()
             usleep(UInt32(1500000 * config.delayMultiplier))
         } else {
             Log.tutorial("Selecting Female Avatar")
-            /** Gender Bool is False, chooses Female **/
+            // Gender Bool is False, chooses Femal
             deviceConfig.tutorialNext.toXCUICoordinate(app: app).tap()
             usleep(UInt32(1500000 * config.delayMultiplier))
         }
