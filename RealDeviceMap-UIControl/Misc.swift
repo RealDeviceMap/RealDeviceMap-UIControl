@@ -930,7 +930,7 @@ extension XCTestCase {
                     Log.debug("Log out confirmation button found")
                     deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
 
-                    for index in 1...20 {
+                    for _ in 1...20 {
                         let screenshotComp = XCUIScreen.main.screenshot()
 
                         if screenshotComp.rgbAtLocation(
@@ -1125,7 +1125,7 @@ extension XCTestCase {
                         Log.test(
                             "Clearing stacked quests: clearing a completed quest (slot 2). " +
                             "RGB for quest slot: " +
-                                screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete)
+                                "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))"
                         )
                         deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
                         sleep(1 * config.delayMultiplier)
@@ -1135,13 +1135,13 @@ extension XCTestCase {
                     //top slot is empty. No more quests to delete, so exit.
                     deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
                     Log.test("No more quests detected. RGB for quest slot: " +
-                        screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))
+                        "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))")
                     break
                 }
             }
         } else {//else we are clearing non-stacked quests because the top spot had the delete icon
             Log.test("Clearing unstacked quests. RGB for quest slot: " +
-                     screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))
+                     "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))")
             for i in 0...2 {
                 if screenshotComp.rgbAtLocation(
                     pos: deviceConfig.questDelete,
@@ -1192,7 +1192,7 @@ extension XCTestCase {
                     //top slot is empty. No more quests to delete, so exit.
                     deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
                     Log.test("No more quests detected. RGB for quest slot: " +
-                             screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))
+                             "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))")
                     break
                 }
             }

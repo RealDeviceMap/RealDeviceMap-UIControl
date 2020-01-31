@@ -611,8 +611,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 return
             }
 
-            let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
-
             Log.tutorial("Solving Tutorial for \(username!)")
 
             /* Start Reworked Changes Here */
@@ -622,7 +620,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 usleep(UInt32(1500000 * config.delayMultiplier))
             }
             sleep(2 * config.delayMultiplier)
-            var gender: Bool = tutorialGenderSelection()
+            let gender: Bool = tutorialGenderSelection()
             tutorialPhysicalFeature()
             tutorialStyleSelection(gender)
             Log.tutorial("Begin Willow Encounter Speech")
@@ -1067,7 +1065,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    isStartup()
+                    _ = isStartup()
                     sleep(2 * config.delayMultiplier)
 
                     deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
@@ -1338,7 +1336,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 let lon = data["lon"] as? Double ?? 0
                                 let delay = data["delay"] as? Double ?? 0
 
-                                if action = "scan_quest" {
+                                if action == "scan_quest" {
                                     print("[STATUS] Quest")
                                     Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
                                 } else {
@@ -1414,7 +1412,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         sleep(1)
                                     }
 
-                                    if action = "scan_quest" &&
+                                    if action == "scan_quest" &&
                                        currentQuests >= self.config.questFullCount &&
                                        !self.newCreated {
                                         self.freeScreen()
@@ -1504,7 +1502,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
 
-                                if action = "scan_quest" {
+                                if action == "scan_quest" {
                                     // Check if previus spin had quest data
                                     self.lock.lock()
                                     if self.gotQuest {
