@@ -4,7 +4,7 @@
 //
 //  Created by Florian Kostenzer on 28.11.18.
 //
-//  swiftlint:disable type_body_length function_body_length cyclomatic_complexity
+//  swiftlint:disable type_body_length function_body_length
 //
 
 import Foundation
@@ -242,37 +242,20 @@ class BuildController {
                 outputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
                     let string = String(data: fileHandle.availableData, encoding: .utf8)
                     if string != nil && string!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                        if string!.contains(string: "[STATUS] Started") && locked {
-                            Log.debug(message: "[\(device.name)] Done building")
-                            self.setStatus(uuid: device.uuid, status: "Running: Starting")
-                            locked = false
-                            self.buildLock.lock()
-                            self.buildingCount -= 1
-                            self.buildLock.unlock()
-                        }
-                        if string!.contains(string: "[STATUS] Startup") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Startup")
-                        }
-                        if string!.contains(string: "[STATUS] Logout") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Logout")
-                        }
-                        if string!.contains(string: "[STATUS] Login") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Login")
-                        }
-                        if string!.contains(string: "[STATUS] Tutorial") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Tutorial")
-                        }
-                        if string!.contains(string: "[STATUS] Pokemon") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Pokemon")
-                        }
-                        if string!.contains(string: "[STATUS] Raid") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Raid")
-                        }
-                        if string!.contains(string: "[STATUS] Quest") {
-                            self.setStatus(uuid: device.uuid, status: "Running: Quest")
-                        }
-                        if string!.contains(string: "[STATUS] IV") {
-                            self.setStatus(uuid: device.uuid, status: "Running: IV")
+                        for line in string!.components(separatedBy: .newlines) {
+                            if line.contains(string: "[STATUS] Started") && locked {
+                                Log.debug(message: "[\(device.name)] Done building")
+                                self.setStatus(uuid: device.uuid, status: "Running: Starting")
+                                locked = false
+                                self.buildLock.lock()
+                                self.buildingCount -= 1
+                                self.buildLock.unlock()
+                            } else if line.starts(with: "[STATUS]") {
+                                self.setStatus(
+                                    uuid: device.uuid,
+                                    status: line.replacingOccurrences(of: "[STATUS] ", with: "")
+                                )
+                            }
                         }
 
                         fullLog.uic(message: string!, all: true)

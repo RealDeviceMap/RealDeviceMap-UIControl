@@ -899,6 +899,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let nearby = data?["nearby"] as? Int ?? 0
                 let wild = data?["wild"] as? Int ?? 0
                 //let forts = data?["forts"] as? Int ?? 0
+                let fortSearch = data?["fort_search"] as? Int ?? 0
                 let quests = data?["quests"] as? Int ?? 0
                 let encounters = data?["encounters"] as? Int ?? 0
                 let pokemonLat = data?["pokemon_lat"] as? Double
@@ -974,9 +975,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 } else {
                     toPrint = "[DEBUG] Got Data without GMO"
                 }
-                if !self.gotQuest && quests != 0 {
-                    self.gotQuest = true
-                    self.gotQuestEarly = true
+                if !self.gotQuest {
+                    if quests > 0 || (self.action == "spin_pokestop" && fortSearch > 0) {
+                        self.gotQuest = true
+                        self.gotQuestEarly = true
+                    }
                 }
                 if !self.gotIV && encounters != 0 {
                     self.gotIV = true
@@ -1442,6 +1445,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.newCreated = false
 
                                 self.lock.lock()
+                                let lastLocation = self.currentLocation
                                 self.currentLocation = (lat, lon)
                                 self.waitRequiresPokemon = false
                                 self.pokemonEncounterId = nil
@@ -1450,15 +1454,24 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.gotQuest = false
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
-                                self.freeScreen()
 
                                 let start = Date()
-
-                                self.app.swipeLeft()
+                                if !self.config.ultraQuests {
+                                    self.freeScreen()
+                                    self.app.swipeLeft()
+                                }
 
                                 var success = false
                                 var locked = true
                                 var found = false
+                                let lastLocationCL = CLLocation(latitude: lastLocation!.lat,
+                                                                longitude: lastLocation!.lon)
+                                let newLocationCL = CLLocation(latitude: lat, longitude: lon)
+                                if lastLocationCL.distance(from: newLocationCL) <= 100 && delay <= 1 {
+                                    locked = false
+                                    success = true
+                                }
+
                                 while locked {
                                     usleep(100000 * self.config.delayMultiplier)
                                     if Date().timeIntervalSince(start) <= 5 {
@@ -1521,7 +1534,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.unlock()
                                 }
-                                self.lock.unlock()
 
                                 if !self.config.ultraQuests {
                                     if success {
@@ -1551,15 +1563,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 } else {
                                     if success {
                                         var attempts = 0
-                                        while attempts < 5 {
+                                        while attempts < 15 {
                                             attempts += 1
                                             self.lock.lock()
-                                            Log.test("Got quest data: " + self.gotQuest.description)
                                             if !self.gotQuest {
-                                                Log.test("UQ stop re-attempt: " + attempts.description)
+                                                Log.test("No quest data!. Re-attempt: " + attempts.description)
                                                 self.lock.unlock()
                                                 sleep(1 * self.config.delayMultiplier)
                                             } else {
+                                                Log.test("Got quest data")
                                                 self.lock.unlock()
                                                 break
                                             }
