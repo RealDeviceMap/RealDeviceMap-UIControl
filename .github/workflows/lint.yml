@@ -1,0 +1,21 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  UICSwiftLint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: GitHub Action for SwiftLint with --strict for UIC
+        uses: norio-nomura/action-swiftlint@3.1.0
+        with:
+          args: --strict
+  ManagerSwiftLint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: GitHub Action for SwiftLint with --strict for Manager
+        uses: norio-nomura/action-swiftlint@3.1.0
+        with:
+          args: --strict --path Manager

@@ -10,6 +10,18 @@ let package = Package(
         .package(url: "https://github.com/SwiftORM/SQLite-StORM.git", .upToNextMinor(from: "3.1.0"))
     ],
     targets: [
-        .target(name: "RDM-UIC-Manager", dependencies: ["PerfectHTTPServer","SQLiteStORM"])
-    ]
+        .target(
+            name: "RDMUICManager",
+            dependencies: [
+                "PerfectHTTPServer",
+                "SQLiteStORM"
+            ]
+        ),
+        .testTarget(
+            name: "RDMUICManagerTests",
+            dependencies: [
+                "RDMUICManager"
+            ]
+        )
+    ]    
 )

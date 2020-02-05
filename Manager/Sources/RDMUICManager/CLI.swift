@@ -4,6 +4,8 @@
 //
 //  Created by Florian Kostenzer on 27.11.18.
 //
+//  swiftlint:disable file_length type_body_length function_body_length cyclomatic_complexity
+//
 
 import Foundation
 import PerfectThread
@@ -27,11 +29,12 @@ internal extension Int {
 }
 
 class CLI {
-    
+
     public static var global = CLI()
 
     private var defaultDevice: Device!
-    
+
+    // swiftlint:disable force_try
     public func start() {
         clear()
         let defaultDevice = Device.get(uuid: "default")
@@ -50,18 +53,17 @@ class CLI {
         } else {
             self.defaultDevice = defaultDevice!
         }
-        
+
         while menu() {
             // Run untill menu() == false
         }
-        
     }
-    
-    
+    // swiftlint:enable force_try
+
     // MARK: - Menus
-    
+
     public func menu() -> Bool {
-        
+
         let menu = """
         ================
         MENU
@@ -75,9 +77,9 @@ class CLI {
         0. Exit
         ================
         """
-        
+
         print(menu)
-        let number = askInput("Please select an option", options: [0,1,2,3,4,5,6])
+        let number = askInput("Please select an option", options: [0, 1, 2, 3, 4, 5, 6])
         print()
         switch number {
         case 1:
@@ -101,9 +103,9 @@ class CLI {
         default:
             return false
         }
-        
+
     }
-    
+
     private func status() {
         clear()
         var run = true
@@ -122,19 +124,19 @@ class CLI {
                 Threading.sleep(seconds: 1)
             }
         }
-        
+
         _ = readLine()
         run = false
         Threading.destroyQueue(queue)
         clear()
     }
-    
+
     private func listAll() {
         clear()
         let devices = Device.getAll()
-        
+
         for device in devices {
-            
+
             clear()
             let row = """
             UUID: \(device.uuid)
@@ -167,14 +169,14 @@ class CLI {
             Enabled: \(device.enabled.toBool())
             AttachScreenshots: \(device.attachScreenshots.toBool())
             """
-            
+
             print(row + "\n")
             print("Press enter to continue...")
             _ = readLine()
         }
         clear()
     }
-    
+
     private func editDefaults() {
         clear()
         print("Edit Defaults\n")
@@ -182,97 +184,99 @@ class CLI {
         if backendURL != "" {
             defaultDevice.backendURL = backendURL
         }
-        
-        let enableAccountManager = askBool("Enable Account Manager (empty = \(defaultDevice.enableAccountManager.toBool()))")
+
+        let enableAccountManager = askBool(
+            "Enable Account Manager (empty = \(defaultDevice.enableAccountManager.toBool()))"
+        )
         if enableAccountManager != nil {
             defaultDevice.enableAccountManager = enableAccountManager!.toInt()
         }
-        
+
         let port = askInt("Port (empty = \(defaultDevice.port))")
         if port != nil {
             defaultDevice.port = port!
         }
-        
+
         let pokemonMaxTime = askDouble("Pokemon Max Time (empty = \(defaultDevice.pokemonMaxTime))")
         if pokemonMaxTime != nil {
             defaultDevice.pokemonMaxTime = pokemonMaxTime!
         }
-        
+
         let raidMaxTime = askDouble("Raid Max Time (empty = \(defaultDevice.raidMaxTime))")
         if raidMaxTime  != nil {
             defaultDevice.raidMaxTime = raidMaxTime!
         }
-        
+
         let maxWarningTimeRaid = askInt("Max Warning Time Raid (empty = \(defaultDevice.maxWarningTimeRaid))")
         if maxWarningTimeRaid  != nil {
             defaultDevice.maxWarningTimeRaid = maxWarningTimeRaid!
         }
-        
+
         let delayMultiplier = askInt("Delay Multiplier (empty = \(defaultDevice.delayMultiplier))")
         if delayMultiplier  != nil {
             defaultDevice.delayMultiplier = delayMultiplier!
         }
-        
+
         let jitterValue = askDouble("Jitter Value (empty = \(defaultDevice.jitterValue))")
         if jitterValue  != nil {
             defaultDevice.jitterValue = jitterValue!
         }
-        
+
         let targetMaxDistance = askDouble("Target Max Distance (empty = \(defaultDevice.targetMaxDistance))")
         if targetMaxDistance  != nil {
             defaultDevice.targetMaxDistance = targetMaxDistance!
         }
-        
+
         let itemFullCount = askInt("Item Full Count (empty = \(defaultDevice.itemFullCount))")
         if itemFullCount  != nil {
             defaultDevice.itemFullCount = itemFullCount!
         }
-        
+
         let questFullCount = askInt("Quest Full Count (empty = \(defaultDevice.questFullCount))")
         if questFullCount  != nil {
             defaultDevice.questFullCount = questFullCount!
         }
-        
+
         let itemsPerStop = askInt("Items Per Stop (empty = \(defaultDevice.itemsPerStop))")
         if itemsPerStop  != nil {
             defaultDevice.itemsPerStop = itemsPerStop!
         }
-        
+
         let minDelayLogout = askDouble("Min Delay Logout (empty = \(defaultDevice.minDelayLogout))")
         if minDelayLogout  != nil {
             defaultDevice.minDelayLogout = minDelayLogout!
         }
-        
+
         let maxNoQuestCount = askInt("Max No Quest Count (empty = \(defaultDevice.maxNoQuestCount))")
         if maxNoQuestCount  != nil {
             defaultDevice.maxNoQuestCount = maxNoQuestCount!
         }
-        
+
         let maxFailedCount = askInt("Max Failed Count (empty = \(defaultDevice.maxFailedCount))")
         if maxFailedCount  != nil {
             defaultDevice.maxFailedCount = maxFailedCount!
         }
-        
+
         let maxEmptyGMO = askInt("Max Empty GMO (empty = \(defaultDevice.maxEmptyGMO))")
         if maxEmptyGMO  != nil {
             defaultDevice.maxEmptyGMO = maxEmptyGMO!
         }
-        
+
         let startupLocationLat = askDouble("Startup Location Lat (empty = \(defaultDevice.startupLocationLat))")
         if startupLocationLat  != nil {
             defaultDevice.startupLocationLat = startupLocationLat!
         }
-        
+
         let startupLocationLon = askDouble("Startup Location Lon (empty = \(defaultDevice.startupLocationLon))")
         if startupLocationLon  != nil {
             defaultDevice.startupLocationLon = startupLocationLon!
         }
-        
+
         let encounterMaxWait = askInt("Encounter Max Wait (empty = \(defaultDevice.encounterMaxWait))")
         if encounterMaxWait  != nil {
             defaultDevice.encounterMaxWait = encounterMaxWait!
         }
-        
+
         let encounterDelay = askDouble("Encounter Delay (empty = \(defaultDevice.encounterDelay))")
         if encounterDelay  != nil {
             defaultDevice.encounterDelay = encounterDelay!
@@ -282,17 +286,17 @@ class CLI {
         if fastIV != nil {
             defaultDevice.fastIV = fastIV!.toInt()
         }
-        
+
         let ultraIV = askBool("Ultra IV (empty = \(defaultDevice.ultraIV.toBool()))")
         if ultraIV != nil {
             defaultDevice.ultraIV = ultraIV!.toInt()
         }
-        
+
         let deployEggs = askBool("Deploy Eggs (empy = \(defaultDevice.deployEggs.toBool()))")
         if deployEggs != nil {
             defaultDevice.deployEggs = deployEggs!.toInt()
         }
-        
+
         let ultraQuests = askBool("Ultra Quests (empty = \(defaultDevice.ultraQuests.toBool()))")
         if ultraQuests != nil {
             defaultDevice.ultraQuests = ultraQuests!.toInt()
@@ -302,12 +306,12 @@ class CLI {
         if token != "" {
             defaultDevice.token = token
         }
-        
+
         let enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")
         if enabled != nil {
             defaultDevice.enabled = enabled!.toInt()
         }
-        
+
         let attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")
         if attachScreenshots != nil {
             defaultDevice.attachScreenshots = attachScreenshots!.toInt()
@@ -321,7 +325,7 @@ class CLI {
             print("Failed to update defaults.\n\n")
         }
     }
-    
+
     private func addDevice() {
         clear()
         print("Add Device\n")
@@ -336,91 +340,93 @@ class CLI {
         if backendURL == "" {
             backendURL = defaultDevice.backendURL
         }
-        var enableAccountManager = askBool("Enable Account Manager (empty = \(defaultDevice.enableAccountManager.toBool()))")?.toInt()
+        var enableAccountManager = askBool(
+            "Enable Account Manager (empty = \(defaultDevice.enableAccountManager.toBool()))"
+        )?.toInt()
         if enableAccountManager == nil {
             enableAccountManager = defaultDevice.enableAccountManager
         }
-        
+
         var port = askInt("Port (empty = \(defaultDevice.port))")
         if port == nil {
             port = defaultDevice.port
         }
-        
+
         var pokemonMaxTime = askDouble("Pokemon Max Time (empty = \(defaultDevice.pokemonMaxTime))")
         if pokemonMaxTime == nil {
             pokemonMaxTime = defaultDevice.pokemonMaxTime
         }
-        
+
         var raidMaxTime = askDouble("Raid Max Time (empty = \(defaultDevice.raidMaxTime))")
         if raidMaxTime == nil {
             raidMaxTime = defaultDevice.raidMaxTime
         }
-        
+
         var maxWarningTimeRaid = askInt("Max Warning Time Raid (empty = \(defaultDevice.maxWarningTimeRaid))")
         if maxWarningTimeRaid == nil {
             maxWarningTimeRaid = defaultDevice.maxWarningTimeRaid
         }
-        
+
         var delayMultiplier = askInt("Delay Multiplier (empty = \(defaultDevice.delayMultiplier))")
         if delayMultiplier == nil {
             delayMultiplier = defaultDevice.delayMultiplier
         }
-        
+
         var jitterValue = askDouble("Jitter Value (empty = \(defaultDevice.jitterValue))")
         if jitterValue == nil {
             jitterValue = defaultDevice.jitterValue
         }
-        
+
         var targetMaxDistance = askDouble("Target Max Distance (empty = \(defaultDevice.targetMaxDistance))")
         if targetMaxDistance == nil {
             targetMaxDistance = defaultDevice.targetMaxDistance
         }
-        
+
         var itemFullCount = askInt("Item Full Count (empty = \(defaultDevice.itemFullCount))")
         if itemFullCount == nil {
             itemFullCount = defaultDevice.itemFullCount
         }
-        
+
         var questFullCount = askInt("Quest Full Count (empty = \(defaultDevice.questFullCount))")
         if questFullCount == nil {
             questFullCount = defaultDevice.questFullCount
         }
-        
+
         var itemsPerStop = askInt("Items Per Stop (empty = \(defaultDevice.itemsPerStop))")
         if itemsPerStop == nil {
             itemsPerStop = defaultDevice.itemsPerStop
         }
-        
+
         var minDelayLogout = askDouble("Min Delay Logout (empty = \(defaultDevice.minDelayLogout))")
         if minDelayLogout == nil {
             minDelayLogout = defaultDevice.minDelayLogout
         }
-        
+
         var maxNoQuestCount = askInt("Max No Quest Count (empty = \(defaultDevice.maxNoQuestCount))")
         if maxNoQuestCount == nil {
             maxNoQuestCount = defaultDevice.maxNoQuestCount
         }
-        
+
         var maxFailedCount = askInt("Max Failed Count (empty = \(defaultDevice.maxFailedCount))")
         if maxFailedCount == nil {
             maxFailedCount = defaultDevice.maxFailedCount
         }
-        
+
         var maxEmptyGMO = askInt("Max Empty GMO (empty = \(defaultDevice.maxEmptyGMO))")
         if maxEmptyGMO == nil {
             maxEmptyGMO = defaultDevice.maxEmptyGMO
         }
-        
+
         var startupLocationLat = askDouble("Startup Location Lat (empty = \(defaultDevice.startupLocationLat))")
         if startupLocationLat == nil {
             startupLocationLat = defaultDevice.startupLocationLat
         }
-        
+
         var startupLocationLon = askDouble("Startup Location Lon (empty = \(defaultDevice.startupLocationLon))")
         if startupLocationLon == nil {
             startupLocationLon = defaultDevice.startupLocationLon
         }
-        
+
         var encounterMaxWait = askInt("Encounter Max Wait (empty = \(defaultDevice.encounterMaxWait))")
         if encounterMaxWait == nil {
             encounterMaxWait = defaultDevice.encounterMaxWait
@@ -434,7 +440,7 @@ class CLI {
         if fastIV == nil {
             fastIV = defaultDevice.fastIV
         }
-        
+
         var ultraIV = askBool("Ultra IV (empty = \(defaultDevice.ultraIV.toBool()))")?.toInt()
         if ultraIV == nil {
             ultraIV = defaultDevice.ultraIV
@@ -444,27 +450,29 @@ class CLI {
         if deployEggs == nil {
             deployEggs = defaultDevice.deployEggs
         }
-        
+
         var token = askInput("Token (empy = \(defaultDevice.token))")
         if token == "" {
             token = defaultDevice.token
         }
-        
+
         var ultraQuests = askBool("Ultra Quests (empty = \(defaultDevice.ultraQuests.toBool()))")?.toInt()
         if ultraQuests == nil {
             ultraQuests = defaultDevice.ultraQuests
         }
-        
+
         var enabled = askBool("Enabled (empty = \(defaultDevice.enabled.toBool()))")?.toInt()
         if enabled == nil {
             enabled = defaultDevice.enabled
         }
-        
-        var attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")?.toInt()
+
+        var attachScreenshots = askBool(
+            "Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))"
+        )?.toInt()
         if attachScreenshots == nil {
             attachScreenshots = defaultDevice.attachScreenshots
         }
-        
+
         device.uuid = uuid
         device.name = name
         device.backendURL = backendURL
@@ -505,7 +513,7 @@ class CLI {
         }
 
     }
-    
+
     private func editDevice() {
         clear()
         let devices = Device.getAll()
@@ -526,7 +534,7 @@ class CLI {
             return
         }
         let device = devices[index - 1]
-        
+
         let name = askInput("Device Name (empty = \(device.name))")
         if name != "" {
             device.name = name
@@ -535,97 +543,97 @@ class CLI {
         if backendURL != "" {
             device.backendURL = backendURL
         }
-        
+
         let enableAccountManager = askBool("Enable Account Manager (empty = \(device.enableAccountManager.toBool()))")
         if enableAccountManager != nil {
             device.enableAccountManager = enableAccountManager!.toInt()
         }
-        
+
         let port = askInt("Port (empty = \(device.port))")
         if port != nil {
             device.port = port!
         }
-        
+
         let pokemonMaxTime = askDouble("Pokemon Max Time (empty = \(device.pokemonMaxTime))")
         if pokemonMaxTime != nil {
             device.pokemonMaxTime = pokemonMaxTime!
         }
-        
+
         let raidMaxTime = askDouble("Raid Max Time (empty = \(device.raidMaxTime))")
         if raidMaxTime  != nil {
             device.raidMaxTime = raidMaxTime!
         }
-        
+
         let maxWarningTimeRaid = askInt("Max Warning Time Raid (empty = \(device.maxWarningTimeRaid))")
         if maxWarningTimeRaid  != nil {
             device.maxWarningTimeRaid = maxWarningTimeRaid!
         }
-        
+
         let delayMultiplier = askInt("Delay Multiplier (empty = \(device.delayMultiplier))")
         if delayMultiplier  != nil {
             device.delayMultiplier = delayMultiplier!
         }
-        
+
         let jitterValue = askDouble("Jitter Value (empty = \(device.jitterValue))")
         if jitterValue  != nil {
             device.jitterValue = jitterValue!
         }
-        
+
         let targetMaxDistance = askDouble("Target Max Distance (empty = \(device.targetMaxDistance))")
         if targetMaxDistance  != nil {
             device.targetMaxDistance = targetMaxDistance!
         }
-        
+
         let itemFullCount = askInt("Item Full Count (empty = \(device.itemFullCount))")
         if itemFullCount  != nil {
             device.itemFullCount = itemFullCount!
         }
-        
+
         let questFullCount = askInt("Quest Full Count (empty = \(device.questFullCount))")
         if questFullCount  != nil {
             device.questFullCount = questFullCount!
         }
-        
+
         let itemsPerStop = askInt("Items Per Stop (empty = \(device.itemsPerStop))")
         if itemsPerStop  != nil {
             device.itemsPerStop = itemsPerStop!
         }
-        
+
         let minDelayLogout = askDouble("Min Delay Logout (empty = \(device.minDelayLogout))")
         if minDelayLogout  != nil {
             device.minDelayLogout = minDelayLogout!
         }
-        
+
         let maxNoQuestCount = askInt("Max No Quest Count (empty = \(device.maxNoQuestCount))")
         if maxNoQuestCount  != nil {
             device.maxNoQuestCount = maxNoQuestCount!
         }
-        
+
         let maxFailedCount = askInt("Max Failed Count (empty = \(device.maxFailedCount))")
         if maxFailedCount  != nil {
             device.maxFailedCount = maxFailedCount!
         }
-        
+
         let maxEmptyGMO = askInt("Max Empty GMO (empty = \(device.maxEmptyGMO))")
         if maxEmptyGMO  != nil {
             device.maxEmptyGMO = maxEmptyGMO!
         }
-        
+
         let startupLocationLat = askDouble("Startup Location Lat (empty = \(device.startupLocationLat))")
         if startupLocationLat  != nil {
             device.startupLocationLat = startupLocationLat!
         }
-        
+
         let startupLocationLon = askDouble("Startup Location Lon (empty = \(device.startupLocationLon))")
         if startupLocationLon  != nil {
             device.startupLocationLon = startupLocationLon!
         }
-        
+
         let encounterMaxWait = askInt("Encounter Max Wait (empty = \(device.encounterMaxWait))")
         if encounterMaxWait  != nil {
             device.encounterMaxWait = encounterMaxWait!
         }
-        
+
         let encounterDelay = askDouble("Encounter Delay (empty = \(device.encounterDelay))")
         if encounterDelay  != nil {
             device.encounterDelay = encounterDelay!
@@ -635,7 +643,7 @@ class CLI {
         if fastIV != nil {
             device.fastIV = fastIV!.toInt()
         }
-        
+
         let ultraIV = askBool("Ultra IV (empty = \(device.ultraIV.toBool()))")
         if ultraIV != nil {
             device.ultraIV = ultraIV!.toInt()
@@ -645,12 +653,12 @@ class CLI {
         if deployEggs != nil {
             device.deployEggs = deployEggs!.toInt()
         }
-        
+
         let token = askInput("Token (empy = \(defaultDevice.token))")
         if token != "" {
             device.token = token
         }
-		
+
         let ultraQuests = askBool("Ultra Quests (empty = \(device.ultraQuests.toBool()))")
         if ultraQuests != nil {
             device.ultraQuests = ultraQuests!.toInt()
@@ -665,7 +673,7 @@ class CLI {
         if attachScreenshots != nil {
             device.attachScreenshots = attachScreenshots!.toInt()
         }
-        
+
         do {
             try device.save()
             clear()
@@ -711,15 +719,14 @@ class CLI {
             print("Failed to delete device.\n\n")
         }
     }
-    
-    
+
     // MARK: - Helper Functions
-    
+
     private func askInput(_ line: String) -> String {
         print("\(line): ", terminator: "")
         return (readLine() ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    
+
     private func askBool(_ line: String) -> Bool? {
         let input = askInput(line)
         if input == "" {
@@ -731,7 +738,7 @@ class CLI {
         }
         return bool
     }
-    
+
     private func askDouble(_ line: String) -> Double? {
         let input = askInput(line)
         if input == "" {
@@ -743,7 +750,7 @@ class CLI {
         }
         return double
     }
-    
+
     private func askInt(_ line: String) -> Int? {
         let input = askInput(line)
         if input == "" {
@@ -755,30 +762,30 @@ class CLI {
         }
         return int
     }
-    
+
     private func askInput(_ line: String, options: [Int]) -> Int {
         let input = askInput(line)
-        if let option = Int(input),options.contains(option) {
+        if let option = Int(input), options.contains(option) {
             return option
         } else {
             print("Please select an valid option.")
             return askInput(line, options: options)
         }
     }
-    
+
     private func printTable(headers: [String], rows: [[String]]) {
         var table = [String: [String]]()
         for header in headers {
             table[header] = [String]()
         }
-        
+
         for row in rows {
             var i = 0
             for header in headers {
                 table[header]!.append(row[i])
                 i += 1
             }
-            
+
         }
         var tableSorted = [(header: String, rows: [String])]()
         for header in headers {
@@ -788,26 +795,24 @@ class CLI {
                 tableSorted.append((header: header, rows: column.value))
             }
         }
-        
+
         printTable(tableSorted)
     }
-    
+
     private func printTable(_ table: [(header: String, rows: [String])]) {
-        
+
         var columnSizes = [Int]()
         for column in table {
             var maxSize = 0
             if column.header.count > maxSize {
                 maxSize = column.header.count
             }
-            for row in column.rows {
-                if row.count > maxSize {
-                    maxSize = row.count
-                }
+            for row in column.rows where row.count > maxSize {
+                maxSize = row.count
             }
             columnSizes.append(maxSize)
         }
-        
+
         var rows = [String]()
         var x = 0
         for column in table {
@@ -815,8 +820,8 @@ class CLI {
                 rows.append("")
                 rows.append("")
             }
-            rows[0] += getPrintFill(column.header, to: columnSizes[x], with: " ")
-            rows[1] += getPrintFill("", to: columnSizes[x], with: "=")
+            rows[0] += getPrintFill(column.header, toCount: columnSizes[x], with: " ")
+            rows[1] += getPrintFill("", toCount: columnSizes[x], with: "=")
             if x < table.count - 1 {
                 rows[0] += "|"
                 rows[1] += "|"
@@ -826,7 +831,7 @@ class CLI {
                 if x == 0 {
                     rows.append("")
                 }
-                rows[i] += getPrintFill(row, to: columnSizes[x], with: " ")
+                rows[i] += getPrintFill(row, toCount: columnSizes[x], with: " ")
                 if x < table.count - 1 {
                     rows[i] += "|"
                 }
@@ -839,15 +844,15 @@ class CLI {
         }
         print("\n")
     }
-    
-    private func getPrintFill(_ text: String, to: Int, with: Character) -> String {
+
+    private func getPrintFill(_ text: String, toCount: Int, with: Character) -> String {
         var row = text
-        while row.count < to {
+        while row.count < toCount {
             row.append(with)
         }
         return row
     }
-    
+
     private func clear() {
         print("\u{001B}[2J")
     }
