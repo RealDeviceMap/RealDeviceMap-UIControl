@@ -4,6 +4,7 @@
 //
 //  Created by Florian Kostenzer on 19.11.18.
 //
+//  IPHONE 6/6S/7/8
 
 import Foundation
 
