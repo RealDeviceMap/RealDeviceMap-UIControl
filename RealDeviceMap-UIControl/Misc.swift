@@ -1311,6 +1311,19 @@ extension XCTestCase {
         return false
     }
 
+    func checkNearbyPixel(screenshot: XCUIScreenshot?=nil) -> Bool {
+        self.clickPassengerWarning()
+        let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
+        if screenshotComp.rgbAtLocation(
+            pos: deviceConfig.nearbypixel,
+            min: (red: 0.25, green: 0.40, blue: 0.41),
+            max: (red: 0.27, green: 0.42, blue: 0.43)) {
+            return true
+        } else {
+            return false
+        }
+    }
+
 }
 
 extension String {

@@ -14,6 +14,12 @@ class DeviceIPhoneNormal: DeviceRatio1775 {
     override var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 325, y: 960, tapScaler: tapScaler)
     }
+    override var nearby: DeviceCoordinate {
+        return DeviceCoordinate(x: 645, y: 1215)
+    }
+    override var nearbypixel: DeviceCoordinate {
+        return DeviceCoordinate(x: 146, y: 310)
+    }
     override var startupNewButton: DeviceCoordinate {
         return DeviceCoordinate(x: 475, y: 960, tapScaler: tapScaler)
     }

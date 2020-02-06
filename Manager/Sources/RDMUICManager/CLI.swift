@@ -168,6 +168,7 @@ class CLI {
             Ultra Quests: \(device.ultraQuests.toBool())
             Enabled: \(device.enabled.toBool())
             AttachScreenshots: \(device.attachScreenshots.toBool())
+            Nearby Tracker: \(device.nearbyTracker.toBool())
             """
 
             print(row + "\n")
@@ -315,6 +316,11 @@ class CLI {
         let attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")
         if attachScreenshots != nil {
             defaultDevice.attachScreenshots = attachScreenshots!.toInt()
+        }
+
+        let nearbyTracker = askBool("Nearby Tracker (empty = \(defaultDevice.nearbyTracker.toBool()))")
+        if nearbyTracker != nil {
+            defaultDevice.nearbyTracker = nearbyTracker!.toInt()
         }
 
         do {
@@ -473,6 +479,11 @@ class CLI {
             attachScreenshots = defaultDevice.attachScreenshots
         }
 
+        var nearbyTracker = askBool("Nearby Tracker (empty = \(defaultDevice.nearbyTracker.toBool()))")?.toInt()
+        if nearbyTracker == nil {
+            nearbyTracker = defaultDevice.nearbyTracker
+        }
+
         device.uuid = uuid
         device.name = name
         device.backendURL = backendURL
@@ -502,6 +513,7 @@ class CLI {
         device.ultraQuests = ultraQuests!
         device.enabled = enabled!
         device.attachScreenshots = attachScreenshots!
+        device.nearbyTracker = nearbyTracker!
 
         do {
             try device.create()
@@ -672,6 +684,11 @@ class CLI {
         let attachScreenshots = askBool("Attach Screenshots (empty = \(device.attachScreenshots.toBool()))")
         if attachScreenshots != nil {
             device.attachScreenshots = attachScreenshots!.toInt()
+        }
+
+        let nearbyTracker = askBool("Nearby Tracker (empty = \(device.nearbyTracker.toBool()))")
+        if nearbyTracker != nil {
+            device.nearbyTracker = nearbyTracker!.toInt()
         }
 
         do {
