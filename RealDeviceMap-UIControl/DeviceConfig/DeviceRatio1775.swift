@@ -4,7 +4,6 @@
 //
 //  Created by Florian Kostenzer on 18.11.18.
 //
-//  IPHONE 5S/SE
 //  swiftlint:disable type_body_length file_length
 //
 
