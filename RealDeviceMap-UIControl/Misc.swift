@@ -160,7 +160,7 @@ extension XCTestCase {
     }
 
     func checkHasWarning(screenshot: XCUIScreenshot?=nil) -> Bool {
-        Log.debug("Checking for the warning pop-up")
+        Log.debug("Checking for the red warning")
         let screenshotComp = screenshot ?? getScreenshot()
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareWarningL,
@@ -170,6 +170,7 @@ extension XCTestCase {
             pos: deviceConfig.compareWarningR,
             min: (red: 0.03, green: 0.07, blue: 0.10),
             max: (red: 0.07, green: 0.11, blue: 0.14)) {
+            Log.debug("Look like you have been warned...")
             return true
         } else {
             return false
@@ -299,8 +300,8 @@ extension XCTestCase {
 
     }
 
-    func isStartup(screenshot: XCUIScreenshot?=nil) -> Bool {
-
+    func isStartup(click: Int = 0, screenshot: XCUIScreenshot?=nil) -> Bool {
+        let tapMe = click
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
 
         if screenshotComp.rgbAtLocation(
@@ -312,8 +313,10 @@ extension XCTestCase {
             min: (red: 0.28, green: 0.79, blue: 0.62),
             max: (red: 0.33, green: 0.85, blue: 0.68)
         ) {
-            Log.startup("Should be clearing Caution Sign new startup prompt")
-            deviceConfig.startupNewButton.toXCUICoordinate(app: app).tap()
+            if tapMe == 1 {
+                Log.startup("Clearing Caution Sign prompt")
+                deviceConfig.startupNewButton.toXCUICoordinate(app: app).tap()
+            }
             return true
         } else if screenshotComp.rgbAtLocation(
             pos: deviceConfig.startupOldOkButton,
@@ -324,8 +327,10 @@ extension XCTestCase {
             min: (red: 0.15, green: 0.41, blue: 0.45),
             max: (red: 0.19, green: 0.46, blue: 0.49)
         ) {
-            Log.startup("Should be Clearing the 2 line long, old style startup prompt")
-            deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
+            if tapMe == 1 {
+                Log.startup("Clearing 2 line caution prompt")
+                deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
+            }
             return true
         } else if screenshotComp.rgbAtLocation(
             pos: deviceConfig.startupOldOkButton,
@@ -336,8 +341,10 @@ extension XCTestCase {
             min: (red: 0.99, green: 0.99, blue: 0.99),
             max: (red: 1.01, green: 1.01, blue: 1.01)
         ) {
-            Log.startup("Should be clearing the 3 line long, old school style prompt")
-            deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
+            if tapMe == 1 {
+                Log.startup("Clearing 3 line prompt")
+                deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
+            }
             return true
         }
 

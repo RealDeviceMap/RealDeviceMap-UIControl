@@ -328,7 +328,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
     func part1LoginSetup() {
 
-        if shouldExit || !config.enableAccountManager {
+        if shouldExit { //<-- can still check for tos/startup state if no account manager
             return
         }
 
@@ -341,21 +341,60 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             while !loaded {
                 let screenshotComp = getScreenshot()
                 if screenshotComp.rgbAtLocation(
-                    pos: self.deviceConfig.startup,
-                    min: (red: 0.0, green: 0.75, blue: 0.55),
-                    max: (red: 1.0, green: 0.90, blue: 0.70)) {
-                    Log.info("Tried to log in but already logged in.")
-                    needsLogout = true
-                    isLoggedIn = true
-                    newLogIn = false
-                    return
-                } else if screenshotComp.rgbAtLocation(
+                    pos: self.deviceConfig.ageVerification,
+                    min: (0.15, 0.33, 0.17),
+                    max: (0.25, 0.43, 0.27)) {
+                    Log.debug("App is in age verification.")
+                    
+                    print("[STATUS] Age verification")
+                    //Open the year select
+                    deviceConfig.ageVerificationYear.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    //Slide
+                    deviceConfig.ageVerificationDragStart.toXCUICoordinate(app: app).press(
+                        forDuration: 0.1,
+                        thenDragTo: deviceConfig.ageVerificationDragEnd.toXCUICoordinate(app: app)
+                    )
+                    sleep(1 * config.delayMultiplier)
+                    //Tap to select
+                    deviceConfig.ageVerificationDragStart.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    //Submit
+                    deviceConfig.ageVerification.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                
+                
+                    sleep(1 * config.delayMultiplier)
+                    deviceConfig.loginNewPlayer.toXCUICoordinate(app: app).tap()
+                    sleep(1 * config.delayMultiplier)
+                    deviceConfig.loginPTC.toXCUICoordinate(app: app).tap()
+                }
+               
+                if screenshotComp.rgbAtLocation(
                     pos: self.deviceConfig.startupLoggedOut,
                     min: (0.95, 0.75, 0.0),
                     max: (1.00, 0.85, 0.1)) {
                     Log.debug("App Started in login screen.")
                     loaded = true
-                } else if acceptTOS() {
+                    return
+                }
+                sleep(2)
+                if unableAuth() {
+                    Log.debug("Unable to authenticate.")
+                    deviceConfig.unableAuthButton.toXCUICoordinate(app: app).tap()
+                    sleep(2 * config.delayMultiplier)
+                    shouldExit = true
+                    return
+                } else if failedLogin() {
+                    Log.error("Account \(username!) failed to log in. Getting a new account")
+                    deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
+                    sleep(2 * config.delayMultiplier)
+                    username = nil
+                    shouldExit = true
+                    return
+                }
+                sleep(5)
+                if acceptTOS() {
                     Log.debug("Accepting Terms")
                     deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
                     sleep(2 * config.delayMultiplier)
@@ -371,19 +410,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     Log.debug("Accepting Privacy Update.")
                     deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
                     sleep(2 * config.delayMultiplier)
-                } else if unableAuth() {
-                    Log.debug("Unable to authenticate.")
-                    deviceConfig.unableAuthButton.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                    shouldExit = true
-                    return
-                } else if failedLogin() {
-                    Log.error("Account \(username!) failed to log in. Getting a new account")
-                    deviceConfig.loginBannedSwitchAccount.toXCUICoordinate(app: app).tap()
-                    sleep(2 * config.delayMultiplier)
-                    username = nil
-                    shouldExit = true
-                    return
                 }
                 count += 1
                 if count == 60 && !loaded {
@@ -394,35 +420,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(1 * config.delayMultiplier)
             }
 
-            let screenshotComp = getScreenshot()
-            if screenshotComp.rgbAtLocation(
-                pos: self.deviceConfig.ageVerification,
-                min: (0.15, 0.33, 0.17),
-                max: (0.25, 0.43, 0.27)) {
-                Log.debug("App is in age verification.")
-
-                print("[STATUS] Age verification")
-                //Open the year select
-                deviceConfig.ageVerificationYear.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
-                //Slide
-                deviceConfig.ageVerificationDragStart.toXCUICoordinate(app: app).press(
-                    forDuration: 0.1,
-                    thenDragTo: deviceConfig.ageVerificationDragEnd.toXCUICoordinate(app: app)
-                )
-                sleep(1 * config.delayMultiplier)
-                //Tap to select
-                deviceConfig.ageVerificationDragStart.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
-                //Submit
-                deviceConfig.ageVerification.toXCUICoordinate(app: app).tap()
-                sleep(1 * config.delayMultiplier)
-            }
-
-            sleep(1 * config.delayMultiplier)
-            deviceConfig.loginNewPlayer.toXCUICoordinate(app: app).tap()
-            sleep(1 * config.delayMultiplier)
-            deviceConfig.loginPTC.toXCUICoordinate(app: app).tap()
+            
         }
     }
 
@@ -495,7 +493,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 blocking: true) { (_) in }
                     app.launch()
                     sleep(10 * config.delayMultiplier)
-                } else if acceptTOS() {
+                } else if acceptTOS() {  //<-- terms check if account manager == true
                     Log.debug("Accepting Terms")
                     deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
                     sleep(2 * config.delayMultiplier)
@@ -565,7 +563,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 blocking: true) { (_) in }
                     shouldExit = true
                     return
-                } else if isStartup() || isTutorial() {
+                } else if isStartup() || isTutorial() {  //<-- dont click, needed to complete startup in part8main
                     loggedIn = true
                     isLoggedIn = true
                     Log.info("Logged in as \(username!)")
@@ -597,7 +595,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             sleep(4 * config.delayMultiplier)
 
             if !isTutorial() {
-                Log.info("Tutorial already done. Restarting...")
+                Log.info("Tutorial Completed...")
                 self.postRequest(
                     url: self.backendControlerURL,
                     data: ["uuid": self.config.uuid, "username": self.username as Any,
@@ -605,9 +603,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     blocking: true) { (_) in }
                 newCreated = true
                 newLogIn = false
-                app.launch()
-                sleep(1 * config.delayMultiplier)
-
                 return
             }
 
@@ -1020,11 +1015,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             return
         }
 
-        isStarted = false
+        isStarted = false  //<-- set to false at start of runloop
 
         // State vars
         var startupCount = 0
-        var isStartupCompleted = false
+        var isStartupCompleted = false  //<-- set to false
 
         var currentQuests = self.config.questFullCount
         var currentItems = self.config.itemFullCount
@@ -1059,17 +1054,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0)).tap()
             }
 
-            if isStarted {
+            if isStarted {  //<-- automatic kick to else at line 1833
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    isStartup()
-                    sleep(2 * config.delayMultiplier)
 
-                    deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
+                    
                     sleep(1 * config.delayMultiplier)
                     hasWarning = self.checkHasWarning()
-                    if hasWarning {
+                    if hasWarning {  //<-- rw happens before news on startup
                         if self.firstWarningDate == nil && config.enableAccountManager {
                             firstWarningDate = Date()
                             postRequest(url: backendControlerURL,
@@ -1081,28 +1074,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         deviceConfig.closeWarning.toXCUICoordinate(app: app).tap()
                         sleep(1 * config.delayMultiplier)
                     }
-
-                    if self.acceptTOS() {
-                        Log.debug("Accepting Terms")
-                        deviceConfig.loginTerms.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-                    if self.acceptTOSUpdate() {
-                        Log.debug("Accepting Updated Terms.")
-                        deviceConfig.loginTerms2.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-                    if self.acceptPrivacy() {
-                        Log.debug("Accepting Privacy.")
-                        deviceConfig.loginPrivacy.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-                    if self.acceptPrivacyUpdate() {
-                        Log.debug("Accepting Privacy Update.")
-                        deviceConfig.loginPrivacyUpdate.toXCUICoordinate(app: app).tap()
-                        sleep(2 * config.delayMultiplier)
-                    }
-
+                    deviceConfig.closeNews.toXCUICoordinate(app: app).tap() //<-- was closing rw
                     self.freeScreen()
                     deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
@@ -1882,9 +1854,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(2 * config.delayMultiplier)
                     shouldExit = true
                     return
-                } else if isStartup() {
+                } else if isStartup(click: 1) { //<-- caution sign must be present here to complete startup
                     Log.info("App Started")
-                    isStarted = true
+                    isStarted = true  // <-- only place isStarted set to true
                     sleep(1 * config.delayMultiplier)
 	            } else {
                     Log.debug("App still in Startup")
