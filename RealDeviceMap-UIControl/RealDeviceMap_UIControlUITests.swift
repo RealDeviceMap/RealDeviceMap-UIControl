@@ -345,7 +345,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     min: (0.15, 0.33, 0.17),
                     max: (0.25, 0.43, 0.27)) {
                     Log.debug("App is in age verification.")
-                    
+
                     print("[STATUS] Age verification")
                     //Open the year select
                     deviceConfig.ageVerificationYear.toXCUICoordinate(app: app).tap()
@@ -362,7 +362,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     //Submit
                     deviceConfig.ageVerification.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
-                
+
                     sleep(1 * config.delayMultiplier)
                     deviceConfig.loginNewPlayer.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
@@ -1056,7 +1056,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    
+
                     sleep(1 * config.delayMultiplier)
                     hasWarning = self.checkHasWarning()
                     if hasWarning {  //<-- rw happens before news on startup
@@ -1866,7 +1866,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
             }
         }
-        
+
     }
 
     func zoom(out: Bool, app: XCUIApplication, coordStartup: XCUICoordinate) {
