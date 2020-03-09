@@ -363,13 +363,12 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     deviceConfig.ageVerification.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
                 
-                
                     sleep(1 * config.delayMultiplier)
                     deviceConfig.loginNewPlayer.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
                     deviceConfig.loginPTC.toXCUICoordinate(app: app).tap()
                 }
-               
+
                 if screenshotComp.rgbAtLocation(
                     pos: self.deviceConfig.startupLoggedOut,
                     min: (0.95, 0.75, 0.0),
@@ -420,7 +419,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 sleep(1 * config.delayMultiplier)
             }
 
-            
         }
     }
 
@@ -1058,7 +1056,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-
                     
                     sleep(1 * config.delayMultiplier)
                     hasWarning = self.checkHasWarning()
@@ -1854,7 +1851,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     sleep(2 * config.delayMultiplier)
                     shouldExit = true
                     return
-                } else if isStartup(click: 1) { //<-- caution sign must be present here to complete startup
+                } else if isStartup(click: true) { //<-- caution sign must be present here to complete startup
                     Log.info("App Started")
                     isStarted = true  // <-- only place isStarted set to true
                     sleep(1 * config.delayMultiplier)
@@ -1869,7 +1866,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 }
             }
         }
-
+        
     }
 
     func zoom(out: Bool, app: XCUIApplication, coordStartup: XCUICoordinate) {

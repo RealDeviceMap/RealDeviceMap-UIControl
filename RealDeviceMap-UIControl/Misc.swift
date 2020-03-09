@@ -300,8 +300,7 @@ extension XCTestCase {
 
     }
 
-    func isStartup(click: Int = 0, screenshot: XCUIScreenshot?=nil) -> Bool {
-        let tapMe = click
+    func isStartup(click: Bool=false, screenshot: XCUIScreenshot?=nil) -> Bool {
         let screenshotComp = screenshot ?? XCUIScreen.main.screenshot()
 
         if screenshotComp.rgbAtLocation(
@@ -313,7 +312,7 @@ extension XCTestCase {
             min: (red: 0.28, green: 0.79, blue: 0.62),
             max: (red: 0.33, green: 0.85, blue: 0.68)
         ) {
-            if tapMe == 1 {
+            if click {
                 Log.startup("Clearing Caution Sign prompt")
                 deviceConfig.startupNewButton.toXCUICoordinate(app: app).tap()
             }
@@ -327,7 +326,7 @@ extension XCTestCase {
             min: (red: 0.15, green: 0.41, blue: 0.45),
             max: (red: 0.19, green: 0.46, blue: 0.49)
         ) {
-            if tapMe == 1 {
+            if click {
                 Log.startup("Clearing 2 line caution prompt")
                 deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
             }
@@ -341,7 +340,7 @@ extension XCTestCase {
             min: (red: 0.99, green: 0.99, blue: 0.99),
             max: (red: 1.01, green: 1.01, blue: 1.01)
         ) {
-            if tapMe == 1 {
+            if click {
                 Log.startup("Clearing 3 line prompt")
                 deviceConfig.startupOldOkButton.toXCUICoordinate(app: app).tap()
             }
@@ -353,9 +352,9 @@ extension XCTestCase {
     /*
     // Planned detection for partially completed reloads, but doesn't seem worth it now :shrug:
     func failedTutorialMethod1(screenshot: XCUIScreenshot?=nil) -> Bool {
-        
+
         let screenshotComp = screenshot ?? getScreenshot()
-        
+
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.compareTutorialL,
             min: (red: 0.3, green: 0.5, blue: 0.6),
@@ -368,11 +367,11 @@ extension XCTestCase {
         } else {
             return false
         }
-        
+
     }
-    
+
     func failedTutorialMethod2(screenshot: XCUIScreenshot?=nil) -> Bool{
-    
+
         //let screenshotComp = screenshot ?? getScreenshot()
         /*
         if screenshotComp.rgbAtLocation(
@@ -383,13 +382,13 @@ extension XCTestCase {
         }
         */
         return true
-        
+
     }
-    
+
     func failedTutorialMethod3(screenshot: XCUIScreenshot?=nil) -> Bool{
-        
+
         //let screenshotComp = screenshot ?? getScreenshot()
-        
+
         /*if screenshotComp.rgbAtLocation(
             pos: deviceConfig.tutorialProfessorCheck,
             min: (red: 0.85, green: 0.9, blue: 0.00),
@@ -398,11 +397,11 @@ extension XCTestCase {
         }*/
         return true
     }
-    
+
     func failedTutorialMethod4(screenshot: XCUIScreenshot?=nil) -> Bool {
-        
+
         //let screenshotComp = screenshot ?? getScreenshot()
-        
+
         /*if screenshotComp.rgbAtLocation(
             pos: deviceConfig.tutorialProfessorCheck,
             min: (red: 0.85, green: 0.9, blue: 0.00),
