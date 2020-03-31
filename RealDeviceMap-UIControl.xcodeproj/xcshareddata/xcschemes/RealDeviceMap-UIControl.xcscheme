@@ -208,6 +208,11 @@
             value = "$(attachScreenshots)"
             isEnabled = "YES">
          </EnvironmentVariable>
+         <EnvironmentVariable
+             key = "appKey"
+             value = "$(appKey)"
+             isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>

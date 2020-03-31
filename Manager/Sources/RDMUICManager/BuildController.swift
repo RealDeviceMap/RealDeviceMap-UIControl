@@ -197,7 +197,7 @@ class BuildController {
             "startupLocationLon=\(device.startupLocationLon)", "encounterMaxWait=\(device.encounterMaxWait)",
             "encounterDelay=\(device.encounterDelay)", "fastIV=\(device.fastIV)", "ultraIV=\(device.ultraIV)",
             "deployEggs=\(device.deployEggs)", "token=\(device.token)", "ultraQuests=\(device.ultraQuests)",
-            "attachScreenshots=\(device.attachScreenshots)"
+            "attachScreenshots=\(device.attachScreenshots)", "appKey=\(device.appKey)"
         )
 
         var contains = true

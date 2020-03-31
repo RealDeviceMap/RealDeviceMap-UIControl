@@ -168,6 +168,7 @@ class CLI {
             Ultra Quests: \(device.ultraQuests.toBool())
             Enabled: \(device.enabled.toBool())
             AttachScreenshots: \(device.attachScreenshots.toBool())
+            App Key: \(device.appKey)
             """
 
             print(row + "\n")
@@ -315,6 +316,11 @@ class CLI {
         let attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")
         if attachScreenshots != nil {
             defaultDevice.attachScreenshots = attachScreenshots!.toInt()
+        }
+        
+        let appKey = askInput("Default App Key (empty = \(defaultDevice.appKey))")
+        if appKey != "" {
+            defaultDevice.appKey = appKey
         }
 
         do {
@@ -472,6 +478,11 @@ class CLI {
         if attachScreenshots == nil {
             attachScreenshots = defaultDevice.attachScreenshots
         }
+        
+        var appKey = askInput("App Key (empty = \(defaultDevice.appKey))")
+        if appKey == "" {
+            appKey = defaultDevice.appKey
+        }
 
         device.uuid = uuid
         device.name = name
@@ -502,6 +513,7 @@ class CLI {
         device.ultraQuests = ultraQuests!
         device.enabled = enabled!
         device.attachScreenshots = attachScreenshots!
+        device.appKey = appKey
 
         do {
             try device.create()
@@ -673,7 +685,12 @@ class CLI {
         if attachScreenshots != nil {
             device.attachScreenshots = attachScreenshots!.toInt()
         }
-
+        
+        let appKey = askInput("App Key (empty = \(device.appKey))")
+        if appKey != "" {
+            device.appKey = appKey
+        }
+        
         do {
             try device.save()
             clear()
