@@ -986,7 +986,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
         return HTTPResponse(.ok)
     }
-    
+
     func handleConfigRequest(request: HTTPRequest) -> HTTPResponse {
         let responseData: [String: Any] = [
             "key": self.config.appKey ?? "",

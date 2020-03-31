@@ -317,7 +317,7 @@ class CLI {
         if attachScreenshots != nil {
             defaultDevice.attachScreenshots = attachScreenshots!.toInt()
         }
-        
+
         let appKey = askInput("Default App Key (empty = \(defaultDevice.appKey))")
         if appKey != "" {
             defaultDevice.appKey = appKey
@@ -478,7 +478,7 @@ class CLI {
         if attachScreenshots == nil {
             attachScreenshots = defaultDevice.attachScreenshots
         }
-        
+
         var appKey = askInput("App Key (empty = \(defaultDevice.appKey))")
         if appKey == "" {
             appKey = defaultDevice.appKey
@@ -685,12 +685,12 @@ class CLI {
         if attachScreenshots != nil {
             device.attachScreenshots = attachScreenshots!.toInt()
         }
-        
+
         let appKey = askInput("App Key (empty = \(device.appKey))")
         if appKey != "" {
             device.appKey = appKey
         }
-        
+
         do {
             try device.save()
             clear()
