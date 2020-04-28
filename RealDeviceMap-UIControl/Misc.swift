@@ -1049,6 +1049,12 @@ extension XCTestCase {
         let start = Date()
         deviceConfig.openQuest.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
+        //get us to a known location by swiping left twice (placing us on the special research tab)
+        app.swipeLeft()
+        sleep(1 * config.delayMultiplier)
+        app.swipeLeft()
+        sleep(1 * config.delayMultiplier)
+        //now we can swipe right once to get us to the field research (quests) tab
         app.swipeRight()
         sleep(1 * config.delayMultiplier)
 
