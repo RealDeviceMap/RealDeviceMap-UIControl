@@ -13,6 +13,10 @@ protocol DeviceConfigProtocol {
 
     /** Green pixel in green button of startup popup. */
     var startup: DeviceCoordinate { get }
+    /** Nearby Tracker. */
+    var nearby: DeviceCoordinate { get }
+    /** Nearby Tracker Pixel. */
+    var nearbypixel: DeviceCoordinate { get }
 
     // Handling Multiple startup prompts
     /* White Pixel (on 3 line prompt) or Greenish-Blue Pixel (on 2 line prompt) bottom right corner of 2line popup */

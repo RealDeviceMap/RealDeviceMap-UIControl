@@ -39,6 +39,7 @@ class Config {
     var ultraQuests: Bool
     var enabled: Bool
     var attachScreenshots: Bool
+    var nearbyTracker: Bool
 
     init() {
 
@@ -74,6 +75,7 @@ class Config {
         ultraQuests = enviroment["ultraQuests"]?.toBool() ?? false
         enabled = enviroment["enabled"]?.toBool() ?? true
         attachScreenshots = enviroment["attachScreenshots"]?.toBool() ?? false
+        nearbyTracker = enviroment["nearbyTracker"]?.toBool() ?? false
     }
 
 }

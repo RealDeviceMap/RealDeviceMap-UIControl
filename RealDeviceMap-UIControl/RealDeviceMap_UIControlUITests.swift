@@ -40,6 +40,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
     var encounterDelay = 1.0
     var server = Server()
     var hasWarning = false
+    var hasnearby = false
 
     var level: Int = 0
     var systemAlertMonitorToken: NSObjectProtocol?
@@ -1123,6 +1124,20 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         deviceConfig.startup.toXCUICoordinate(app: app).tap()
                         app.swipeDown()
                     }
+
+                    if self.config.nearbyTracker {
+                        Log.info("STARTUP nearbyTracker \(self.config.nearbyTracker)")
+                        self.hasnearby = self.checkNearbyPixel()
+                        sleep(2)
+                        self.hasnearby = self.checkNearbyPixel()
+                        Log.info("STARTUP hasnearby \(self.hasnearby)")
+                        if !self.hasnearby {
+                            deviceConfig.nearby.toXCUICoordinate(app: app).tap()
+                            sleep(1)
+                            Log.info("STARTUP Nearby Tap")
+                        }
+                    }
+
                     sleep(1 * config.delayMultiplier)
 
                     isStartupCompleted = true
@@ -1202,7 +1217,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
                             self.action = action
                             if action == "scan_pokemon" {
-                                print("[STATUS] Pokemon")
+                                if self.config.nearbyTracker {
+                                    print("[STATUS] NTM Pokemon")
+                                } else {
+                                    print("[STATUS] Pokemon")
+                                }
                                 if self.hasWarning && self.config.enableAccountManager {
                                     Log.info("Account has a warning and tried to scan for Pokemon. Logging out!")
                                     self.lock.lock()
@@ -1264,9 +1283,24 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.unlock()
                                 }
+                                if self.config.nearbyTracker {
+                                    self.hasnearby = self.checkNearbyPixel()
+                                    sleep(2)
+                                    self.hasnearby = self.checkNearbyPixel()
+                                    Log.info("POKEMON hasnearby \(self.hasnearby)")
+                                    if !self.hasnearby {
+                                        self.deviceConfig.nearby.toXCUICoordinate(app: self.app).tap()
+                                        sleep(1)
+                                        Log.info("POKEMON Nearby Tap")
+                                    }
+                                }
 
                             } else if action == "scan_raid" {
-                                print("[STATUS] Raid")
+                                if self.config.nearbyTracker {
+                                    print("[STATUS] NTM Raid")
+                                } else {
+                                    print("[STATUS] Raid")
+                                }
                                 if self.hasWarning && self.firstWarningDate != nil &&
                                    Int(Date().timeIntervalSince(self.firstWarningDate!)) >=
                                      self.config.maxWarningTimeRaid && self.config.enableAccountManager {
@@ -1329,6 +1363,18 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.unlock()
                                 }
+                                if self.config.nearbyTracker {
+                                    self.hasnearby = self.checkNearbyPixel()
+                                    sleep(2)
+                                    self.hasnearby = self.checkNearbyPixel()
+                                    Log.info("RAID hasnearby \(self.hasnearby)")
+                                    if !self.hasnearby {
+                                        self.deviceConfig.nearby.toXCUICoordinate(app: self.app).tap()
+                                        sleep(1)
+                                        Log.info("RAID Nearby Tap")
+                                    }
+                                }
+
                             } else if action == "scan_quest" {
                                 print("[STATUS] Quest")
 
@@ -1553,7 +1599,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.shouldExit = true
                                 return
                             } else if action == "scan_iv" {
-                                print("[STATUS] IV")
+                                if self.config.nearbyTracker {
+                                    print("[STATUS] NTM IV")
+                                } else {
+                                    print("[STATUS] IV")
+                                }
                                 if self.hasWarning && self.firstWarningDate != nil &&
                                    Int(Date().timeIntervalSince(self.firstWarningDate!)) >=
                                      self.config.maxWarningTimeRaid && self.config.enableAccountManager {
@@ -1830,6 +1880,17 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
                                     }
 
+                                }
+                                if self.config.nearbyTracker {
+                                    self.hasnearby = self.checkNearbyPixel()
+                                    sleep(2)
+                                    self.hasnearby = self.checkNearbyPixel()
+                                    Log.info("IV hasnearby \(self.hasnearby)")
+                                    if self.config.ultraIV && !self.hasnearby {
+                                        self.deviceConfig.nearby.toXCUICoordinate(app: self.app).tap()
+                                        sleep(1)
+                                        Log.info("IV Nearby Tap")
+                                    }
                                 }
 
                             } else {

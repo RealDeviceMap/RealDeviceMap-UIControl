@@ -29,6 +29,12 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var startup: DeviceCoordinate {
         return DeviceCoordinate(x: 728, y: 1542, scaler: scaler) //was 1234
     }
+    var nearby: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler) // Need Screenshot Cords
+    }
+    var nearbypixel: DeviceCoordinate {
+        return DeviceCoordinate(x: 1387, y: 1873, scaler: scaler)
+    }
     var startupLoggedOut: DeviceCoordinate {
         return DeviceCoordinate(x: 807, y: 177, scaler: scaler)
     }

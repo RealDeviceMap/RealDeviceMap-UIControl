@@ -198,7 +198,7 @@ class BuildController {
             "startupLocationLon=\(device.startupLocationLon)", "encounterMaxWait=\(device.encounterMaxWait)",
             "encounterDelay=\(device.encounterDelay)", "fastIV=\(device.fastIV)", "ultraIV=\(device.ultraIV)",
             "deployEggs=\(device.deployEggs)", "token=\(device.token)", "ultraQuests=\(device.ultraQuests)",
-            "attachScreenshots=\(device.attachScreenshots)"
+            "attachScreenshots=\(device.attachScreenshots)", "nearbyTracker=\(device.nearbyTracker)"
         )
 
         var contains = true
@@ -274,6 +274,15 @@ class BuildController {
                         }
                         if string!.contains(string: "[STATUS] IV") {
                             self.setStatus(uuid: device.uuid, status: "Running: IV")
+                        }
+                        if string!.contains(string: "[STATUS] NTM Pokemon") {
+                            self.setStatus(uuid: device.uuid, status: "Running: NTM Pokemon")
+                        }
+                        if string!.contains(string: "[STATUS] NTM Raid") {
+                            self.setStatus(uuid: device.uuid, status: "Running: NTM Raid")
+                        }
+                        if string!.contains(string: "[STATUS] NTM IV") {
+                            self.setStatus(uuid: device.uuid, status: "Running: NTM IV")
                         }
 
                         fullLog.uic(message: string!, all: true)
