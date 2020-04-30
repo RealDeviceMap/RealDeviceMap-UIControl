@@ -930,7 +930,7 @@ extension XCTestCase {
                     Log.debug("Log out confirmation button found")
                     deviceConfig.logoutConfirm.toXCUICoordinate(app: app).tap()
 
-                    for index in 1...20 {
+                    for _ in 1...20 {
                         let screenshotComp = XCUIScreen.main.screenshot()
 
                         if screenshotComp.rgbAtLocation(
@@ -1025,12 +1025,12 @@ extension XCTestCase {
         // Rocket invasion detection
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.rocketLogoGirl,
-            min: (red: 0.62, green: 0.24, blue: 0.13),
-            max: (red: 0.87, green: 0.36, blue: 0.20)) ||
+            min: (red: 0.76, green: 0.30, blue: 0.15),
+            max: (red: 0.87, green: 0.38, blue: 0.22)) ||
            screenshotComp.rgbAtLocation(
             pos: deviceConfig.rocketLogoGuy,
-            min: (red: 0.62, green: 0.24, blue: 0.13),
-            max: (red: 0.87, green: 0.36, blue: 0.20)) {
+            min: (red: 0.76, green: 0.30, blue: 0.15),
+            max: (red: 0.87, green: 0.38, blue: 0.22)) {
             Log.info("Rocket invasion encountered")
 
             // Tap through dialog 4 times and wait 3 seconds between each
@@ -1046,9 +1046,21 @@ extension XCTestCase {
     }
 
     func clearQuest() {
+        Log.test("Starting ClearQuest()")
         let start = Date()
         deviceConfig.openQuest.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
+
+        var screenshotComp = XCUIScreen.main.screenshot()
+        while screenshotComp.rgbAtLocation(pos: deviceConfig.questWillow,
+            min: (red: 0.50, green: 0.00, blue: 0.00),
+            max: (red: 0.55, green: 0.02, blue: 0.02)) {
+                Log.test("Clearing Prof Willow")
+                deviceConfig.openPokestop.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+                screenshotComp = XCUIScreen.main.screenshot()
+        }
+
         //get us to a known location by swiping left twice (placing us on the special research tab)
         app.swipeLeft()
         sleep(1 * config.delayMultiplier)
@@ -1058,52 +1070,92 @@ extension XCTestCase {
         app.swipeRight()
         sleep(1 * config.delayMultiplier)
 
-        var screenshotComp = getScreenshot()
-
         if screenshotComp.rgbAtLocation(
             pos: deviceConfig.questDelete,
             min: (red: 0.98, green: 0.60, blue: 0.22),
             max: (red: 1.0, green: 0.65, blue: 0.27)
         ) {
+            //If the top quest is orange, might be clearing stacked quests
+            //Theres a chance that we have a normal completed quests on top
+            //We will eventually have a stack so I did not add logic for this check
+
             Log.test("Clearing stacked quests")
 
-            for i in 0...2 {
+            for i in 0...3 {
                 if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.questFilledColorWithStack1,
-                    min: (red: 0.98, green: 0.98, blue: 0.98),
+                    pos: deviceConfig.questDeleteWithStack,
+                    min: (red: 0.80, green: 0.80, blue: 0.80),
                     max: (red: 1.0, green: 1.0, blue: 1.0)
                 ) {
-                    //top slot is normal quest. delete it.
+                    //second slot is normal quest. delete it.
+                    Log.test("Clearing stacked quests: clearing a normal quest (slot 2).")
                     deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
                     deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
-                    if i < 2 {
-                        screenshotComp = getScreenshot()
+                    if i < 3 {
+                        screenshotComp = XCUIScreen.main.screenshot()
                     }
                 } else if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.questFilledColorWithStack1,
-                    min: (red: 0.98, green: 0.60, blue: 0.22),
+                    pos: deviceConfig.questDeleteWithStack,
+                    min: (red: 0.90, green: 0.56, blue: 0.21),
                     max: (red: 1.0, green: 0.65, blue: 0.27)
                 ) {
-                    //top slot is a completed quest. Click on the quest to initiate the encounter
-                    deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
-                    sleep(1 * config.delayMultiplier)
-                    self.freeScreen() //run from the encounter
+                    //second slot is a completed quest. Check the next one so
+                    //we dont leave the quest log. Then click on the quests to initiate the encounter
+                    if screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.questDeleteThirdSlot,
+                        min: (red: 0.80, green: 0.80, blue: 0.80),
+                        max: (red: 1.0, green: 1.0, blue: 1.0)
+                    ) {
+                        //third slot is normal quest. delete it.
+                        Log.test("Clearing stacked quests: clearing a normal quest (slot 3).")
+                        deviceConfig.questDeleteThirdSlot.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        screenshotComp = XCUIScreen.main.screenshot()
+                    } else if screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.questDeleteThirdSlot,
+                        min: (red: 0.98, green: 0.60, blue: 0.22),
+                        max: (red: 1.0, green: 0.65, blue: 0.27)
+                    ) {
+                        //third slot is a completed quest
+                        Log.test("Clearing stacked quests: clearing a completed quest (slot 3).")
+                        deviceConfig.questDeleteThirdSlot.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        self.freeScreen() //run from the encounter
+                        self.clearQuest() //to finish clearing the quests since we exited the quest log
+                    } else {
+                        //tap the second slot if nothing is in the third slot
+                        Log.test(
+                            "Clearing stacked quests: clearing a completed quest (slot 2). " +
+                            "RGB for quest slot: " +
+                                "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))"
+                        )
+                        deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        self.freeScreen() //run from the encounter
+                    }
                 } else {
                     //top slot is empty. No more quests to delete, so exit.
+                    deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+                    Log.test("No more quests detected. RGB for quest slot: " +
+                        "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))")
                     break
                 }
             }
-        } else {
-            Log.test("Clearing unstacked quests")
+        } else {//else we are clearing non-stacked quests because the top spot had the delete icon
+            Log.test("Clearing unstacked quests. RGB for quest slot: " +
+                     "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))")
             for i in 0...2 {
                 if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.questFilledColor1,
-                    min: (red: 0.98, green: 0.98, blue: 0.98),
+                    pos: deviceConfig.questDelete,
+                    min: (red: 0.80, green: 0.80, blue: 0.80),
                     max: (red: 1.0, green: 1.0, blue: 1.0)
                 ) {
                     //top slot is normal quest. delete it.
+                    Log.test("Clearing unstacked quests: clearing a normal quest (slot 1).")
                     deviceConfig.questDelete.toXCUICoordinate(app: app).tap()
                     sleep(1 * config.delayMultiplier)
                     deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
@@ -1112,16 +1164,41 @@ extension XCTestCase {
                         screenshotComp = getScreenshot()
                     }
                 } else if screenshotComp.rgbAtLocation(
-                    pos: deviceConfig.questFilledColor1,
+                    pos: deviceConfig.questDelete,
                     min: (red: 0.98, green: 0.60, blue: 0.22),
                     max: (red: 1.0, green: 0.65, blue: 0.27)
                 ) {
-                    //top slot is a completed quest.  Click on the quest to initiate the encounter
-                    deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
-                    sleep(1 * config.delayMultiplier)
-                    self.freeScreen() //run from the encounter
+                    //top slot is a completed quest. Check the next one so we dont leave the quest log.
+                    //Then click on the quests to initiate the encounter
+                    if screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.questDeleteWithStack,
+                        min: (red: 0.80, green: 0.80, blue: 0.80),
+                        max: (red: 1.0, green: 1.0, blue: 1.0)
+                    ) {
+                        //second slot is normal quest. delete it.
+                        Log.test("Clearing unstacked quests: clearing a normal quest (slot 2).")
+                        deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        deviceConfig.questDeleteConfirm.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        screenshotComp = XCUIScreen.main.screenshot()
+                    } else if screenshotComp.rgbAtLocation(
+                        pos: deviceConfig.questDeleteWithStack,
+                        min: (red: 0.98, green: 0.60, blue: 0.22),
+                        max: (red: 1.0, green: 0.65, blue: 0.27)
+                    ) {
+                        //second slot is a completed quest
+                        Log.test("Clearing unstacked quests: clearing a completed quest (slot 2).")
+                        deviceConfig.questDeleteWithStack.toXCUICoordinate(app: app).tap()
+                        sleep(1 * config.delayMultiplier)
+                        self.freeScreen() //run from the encounter
+                        self.clearQuest() //to finish clearing the last quest since we exited the quest log
+                    }
                 } else {
                     //top slot is empty. No more quests to delete, so exit.
+                    deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+                    Log.test("No more quests detected. RGB for quest slot: " +
+                             "\(screenshotComp.rgbAtLocation(pos: deviceConfig.questDelete))")
                     break
                 }
             }
@@ -1145,7 +1222,6 @@ extension XCTestCase {
         let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         var index = 0
         var done = false
-        var hasEgg = false
 
         deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
         sleep(1 * config.delayMultiplier)
@@ -1153,29 +1229,39 @@ extension XCTestCase {
         sleep(1 * config.delayMultiplier)
 
         while !done && deviceConfig.itemDeleteYs.count != 0 {
-            let screenshot = getScreenshot()
+            let screenshot = XCUIScreen.main.screenshot()
 
-            if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[index]) {
-                hasEgg = true
+            if screenshot.rgbAtLocation(
+                pos: deviceConfig.itemFreePass,
+                min: (red: 0.42, green: 0.81, blue: 0.59),
+                max: (red: 0.46, green: 0.85, blue: 0.63)
+            ) {
+                Log.test("Closing free raid pass popup")
+                deviceConfig.itemFreePass.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
+            }
+            if screenshot.rgbAtLocation(
+                pos: deviceConfig.itemGiftInfo,
+                min: (red: 0.42, green: 0.81, blue: 0.59),
+                max: (red: 0.46, green: 0.85, blue: 0.63)
+            ) {
+                Log.test("Closing gift info popup")
+                deviceConfig.itemGiftInfo.toXCUICoordinate(app: app).tap()
+                sleep(1 * config.delayMultiplier)
             }
 
-            if itemHasDelete(
-                screenshot,
-                x: deviceConfig.itemDeleteX,
-                y: deviceConfig.itemDeleteYs[index]
-               ) && !itemIsGift(
-                screenshot,
-                x: deviceConfig.itemGiftX,
-                y: deviceConfig.itemDeleteYs[index]
-               ) && !itemIsEgg(
-                screenshot,
-                x: deviceConfig.itemEggX,
-                y: deviceConfig.itemDeleteYs[index]
-               ) && !itemIsEggActive(
-                screenshot,
-                x: deviceConfig.itemEggX,
-                y: deviceConfig.itemDeleteYs[index]
-               ) {
+            if itemHasDelete(screenshot, x: deviceConfig.itemDeleteX,
+                             y: deviceConfig.itemDeleteYs[index]) &&
+               !itemIsGift(screenshot, x: deviceConfig.itemGiftX,
+                           y: deviceConfig.itemDeleteYs[index]) &&
+               !itemIsEgg(screenshot, x: deviceConfig.itemEggX,
+                          y: deviceConfig.itemDeleteYs[index]) &&
+               !itemIsEggActive(screenshot, x: deviceConfig.itemEggX,
+                                y: deviceConfig.itemDeleteYs[index]) ||
+                itemIsPokeball(screenshot, x: deviceConfig.itemGiftX,
+                               y: deviceConfig.itemDeleteYs[index]) ||
+                itemIsIncense(screenshot, x: deviceConfig.itemGiftX,
+                              y: deviceConfig.itemIncenseYs[index]) {
 
                 let delete = normalized.withOffset(
                     CGVector(dx: lround(Double(deviceConfig.itemDeleteX)*tapMultiplier),
@@ -1185,7 +1271,6 @@ extension XCTestCase {
                 sleep(1 * config.delayMultiplier)
                 deviceConfig.itemDeleteIncrease.toXCUICoordinate(app: app).press(forDuration: 3)
                 deviceConfig.itemDeleteConfirm.toXCUICoordinate(app: app).tap()
-
                 sleep(1 * config.delayMultiplier)
             } else if index + 1 < deviceConfig.itemDeleteYs.count {
                 index += 1
@@ -1193,28 +1278,69 @@ extension XCTestCase {
                 done = true
             }
         }
+        sleep(1 * config.delayMultiplier)
+    }
 
-        let deployEnabled: Bool = config.deployEggs
-        Log.test("deployEnabled: \(deployEnabled)")
-        if hasEgg && deployEnabled {
+    func eggDeploy() -> Bool {
+        Log.test("Starting eggDeploy()")
+        var hasEgg = false
+
+        deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+        sleep(1 * config.delayMultiplier)
+        deviceConfig.openItems.toXCUICoordinate(app: app).tap()
+        sleep(1 * config.delayMultiplier)
+
+        let screenshot = XCUIScreen.main.screenshot()
+        if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[0]) {
+            hasEgg = true
+        } else {
+            //If the top line is not an egg, clear items again just in case and recheck the top line
+            Log.test("No egg found. Checking for items to clear before a recheck.")
+            deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
+            sleep(1 * config.delayMultiplier)
+            clearItems()
+            let screenshot = XCUIScreen.main.screenshot()
+            if itemIsEgg(screenshot, x: deviceConfig.itemEggX, y: deviceConfig.itemDeleteYs[0]) {
+                hasEgg = true
+            }
+        }
+
+        if hasEgg {
+            Log.test("New egg found. Deploying it.")
             deviceConfig.itemEggMenuItem.toXCUICoordinate(app: app).tap()
             sleep(1 * config.delayMultiplier)
             deviceConfig.itemEggDeploy.toXCUICoordinate(app: app).tap()
             sleep(2 * config.delayMultiplier)
+            return true
         } else {
+            Log.test("No egg found or there's already has an active egg. Closing Menu.")
             deviceConfig.closeMenu.toXCUICoordinate(app: app).tap()
-            Log.test("Closing Menu")
+            sleep(1 * config.delayMultiplier)
+            return false
         }
-        sleep(1 * config.delayMultiplier)
-
     }
 
     func itemHasDelete(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
-
         return screenshot.rgbAtLocation(
             pos: (x: x, y: y),
             min: (red: 0.50, green: 0.50, blue: 0.50),
             max: (red: 0.75, green: 0.80, blue: 0.75)
+        )
+    }
+
+    func itemIsPokeball(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
+        return screenshot.rgbAtLocation(
+            pos: (x: x, y: y),
+            min: (red: 0.9, green: 0.7, blue: 0.7),
+            max: (red: 0.99, green: 0.8, blue: 0.8)
+        )
+    }
+
+    func itemIsIncense(_ screenshot: XCUIScreenshot, x: Int, y: Int) -> Bool {
+        return screenshot.rgbAtLocation(
+            pos: (x: x, y: y),
+            min: (red: 0.01, green: 0.9, blue: 0.4),
+            max: (red: 0.09, green: 1.0, blue: 0.5)
         )
     }
 

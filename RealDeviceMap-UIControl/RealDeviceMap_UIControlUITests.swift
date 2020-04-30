@@ -611,8 +611,6 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 return
             }
 
-            let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
-
             Log.tutorial("Solving Tutorial for \(username!)")
 
             /* Start Reworked Changes Here */
@@ -622,7 +620,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 usleep(UInt32(1500000 * config.delayMultiplier))
             }
             sleep(2 * config.delayMultiplier)
-            var gender: Bool = tutorialGenderSelection()
+            let gender: Bool = tutorialGenderSelection()
             tutorialPhysicalFeature()
             tutorialStyleSelection(gender)
             Log.tutorial("Begin Willow Encounter Speech")
@@ -824,14 +822,16 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                     "lat": currentLocation!.lat,
                     "lng": currentLocation!.lon
                 ]
-                if self.config.ultraQuests == true && self.action == "scan_quest" {
+                if self.config.ultraQuests == true &&
+                   (self.action == "scan_quest" || self.action == "spin_pokestop") {
                     //autospinning should happen only when ultraQuests is set and the instance is scan_quest type
                     if self.level >= 30 {
                         responseData["actions"] = ["pokemon", "pokestop"]
                     } else {
                         responseData["actions"] = ["pokestop"]
                     }
-                } else if self.config.ultraQuests == false && self.action == "scan_quest" {
+                } else if self.config.ultraQuests == false &&
+                    (self.action == "scan_quest" || self.action == "spin_pokestop") {
                     //autospinning should happen only when ultraQuests is set and the instance is scan_quest type
                     if self.level >= 30 {
                         responseData["actions"] = ["pokemon"]
@@ -881,7 +881,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
             jsonData!["lat_target"] = currentLocation!.lat
             jsonData!["lon_target"] = currentLocation!.lon
             jsonData!["target_max_distnace"] = targetMaxDistance
-            jsonData!["username"] = self.username
+            if self.username != nil {
+                jsonData!["username"] = self.username
+            }
             jsonData!["pokemon_encounter_id"] = pokemonEncounterId
             jsonData!["pokemon_encounter_id_for_encounter"] = pokemonEncounterIdForEncounter
             jsonData!["list_scatter_pokemon"] = listScatterPokemon
@@ -897,6 +899,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 let nearby = data?["nearby"] as? Int ?? 0
                 let wild = data?["wild"] as? Int ?? 0
                 //let forts = data?["forts"] as? Int ?? 0
+                let fortSearch = data?["fort_search"] as? Int ?? 0
                 let quests = data?["quests"] as? Int ?? 0
                 let encounters = data?["encounters"] as? Int ?? 0
                 let pokemonLat = data?["pokemon_lat"] as? Double
@@ -972,9 +975,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 } else {
                     toPrint = "[DEBUG] Got Data without GMO"
                 }
-                if !self.gotQuest && quests != 0 {
-                    self.gotQuest = true
-                    self.gotQuestEarly = true
+                if !self.gotQuest {
+                    if quests > 0 || (self.action == "spin_pokestop" && fortSearch > 0) {
+                        self.gotQuest = true
+                        self.gotQuestEarly = true
+                    }
                 }
                 if !self.gotIV && encounters != 0 {
                     self.gotIV = true
@@ -1028,7 +1033,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
 
         var currentQuests = self.config.questFullCount
         var currentItems = self.config.itemFullCount
-
+        var eggStart = Date(timeInterval: -1860, since: Date())
         var failedToGetJobCount = 0
         var failedCount = 0
         emptyGmoCount = 0
@@ -1063,7 +1068,7 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                 if !isStartupCompleted {
                     Log.debug("Performing Startup sequence")
                     currentLocation = config.startupLocation
-                    isStartup()
+                    _ = isStartup()
                     sleep(2 * config.delayMultiplier)
 
                     deviceConfig.closeNews.toXCUICoordinate(app: app).tap()
@@ -1329,13 +1334,19 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     }
                                     self.lock.unlock()
                                 }
-                            } else if action == "scan_quest" {
-                                print("[STATUS] Quest")
-
+                            } else if action == "scan_quest" || action == "spin_pokestop" {
                                 let lat = data["lat"] as? Double ?? 0
                                 let lon = data["lon"] as? Double ?? 0
                                 let delay = data["delay"] as? Double ?? 0
-                                Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
+
+                                if action == "scan_quest" {
+                                    print("[STATUS] Quest")
+                                    Log.debug("Scanning for Quest at \(lat) \(lon) in \(Int(delay))s")
+                                } else {
+                                    print("[STATUS] Spin Pokestop")
+                                    Log.debug("Spinning Pokestop at \(lat) \(lon) in \(Int(delay))s")
+                                }
+
                                 if !self.config.ultraQuests {
                                     self.zoom(
                                         out: false,
@@ -1404,7 +1415,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         sleep(1)
                                     }
 
-                                    if currentQuests >= self.config.questFullCount && !self.newCreated {
+                                    if action == "scan_quest" &&
+                                       currentQuests >= self.config.questFullCount &&
+                                       !self.newCreated {
                                         self.freeScreen()
                                         Log.debug("Clearing Quests")
                                         self.clearQuest()
@@ -1413,9 +1426,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         sleep(1)
                                     }
                                 }
+
+                                if self.config.deployEggs && eggStart < Date() {
+                                    self.freeScreen()
+                                    Log.debug("Deploying an egg")
+                                    let i = Double.random(in: 0...60)
+                                    if self.eggDeploy() {
+                                        // if an egg was used, set the timer to 31 minutes
+                                        eggStart = Date(timeInterval: 1860+i, since: Date())
+                                    } else {
+                                        // if no egg was used, set the timer to 16 minutes so it rechecks
+                                        // useful if you get more eggs from leveling up
+                                        eggStart = Date(timeInterval: 960+i, since: Date())
+                                    }
+                                    Log.debug("Egg timer set to \(eggStart) UTC for a recheck")
+                                }
+
                                 self.newCreated = false
 
                                 self.lock.lock()
+                                let lastLocation = self.currentLocation
                                 self.currentLocation = (lat, lon)
                                 self.waitRequiresPokemon = false
                                 self.pokemonEncounterId = nil
@@ -1424,15 +1454,24 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 self.gotQuest = false
                                 self.lock.unlock()
                                 Log.debug("Scanning prepared")
-                                self.freeScreen()
 
                                 let start = Date()
-
-                                self.app.swipeLeft()
+                                if !self.config.ultraQuests {
+                                    self.freeScreen()
+                                    self.app.swipeLeft()
+                                }
 
                                 var success = false
                                 var locked = true
                                 var found = false
+                                let lastLocationCL = CLLocation(latitude: lastLocation!.lat,
+                                                                longitude: lastLocation!.lon)
+                                let newLocationCL = CLLocation(latitude: lat, longitude: lon)
+                                if lastLocationCL.distance(from: newLocationCL) <= 100 && delay <= 1 {
+                                    locked = false
+                                    success = true
+                                }
+
                                 while locked {
                                     usleep(100000 * self.config.delayMultiplier)
                                     if Date().timeIntervalSince(start) <= 5 {
@@ -1476,23 +1515,26 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                     self.lock.unlock()
                                 }
 
-                                // Check if previus spin had quest data
-                                self.lock.lock()
-                                if self.gotQuest {
-                                    self.noQuestCount = 0
-                                } else {
-                                    self.noQuestCount += 1
-                                }
-                                self.gotQuest = false
+                                if action == "scan_quest" {
+                                    // Check if previus spin had quest data
+                                    self.lock.lock()
+                                    if self.gotQuest {
+                                        self.noQuestCount = 0
+                                    } else {
+                                        self.noQuestCount += 1
+                                    }
+                                    self.gotQuest = false
 
-                                if self.noQuestCount >= self.config.maxNoQuestCount {
+                                    if self.noQuestCount >= self.config.maxNoQuestCount {
+                                        self.lock.unlock()
+                                        Log.debug("Stuck somewhere. Restarting")
+                                        self.app.terminate()
+                                        self.shouldExit = true
+                                        return
+                                    }
                                     self.lock.unlock()
-                                    Log.debug("Stuck somewhere. Restarting")
-                                    self.app.terminate()
-                                    self.shouldExit = true
-                                    return
                                 }
-                                self.lock.unlock()
+
                                 if !self.config.ultraQuests {
                                     if success {
                                         self.freeScreen()
@@ -1502,7 +1544,9 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                         while attempts < 5 {
                                             attempts += 1
                                             self.lock.lock()
+                                            Log.test("Got quest data: " + self.gotQuest.description)
                                             if !self.gotQuest {
+                                                Log.test("Respinning stop attempt: " + attempts.description)
                                                 self.lock.unlock()
                                                 usleep(100000 * self.config.delayMultiplier)
                                                 self.freeScreen()
@@ -1519,13 +1563,15 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                                 } else {
                                     if success {
                                         var attempts = 0
-                                        while attempts < 5 {
+                                        while attempts < 15 {
                                             attempts += 1
                                             self.lock.lock()
                                             if !self.gotQuest {
+                                                Log.test("No quest data!. Re-attempt: " + attempts.description)
                                                 self.lock.unlock()
                                                 sleep(1 * self.config.delayMultiplier)
                                             } else {
+                                                Log.test("Got quest data")
                                                 self.lock.unlock()
                                                 break
                                             }

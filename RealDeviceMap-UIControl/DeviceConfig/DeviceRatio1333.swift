@@ -186,20 +186,20 @@ class DeviceRatio1333: DeviceConfigProtocol {
     var questDelete: DeviceCoordinate {
         return DeviceCoordinate(x: 1434, y: 1272, scaler: scaler)
     }
-    var questFilledColor1: DeviceCoordinate {
-        return DeviceCoordinate(x: 108, y: 1258, scaler: scaler)
-    }
     var questDeleteWithStack: DeviceCoordinate {
         return DeviceCoordinate(x: 1445, y: 1677, scaler: scaler)
-    }
-    var questFilledColorWithStack1: DeviceCoordinate {
-        return DeviceCoordinate(x: 108, y: 1665, scaler: scaler)
     }
     var questDeleteConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 768, y: 1143, scaler: scaler)
     }
     var openItems: DeviceCoordinate {
         return DeviceCoordinate(x: 1165, y: 1620, scaler: scaler)
+    }
+    var questWillow: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+    var questDeleteThirdSlot: DeviceCoordinate {
+        return DeviceCoordinate(x: 1445, y: 2030, scaler: scaler) //not accurate
     }
 
     // MARK: - Item Clearing
@@ -234,6 +234,21 @@ class DeviceRatio1333: DeviceConfigProtocol {
             scaler.scaleY(y: 1501),
             scaler.scaleY(y: 2010)
         ]
+    }
+    var itemIncenseYs: [Int] {
+        return [
+            scaler.scaleY(y: 0),
+            scaler.scaleY(y: 0),
+            scaler.scaleY(y: 0),
+            scaler.scaleY(y: 0),
+            scaler.scaleY(y: 0)
+        ]
+    }
+    var itemFreePass: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
+    }
+    var itemGiftInfo: DeviceCoordinate {
+        return DeviceCoordinate(x: 0, y: 0, scaler: scaler)
     }
 
     // MARK: - Login
