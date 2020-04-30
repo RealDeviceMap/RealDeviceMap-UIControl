@@ -1061,6 +1061,12 @@ extension XCTestCase {
                 screenshotComp = XCUIScreen.main.screenshot()
         }
 
+        //get us to a known location by swiping left twice (placing us on the special research tab)
+        app.swipeLeft()
+        sleep(1 * config.delayMultiplier)
+        app.swipeLeft()
+        sleep(1 * config.delayMultiplier)
+        //now we can swipe right once to get us to the field research (quests) tab
         app.swipeRight()
         sleep(1 * config.delayMultiplier)
 

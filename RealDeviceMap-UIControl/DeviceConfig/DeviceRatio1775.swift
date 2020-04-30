@@ -184,10 +184,16 @@ class DeviceRatio1775: DeviceConfigProtocol {
         return DeviceCoordinate(x: 590, y: 970, scaler: scaler)
     }
     var questDelete: DeviceCoordinate {
-        return DeviceCoordinate(x: 598, y: 530, scaler: scaler)
+        return DeviceCoordinate(x: 596, y: 570, scaler: scaler)
+    }
+    var questFilledColor1: DeviceCoordinate {
+        return DeviceCoordinate(x: 44, y: 567, scaler: scaler)
     }
     var questDeleteWithStack: DeviceCoordinate {
-        return DeviceCoordinate(x: 600, y: 700, scaler: scaler)
+        return DeviceCoordinate(x: 596, y: 739, scaler: scaler)
+    }
+    var questFilledColorWithStack1: DeviceCoordinate {
+        return DeviceCoordinate(x: 44, y: 736, scaler: scaler)
     }
     var questDeleteConfirm: DeviceCoordinate {
         return DeviceCoordinate(x: 320, y: 620, scaler: scaler)
@@ -257,7 +263,7 @@ class DeviceRatio1775: DeviceConfigProtocol {
     }
 
     var loginPTC: DeviceCoordinate {
-        return DeviceCoordinate(x: 320, y: 800, scaler: scaler)
+        return DeviceCoordinate(x: 320, y: 700, scaler: scaler)
     }
 
     var loginUsernameTextfield: DeviceCoordinate {
