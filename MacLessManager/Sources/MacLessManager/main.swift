@@ -22,13 +22,13 @@ let frontendURL = CommandLine.arguments[frontendURLIndex + 1]
 
 guard let usernameIndex = CommandLine.arguments.firstIndex(of: "--username"),
       CommandLine.arguments.count > usernameIndex + 1 else {
-    fatalError("--frontend not set but is required")
+    fatalError("--username not set but is required")
 }
 let username = CommandLine.arguments[usernameIndex + 1]
 
 guard let passwordIndex = CommandLine.arguments.firstIndex(of: "--password"),
       CommandLine.arguments.count > passwordIndex + 1 else {
-    fatalError("--frontend not set but is required")
+    fatalError("--password not set but is required")
 }
 let password = CommandLine.arguments[passwordIndex + 1]
 
