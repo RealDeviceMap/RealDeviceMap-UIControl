@@ -6,7 +6,7 @@ class MacLessManager {
 
     let logger: Logger
     let id: String
-    let backendURL: URL
+    let frontendURL: URL
     let username: String
     let password: String
     let restartAfter: Double
@@ -18,10 +18,10 @@ class MacLessManager {
     var running: Bool = false
     var deviceRestarts = [String: Date]()
 
-    init(backendURL: String, username: String, password: String, restartAfter: Int, restartLockout: Int) {
+    init(frontendURL: String, username: String, password: String, restartAfter: Int, restartLockout: Int) {
         self.id = UUID().uuidString
         self.logger = Logger(label: "MacLessManager-\(id)")
-        self.backendURL = URL(string: "\(backendURL)/api/get_data?show_devices=true")!
+        self.frontendURL = URL(string: "\(frontendURL)/api/get_data?show_devices=true")!
         self.password = password
         self.username = username
         self.restartAfter = Double(restartAfter)
@@ -99,7 +99,7 @@ class MacLessManager {
     }
 
     private func getAllDeviceStatusse() throws -> [String: Date] {
-        var request = URLRequest(url: backendURL)
+        var request = URLRequest(url: frontendURL)
         let token = "\(username):\(password)".data(using: .utf8)!.base64EncodedString()
         request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
         let configuration = URLSessionConfiguration.default
