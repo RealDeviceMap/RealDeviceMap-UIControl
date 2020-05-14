@@ -45,34 +45,34 @@ jobs:
     - name: Build
       working-directory: Manager
       run: swift build -v -c release
-MacLessManagerBuildDebug:
-   runs-on: macos-latest
-   steps:
-   - uses: actions/checkout@v1
-   - name: Resolve
-     working-directory: MacLessManager
-     run: swift package resolve
-   - uses: actions/cache@v1
-     with:
-       path: MacLessManager/.build
-       key: ${{ runner.os }}-debug-spm-${{ hashFiles('MacLessManager/Package.resolved') }}
-   - name: Build
-     working-directory: MacLessManager
-     run: swift build -v -c debug
+  MacLessManagerBuildDebug:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Resolve
+      working-directory: MacLessManager
+      run: swift package resolve
+    - uses: actions/cache@v1
+      with:
+        path: MacLessManager/.build
+        key: ${{ runner.os }}-debug-spm-${{ hashFiles('MacLessManager/Package.resolved') }}
+    - name: Build
+      working-directory: MacLessManager
+      run: swift build -v -c debug
 #   - name: Test
 #     working-directory: MacLessManager
 #     run: swift test -v -c debug
- MacLessManagerBuildRelease:
-   runs-on: macos-latest
-   steps:
-   - uses: actions/checkout@v1
-   - name: Resolve
-     working-directory: MacLessManager
-     run: swift package resolve
-   - uses: actions/cache@v1
-     with:
-       path: MacLessManager/.build
-       key: ${{ runner.os }}-release-spm-${{ hashFiles('MacLessManager/Package.resolved') }}
-   - name: Build
-     working-directory: MacLessManager
-     run: swift build -v -c release
+  MacLessManagerBuildRelease:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Resolve
+      working-directory: MacLessManager
+      run: swift package resolve
+    - uses: actions/cache@v1
+      with:
+        path: MacLessManager/.build
+        key: ${{ runner.os }}-release-spm-${{ hashFiles('MacLessManager/Package.resolved') }}
+    - name: Build
+      working-directory: MacLessManager
+      run: swift build -v -c release
