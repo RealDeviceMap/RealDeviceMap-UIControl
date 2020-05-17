@@ -992,6 +992,23 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         return HTTPResponse(.ok)
     }
 
+    func handleConfigRequest(request: HTTPRequest) -> HTTPResponse {
+        let responseData: [String: Any] = [
+            "key": self.config.appKey ?? "",
+            "loc": "", // optional
+            "endpoints": [""] // optional
+        ]
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: responseData, options: .prettyPrinted)
+            let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
+            let response = HTTPResponse(content: jsonString)
+            response.headers = ["Content-Type": "application/json"]
+            return response
+        } catch {
+            return HTTPResponse(.internalServerError)
+        }
+    }
+
     func part8Main() {
 
         if shouldExit || ((username == nil || isLoggedIn == false) && config.enableAccountManager) {
@@ -2015,6 +2032,8 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
         self.server.route(.post, "loc", self.handleLocRequest)
         self.server.route(.get, "data", self.handleDataRequest)
         self.server.route(.post, "data", self.handleDataRequest)
+        self.server.route(.get, "config", self.handleConfigRequest)
+        self.server.route(.post, "config", self.handleConfigRequest)
 
         self.lock.lock()
         self.currentLocation = self.config.startupLocation

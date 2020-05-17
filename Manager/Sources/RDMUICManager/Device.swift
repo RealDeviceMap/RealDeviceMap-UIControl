@@ -53,6 +53,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
     var ultraQuests: Int
     var enabled: Int
     var attachScreenshots: Int
+    var appKey: String
 
     override init() {
         self.uuid = ""
@@ -84,6 +85,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
 		self.ultraQuests = 0
         self.enabled = 1
         self.attachScreenshots = 0
+        self.appKey = ""
         super.init()
     }
 
@@ -92,7 +94,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
          targetMaxDistance: Double, itemFullCount: Int, questFullCount: Int, itemsPerStop: Int, minDelayLogout: Double,
          maxNoQuestCount: Int, maxFailedCount: Int, maxEmptyGMO: Int, startupLocationLat: Double,
          startupLocationLon: Double, encounterMaxWait: Int, encounterDelay: Double, fastIV: Int, ultraIV: Int,
-         deployEggs: Int, token: String, ultraQuests: Int, enabled: Int, attachScreenshots: Int) {
+         deployEggs: Int, token: String, ultraQuests: Int, enabled: Int, attachScreenshots: Int, appKey: String) {
         self.uuid = uuid
         self.name = name
         self.backendURL = backendURL
@@ -122,6 +124,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
 		self.ultraQuests = ultraQuests
         self.enabled = enabled
         self.attachScreenshots = attachScreenshots
+        self.appKey = appKey
         super.init()
     }
 
@@ -159,6 +162,7 @@ class Device: SQLiteStORM, Equatable, Hashable {
 		ultraQuests = this.data["ultraQuests"] as? Int ?? 0
         enabled = this.data["enabled"] as? Int ?? 1
         attachScreenshots = this.data["attachScreenshots"] as? Int ?? 0
+        appKey = this.data["appKey"] as? String ?? ""
     }
 
     static func getAll() -> [Device] {
