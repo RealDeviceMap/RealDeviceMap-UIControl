@@ -198,7 +198,7 @@ class BuildController {
             "startupLocationLon=\(device.startupLocationLon)", "encounterMaxWait=\(device.encounterMaxWait)",
             "encounterDelay=\(device.encounterDelay)", "fastIV=\(device.fastIV)", "ultraIV=\(device.ultraIV)",
             "deployEggs=\(device.deployEggs)", "token=\(device.token)", "ultraQuests=\(device.ultraQuests)",
-            "attachScreenshots=\(device.attachScreenshots)"
+            "attachScreenshots=\(device.attachScreenshots)", "wildsOnly=\(device.wildsOnly)"
         )
 
         var contains = true
@@ -257,6 +257,9 @@ class BuildController {
                                     status: line.replacingOccurrences(of: "[STATUS] ", with: "")
                                 )
                             }
+                        }
+                        if string!.contains(string: "[STATUS] WO Pokemon") {
+                            self.setStatus(uuid: device.uuid, status: "Running: WO Pokemon")
                         }
 
                         fullLog.uic(message: string!, all: true)

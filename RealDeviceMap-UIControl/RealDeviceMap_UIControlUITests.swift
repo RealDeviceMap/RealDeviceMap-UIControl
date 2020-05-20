@@ -929,37 +929,72 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         self.emptyGmoCount = 0
 
                         if self.pokemonEncounterId != nil {
-                            if (nearby + wild) > 0 {
-                                if pokemonLat != nil && pokemonLon != nil &&
-                                   self.pokemonEncounterId == pokemonEncounterIdResult {
-                                    self.waitRequiresPokemon = false
-                                    let oldLocation = CLLocation(latitude: self.currentLocation!.lat,
-                                                                 longitude: self.currentLocation!.lon)
-                                    self.currentLocation = (pokemonLat!, pokemonLon!)
-                                    let newLocation = CLLocation(latitude: self.currentLocation!.lat,
-                                                                 longitude: self.currentLocation!.lon)
-                                    self.encounterDistance = newLocation.distance(from: oldLocation)
-                                    self.pokemonEncounterId = nil
-                                    if self.listScatterPokemon {
-                                        self.listScatterPokemon = false
-                                        self.scatterPokemon = data?["scatter_pokemon"]
-                                            as? [[String: Any]] ?? [[String: Any]]()
+                            if !self.config.wildsOnly {
+                                if (nearby + wild) > 0 {
+                                    if pokemonLat != nil && pokemonLon != nil &&
+                                       self.pokemonEncounterId == pokemonEncounterIdResult {
+                                        self.waitRequiresPokemon = false
+                                        let oldLocation = CLLocation(latitude: self.currentLocation!.lat,
+                                                                     longitude: self.currentLocation!.lon)
+                                        self.currentLocation = (pokemonLat!, pokemonLon!)
+                                        let newLocation = CLLocation(latitude: self.currentLocation!.lat,
+                                                                     longitude: self.currentLocation!.lon)
+                                        self.encounterDistance = newLocation.distance(from: oldLocation)
+                                        self.pokemonEncounterId = nil
+                                        if self.listScatterPokemon {
+                                            self.listScatterPokemon = false
+                                            self.scatterPokemon = data?["scatter_pokemon"]
+                                                as? [[String: Any]] ?? [[String: Any]]()
+                                        }
+                                        self.waitForData = false
+                                        toPrint = "[DEBUG] Got Data and found Nearby And Wild Pokemon"
+                                    } else {
+                                        toPrint = "[DEBUG] Got Data but didn't find Nearby And Wild Pokemon"
                                     }
-                                    self.waitForData = false
-                                    toPrint = "[DEBUG] Got Data and found Pokemon"
                                 } else {
-                                    toPrint = "[DEBUG] Got Data but didn't find Pokemon"
+                                    toPrint = "[DEBUG] Got Data without Nearby And Wild Pokemon"
                                 }
                             } else {
-                                toPrint = "[DEBUG] Got Data without Pokemon"
+                                if (wild) > 0 {
+                                    if pokemonLat != nil && pokemonLon != nil &&
+                                       self.pokemonEncounterId == pokemonEncounterIdResult {
+                                        self.waitRequiresPokemon = false
+                                        let oldLocation = CLLocation(latitude: self.currentLocation!.lat,
+                                                                     longitude: self.currentLocation!.lon)
+                                        self.currentLocation = (pokemonLat!, pokemonLon!)
+                                        let newLocation = CLLocation(latitude: self.currentLocation!.lat,
+                                                                     longitude: self.currentLocation!.lon)
+                                        self.encounterDistance = newLocation.distance(from: oldLocation)
+                                        self.pokemonEncounterId = nil
+                                        if self.listScatterPokemon {
+                                            self.listScatterPokemon = false
+                                            self.scatterPokemon = data?["scatter_pokemon"]
+                                                as? [[String: Any]] ?? [[String: Any]]()
+                                        }
+                                        self.waitForData = false
+                                        toPrint = "[DEBUG] Got Data and found Wild Pokemon"
+                                    } else {
+                                        toPrint = "[DEBUG] Got Data but didn't find Wild Pokemon"
+                                    }
+                                } else {
+                                    toPrint = "[DEBUG] Got Data without Wild Pokemon"
+                                }
                             }
-
                         } else if self.waitRequiresPokemon {
-                            if (nearby + wild) > 0 {
-                                toPrint = "[DEBUG] Got Data with Pokemon"
-                                self.waitForData = false
+                            if !self.config.wildsOnly {
+                                if (nearby + wild) > 0 {
+                                    toPrint = "[DEBUG] Got Data with Nearby And Wild Pokemon"
+                                    self.waitForData = false
+                                } else {
+                                    toPrint = "[DEBUG] Got Data without Nearby And Wild Pokemon"
+                                }
                             } else {
-                                toPrint = "[DEBUG] Got Data without Pokemon"
+                                if (wild) > 0 {
+                                    toPrint = "[DEBUG] Got Data with Wild Pokemon"
+                                    self.waitForData = false
+                                } else {
+                                    toPrint = "[DEBUG] Got Data without Wild Pokemon"
+                                }
                             }
                         } else {
                             toPrint = "[DEBUG] Got Data"
@@ -1207,7 +1242,11 @@ class RealDeviceMap_UIControlUITests: XCTestCase {
                         if let data = result!["data"] as? [String: Any], let action = data["action"] as? String {
                             self.action = action
                             if action == "scan_pokemon" {
-                                print("[STATUS] Pokemon")
+                                if self.config.wildsOnly {
+                                    print("[STATUS] WO Pokemon")
+                                } else {
+                                    print("[STATUS] Pokemon")
+                                }
                                 if self.hasWarning && self.config.enableAccountManager {
                                     Log.info("Account has a warning and tried to scan for Pokemon. Logging out!")
                                     self.lock.lock()

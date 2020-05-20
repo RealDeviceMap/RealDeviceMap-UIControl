@@ -168,6 +168,7 @@ class CLI {
             Ultra Quests: \(device.ultraQuests.toBool())
             Enabled: \(device.enabled.toBool())
             AttachScreenshots: \(device.attachScreenshots.toBool())
+            Wilds Only: \(device.wildsOnly.toBool())
             """
 
             print(row + "\n")
@@ -315,6 +316,11 @@ class CLI {
         let attachScreenshots = askBool("Attach Screenshots (empty = \(defaultDevice.attachScreenshots.toBool()))")
         if attachScreenshots != nil {
             defaultDevice.attachScreenshots = attachScreenshots!.toInt()
+        }
+
+        let wildsOnly = askBool("Wilds Only (empty = \(defaultDevice.wildsOnly.toBool()))")
+        if wildsOnly != nil {
+            defaultDevice.wildsOnly = wildsOnly!.toInt()
         }
 
         do {
@@ -473,6 +479,11 @@ class CLI {
             attachScreenshots = defaultDevice.attachScreenshots
         }
 
+        var wildsOnly = askBool("Wilds Only (empty = \(defaultDevice.wildsOnly.toBool()))")?.toInt()
+        if wildsOnly == nil {
+            wildsOnly = defaultDevice.wildsOnly
+        }
+
         device.uuid = uuid
         device.name = name
         device.backendURL = backendURL
@@ -502,6 +513,7 @@ class CLI {
         device.ultraQuests = ultraQuests!
         device.enabled = enabled!
         device.attachScreenshots = attachScreenshots!
+        device.wildsOnly = wildsOnly!
 
         do {
             try device.create()
@@ -672,6 +684,11 @@ class CLI {
         let attachScreenshots = askBool("Attach Screenshots (empty = \(device.attachScreenshots.toBool()))")
         if attachScreenshots != nil {
             device.attachScreenshots = attachScreenshots!.toInt()
+        }
+
+        let wildsOnly = askBool("Wilds Only (empty = \(device.wildsOnly.toBool()))")
+        if wildsOnly != nil {
+            device.wildsOnly = wildsOnly!.toInt()
         }
 
         do {
