@@ -5,8 +5,8 @@ import PackageDescription
 let package = Package(
     name: "MacLessManager",
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log", .upToNextMinor(from: "1.2.0")),
-        .package(url: "https://github.com/JohnSundell/ShellOut", .upToNextMinor(from: "2.3.0"))
+        .package(url: "https://github.com/apple/swift-log", from: "1.2.0"),
+        .package(url: "https://github.com/JohnSundell/ShellOut", from: "2.3.0")
     ],
     targets: [
         .target(
