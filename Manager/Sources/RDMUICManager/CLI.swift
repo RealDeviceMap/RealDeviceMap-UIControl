@@ -74,12 +74,13 @@ class CLI {
         4. Add Device
         5. Edit Device
         6. Delete Device
+        7. Toggle Device
         0. Exit
         ================
         """
 
         print(menu)
-        let number = askInput("Please select an option", options: [0, 1, 2, 3, 4, 5, 6])
+        let number = askInput("Please select an option", options: [0, 1, 2, 3, 4, 5, 6, 7])
         print()
         switch number {
         case 1:
@@ -99,6 +100,9 @@ class CLI {
             return true
         case 6:
             deleteDevice()
+            return true
+        case 7:
+            toggleDevice()
             return true
         default:
             return false
@@ -717,6 +721,44 @@ class CLI {
             print("Device deleted.\n\n")
         } catch {
             print("Failed to delete device.\n\n")
+        }
+    }
+
+    private func toggleDevice() {
+        clear()
+        let devices = Device.getAll()
+        print("=======================")
+        print("Select Device to Toggle")
+        print("=======================")
+        var i = 1
+        for device in devices {
+            print("\(i): \(device.name)")
+            i += 1
+        }
+        print("0: Back")
+        print("=====================")
+        let index = askInput("Please select an option", options: Array(0...devices.count))
+        print()
+        if index == 0 {
+            clear()
+            return
+        }
+        let device = devices[index - 1]
+        device.enabled = 1 - device.enabled
+
+        do {
+            try device.save()
+            clear()
+            BuildController.global.removeDevice(device: device)
+            let tmpQueue = Threading.getQueue(name: UUID().uuidString, type: .serial)
+            tmpQueue.dispatch {
+                Threading.sleep(seconds: 10.0)
+                BuildController.global.addDevice(device: device)
+                Threading.destroyQueue(tmpQueue)
+            }
+            print("Device toggled.\n\n")
+        } catch {
+            print("Failed to toggle device.\n\n")
         }
     }
 
