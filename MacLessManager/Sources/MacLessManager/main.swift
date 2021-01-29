@@ -18,19 +18,19 @@ guard let frontendURLIndex = CommandLine.arguments.firstIndex(of: "--frontend"),
       CommandLine.arguments.count > frontendURLIndex + 1 else {
     fatalError("--frontend not set but is required")
 }
-let frontendURL = CommandLine.arguments[frontendURLIndex + 1]
+let frontendURL: String = CommandLine.arguments[Int(frontendURLIndex) + 1]
 
 guard let usernameIndex = CommandLine.arguments.firstIndex(of: "--username"),
       CommandLine.arguments.count > usernameIndex + 1 else {
     fatalError("--username not set but is required")
 }
-let username = CommandLine.arguments[usernameIndex + 1]
+let username: String = CommandLine.arguments[usernameIndex + 1]
 
 guard let passwordIndex = CommandLine.arguments.firstIndex(of: "--password"),
       CommandLine.arguments.count > passwordIndex + 1 else {
     fatalError("--password not set but is required")
 }
-let password = CommandLine.arguments[passwordIndex + 1]
+let password: String = CommandLine.arguments[passwordIndex + 1]
 
 let restartAfter: Int
 if let index = CommandLine.arguments.firstIndex(of: "--after"),
