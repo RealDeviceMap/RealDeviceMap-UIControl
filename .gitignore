@@ -7,6 +7,11 @@ RealDeviceMap-UIControl.xcodeproj/project.xcworkspace/xcuserdata/*
 Manager/RDM-UIC-Manager.xcodeproj/
 Manager/.build/
 Manager/Package.resolved
+Manager/.swiftpm/
+MacLessManager/MacLessManager.xcodeproj/
+MacLessManager/.build/
+MacLessManager/Package.resolved
+MacLessManager/.swiftpm/
 
 # Pods
 Podfile.lock
