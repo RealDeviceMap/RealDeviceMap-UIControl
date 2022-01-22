@@ -60,13 +60,13 @@ class MacLessManager {
         while running {
             runningLock.unlock()
             guard let devices = try? getAllDevices(), !devices.isEmpty else {
-                self.logger.error("Failed to laod devices (or none connected)")
+                self.logger.error("Failed to load devices (or none connected)")
                 sleep(1)
                 continue
             }
             self.logger.info("\(devices.count) devices connected")
             guard let statusse = try? getAllDeviceStatusse(), !statusse.isEmpty else {
-                self.logger.error("Failed to laod statusse")
+                self.logger.error("Failed to load status")
                 sleep(1)
                 continue
             }
@@ -130,8 +130,10 @@ class MacLessManager {
         var devices = [String: String]()
         let uuids = try getAllDeciceUUIDs()
         for uuid in uuids {
-            let name = try shellOut(to: "idevicename", arguments: ["--udid", uuid])
-            devices[uuid] = name
+            let name = try? shellOut(to: "idevicename", arguments: ["--udid", uuid])
+            if name != nil {
+                devices[uuid] = name
+            }
         }
         return devices
     }
